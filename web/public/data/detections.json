@@ -1,0 +1,10 @@
+{
+  "_note": "Illustrative sample detections. Replace this file with the model pipeline's output (same fields; see src/lib/detections.js).",
+  "detections": [
+    { "id": "d1", "species": "copper_rockfish", "camera": "hartley_bay", "timestamp": "2024-04-20T13:02:13Z", "status": "Uncertain", "confidence": 0.58, "box": { "x": 0.34, "y": 0.42, "w": 0.30, "h": 0.26 }, "clipUrl": null, "frameUrl": null },
+    { "id": "d2", "species": "lingcod", "camera": "campbell_river", "timestamp": "2024-08-01T05:01:35Z", "status": "Needs review", "confidence": 0.71, "box": { "x": 0.18, "y": 0.55, "w": 0.46, "h": 0.20 }, "clipUrl": null, "frameUrl": null },
+    { "id": "d3", "species": "kelp_greenling", "camera": "campbell_river", "timestamp": "2025-06-12T14:03:00Z", "status": "Uncertain", "confidence": 0.49, "box": { "x": 0.52, "y": 0.36, "w": 0.26, "h": 0.22 }, "clipUrl": null, "frameUrl": null },
+    { "id": "d4", "species": "copper_rockfish", "camera": "china_creek", "timestamp": "2022-11-22T22:04:01Z", "status": "Needs review", "confidence": 0.77, "box": { "x": 0.40, "y": 0.30, "w": 0.28, "h": 0.30 }, "clipUrl": null, "frameUrl": null },
+    { "id": "d5", "species": "copper_rockfish", "camera": "hartley_bay", "timestamp": "2024-04-25T04:02:55Z", "status": "Identified", "confidence": 0.96, "box": { "x": 0.30, "y": 0.40, "w": 0.32, "h": 0.28 }, "clipUrl": null, "frameUrl": null }
+  ]
+}

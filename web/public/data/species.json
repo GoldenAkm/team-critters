@@ -1,0 +1,83 @@
+{
+  "_note": "Illustrative sample data. Species facts, features and conservation tags must be checked against DFO / SARA before the demo.",
+  "species": [
+    {
+      "id": "copper_rockfish",
+      "name": "Copper rockfish",
+      "sci": "Sebastes caurinus",
+      "rank": "species",
+      "number": 1,
+      "tag": "Not verified",
+      "tagKind": "unverified",
+      "shape": "circle",
+      "model": "copper-rockfish",
+      "features": [
+        "Spiny dorsal fin running along the back",
+        "Pale stripe along the rear half of the side",
+        "Large head and mouth with a deep body",
+        "Copper to brown mottled colouring"
+      ],
+      "hotspots": [],
+      "blurb": "One of the most common rockfish at ONC's BC coastal cameras. Rockfish live for decades, so changes in how often they're seen can be an early conservation signal.",
+      "habitatHint": "Rocky reefs, often resting on the bottom near cover."
+    },
+    {
+      "id": "quillback_rockfish",
+      "name": "Quillback rockfish",
+      "sci": "Sebastes maliger",
+      "rank": "species",
+      "number": 2,
+      "tag": "Threatened",
+      "tagKind": "at_risk",
+      "shape": "hexagon",
+      "model": "quillback-rockfish",
+      "features": [
+        "Very tall, deeply notched spiny dorsal fin",
+        "Dark brown body with yellow-orange speckles on the head",
+        "Pale area in front of the dorsal fin"
+      ],
+      "hotspots": [],
+      "blurb": "Listed as Threatened. Hard to tell from copper rockfish in murky footage, which is why people check these clips.",
+      "habitatHint": "Rocky reefs and boulder fields, close to the bottom."
+    },
+    {
+      "id": "lingcod",
+      "name": "Lingcod",
+      "sci": "Ophiodon elongatus",
+      "rank": "species",
+      "number": 3,
+      "tag": "Species of interest",
+      "tagKind": "interest",
+      "shape": "triangle",
+      "model": "lingcod",
+      "features": [
+        "Long, slender body",
+        "Very large mouth with visible teeth",
+        "Long, continuous dorsal fin with a notch in the middle"
+      ],
+      "hotspots": [],
+      "blurb": "A large predator of rocky reefs. Often seen lying still on the bottom near rockfish.",
+      "habitatHint": "Rocky bottoms, often motionless near crevices."
+    },
+    {
+      "id": "kelp_greenling",
+      "name": "Kelp greenling",
+      "sci": "Hexagrammos decagrammus",
+      "rank": "species",
+      "number": 4,
+      "tag": "Not at risk",
+      "tagKind": "not_at_risk",
+      "shape": "diamond",
+      "model": "kelp-greenling",
+      "features": [
+        "Slender body with a single long dorsal fin",
+        "Small head and mouth",
+        "Spotted (male) or freckled brown (female) colouring"
+      ],
+      "hotspots": [],
+      "blurb": "A common reef fish in shallow BC waters. Its colour varies a lot between males and females.",
+      "habitatHint": "Shallow reefs and kelp beds."
+    }
+  ],
+  "comingSoonSlots": 2
+}

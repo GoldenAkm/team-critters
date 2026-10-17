@@ -1,0 +1,8 @@
+{
+  "_note": "Device codes and the Campbell River / Hartley Bay positions come from the hackathon dataset. China Creek position is approximate.",
+  "cameras": [
+    { "id": "campbell_river", "name": "Campbell River", "region": "Pacific", "area": "Vancouver Island", "device": "AXISCAMB8A44F271FBC", "lat": 50.02076, "lon": -125.2354 },
+    { "id": "china_creek", "name": "China Creek", "region": "Pacific", "area": "Vancouver Island", "device": "AXISCAMACCC8ED95D9B", "lat": 49.08, "lon": -124.81, "approx": true },
+    { "id": "hartley_bay", "name": "Hartley Bay", "region": "Pacific", "area": "BC North Coast", "device": "AXISCAMB8A44F76CD4F", "lat": 53.42246, "lon": -129.247513 }
+  ]
+}
