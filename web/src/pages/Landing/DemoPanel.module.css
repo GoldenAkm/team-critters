@@ -1,0 +1,78 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+
+.play {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 1.5px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.06);
+}
+
+/* Nudge the triangle right so it looks centred in the circle */
+.play svg {
+  transform: translateX(2px);
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.captionTitle {
+  font-weight: 600;
+}
+
+.captionMeta {
+  color: var(--color-ink-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    gap: 10px;
+  }
+
+  .play {
+    width: 52px;
+    height: 52px;
+  }
+
+  .play svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .caption {
+    padding: 6px 10px;
+  }
+
+  .captionTitle {
+    font-size: 14px;
+  }
+
+  .captionMeta {
+    font-size: 11px;
+  }
+}
