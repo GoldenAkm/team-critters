@@ -1,0 +1,102 @@
+.header {
+  --bar-height: 60px;
+  --logo-size: 96px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: var(--bar-height);
+  /* Leave room for the hanging logo on the left, and below the bar */
+  margin-bottom: calc(var(--logo-size) - var(--bar-height) - 3px);
+  padding: 0 var(--gutter) 0 calc(var(--gutter) + var(--logo-size) + 20px);
+  border-bottom: 3px solid var(--onc-blue);
+  background: #fff;
+}
+
+/* Like the real portal, the square logo hangs down past the bar */
+.logoLink {
+  position: absolute;
+  top: 0;
+  left: var(--gutter);
+  z-index: 2;
+}
+
+.logo {
+  display: block;
+  width: var(--logo-size);
+  height: var(--logo-size);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.18);
+}
+
+.portalName {
+  color: var(--onc-blue);
+  font-family: var(--font-portal);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.05;
+  text-decoration: none;
+}
+
+@media (max-width: 999px) {
+  .portalName {
+    font-size: 19px;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 44px targets for touch */
+.iconLink {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--onc-teal);
+  transition: background-color 0.15s ease;
+}
+
+.iconLink:hover {
+  background: rgb(18 157 192 / 0.1);
+}
+
+.logIn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px 0 10px;
+  color: var(--onc-teal-text);
+  font-weight: 500;
+  white-space: nowrap;
+  text-underline-offset: 3px;
+}
+
+.logIn:hover {
+  color: var(--onc-blue);
+}
+
+@media (max-width: 560px) {
+  .header {
+    --bar-height: 56px;
+    --logo-size: 68px;
+
+    justify-content: flex-end;
+  }
+
+  .portalName {
+    display: none;
+  }
+
+  .iconLink {
+    width: 40px;
+  }
+}
