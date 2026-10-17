@@ -23,6 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# Background photos without a licence yet: kept out of git until replaced
+# Background photo without a licence yet: kept out of git until replaced
 public/depths/1-surface-kelp.webp
-public/depths/2-midwater-jelly.webp
