@@ -1,0 +1,128 @@
+[
+  {
+    "id": "cambridge_bay",
+    "name": "Cambridge Bay",
+    "region": "Arctic",
+    "area": "Arctic",
+    "lat": 69.1131,
+    "lon": -105.0636,
+    "oncLocationCode": "CBY"
+  },
+  {
+    "id": "minas_passage",
+    "name": "Minas Passage",
+    "region": "Atlantic",
+    "area": "Bay of Fundy",
+    "lat": 45.3712,
+    "lon": -64.4031,
+    "oncLocationCode": "MIN"
+  },
+  {
+    "id": "conception_bay",
+    "name": "Conception Bay",
+    "region": "Atlantic",
+    "area": "Atlantic",
+    "lat": 47.4258,
+    "lon": -53.1211,
+    "oncLocationCode": "AAEJB"
+  },
+  {
+    "id": "chatham_sound",
+    "name": "Chatham Sound",
+    "region": "Pacific",
+    "area": "BC North Coast",
+    "lat": 54.2588,
+    "lon": -130.4307,
+    "oncLocationCode": "JCMWR"
+  },
+  {
+    "id": "douglas_channel",
+    "name": "Douglas Channel",
+    "region": "Pacific",
+    "area": "BC North Coast",
+    "lat": 53.4223,
+    "lon": -129.2468,
+    "oncLocationCode": "DC"
+  },
+  {
+    "id": "barkley_canyon",
+    "name": "Barkley Canyon",
+    "region": "Pacific",
+    "area": "Northeast Pacific Ocean",
+    "lat": 48.3167,
+    "lon": -126.0505,
+    "oncLocationCode": "BAC"
+  },
+  {
+    "id": "barkley_sound",
+    "name": "Barkley Sound",
+    "region": "Pacific",
+    "area": "Northeast Pacific Ocean",
+    "lat": 48.8083,
+    "lon": -125.2815,
+    "oncLocationCode": "JATTD"
+  },
+  {
+    "id": "cascadia_basin",
+    "name": "Cascadia Basin",
+    "region": "Pacific",
+    "area": "Northeast Pacific Ocean",
+    "lat": 47.7564,
+    "lon": -127.7317,
+    "oncLocationCode": "CBN"
+  },
+  {
+    "id": "clayoquot_slope",
+    "name": "Clayoquot Slope",
+    "region": "Pacific",
+    "area": "Northeast Pacific Ocean",
+    "lat": 48.6706,
+    "lon": -126.848,
+    "oncLocationCode": "CQS"
+  },
+  {
+    "id": "endeavour",
+    "name": "Endeavour",
+    "region": "Pacific",
+    "area": "Northeast Pacific Ocean",
+    "lat": 47.9493,
+    "lon": -129.0983,
+    "oncLocationCode": "END"
+  },
+  {
+    "id": "discovery_passage",
+    "name": "Discovery Passage",
+    "region": "Pacific",
+    "area": "Salish Sea",
+    "lat": 50.0208,
+    "lon": -125.2354,
+    "oncLocationCode": "DISC"
+  },
+  {
+    "id": "saanich_inlet",
+    "name": "Saanich Inlet",
+    "region": "Pacific",
+    "area": "Salish Sea",
+    "lat": 48.6531,
+    "lon": -123.5521,
+    "oncLocationCode": "SAAN"
+  },
+  {
+    "id": "strait_of_georgia",
+    "name": "Strait of Georgia",
+    "region": "Pacific",
+    "area": "Salish Sea",
+    "lat": 49.0398,
+    "lon": -123.4257,
+    "oncLocationCode": "SOG"
+  },
+  {
+    "id": "china_creek",
+    "name": "China Creek",
+    "region": "Pacific",
+    "area": "Vancouver Island",
+    "lat": 49.1538,
+    "lon": -124.8024,
+    "oncLocationCode": "JAKOC"
+  }
+]
