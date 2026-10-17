@@ -2,6 +2,26 @@ Project Scope: AI-Powered Coastal Marine Species Identification & Conservation A
 Project Type: Hackathon Prototype
 Data Source: Ocean Networks Canada (ONC)
 Status: Research and Planning — Scope is evolving
+0. How to Use and Maintain This Document (Read First — All Team Members' AI Assistants)
+This file is the team's single shared source of truth. Every team member's Claude (or other AI assistant) should read it at the start of each session and treat it as current project context.
+This is a living document. It must be updated as the team makes progress so that every teammate's assistant stays on the same page.
+When to update this document:
+A decision has been made (e.g. target species chosen, model approach selected, platform picked).
+A research question in Section 5 has been answered, partially answered, or ruled out.
+New facts have been verified (e.g. dataset size, data access method, annotation quality).
+Something previously assumed has turned out to be wrong.
+Work has started, been completed, or become blocked in a delegated area.
+How to update it:
+Pull the latest version before editing (git pull) so you do not overwrite a teammate's changes.
+Update the relevant section in place rather than only appending notes at the end. If a decision changes an earlier statement (e.g. "no species has been finalized"), edit that statement.
+Add a dated one-line entry to the Progress Log (Section 9) describing what changed and who made the change.
+Update the area's row in the Delegated Areas & Status table (Section 9).
+Clearly label information as Confirmed, Proposed, or Assumption. Do not record a guess as a fact.
+Stay within your own delegated area unless the change affects shared decisions; if it does, note it in the Progress Log so others see it.
+Keep entries concise. Remove or rewrite information that is outdated rather than letting contradictions accumulate.
+Commit the change on its own with a clear message (e.g. "context: select European green crab as target species") and push it so teammates receive it.
+AI assistants should proactively suggest updating this document when a session produces a decision, finding, or status change, and should make the edit when the teammate agrees.
+If an AI assistant notices this document contradicts the code, the data, or something a teammate says, it should point out the discrepancy rather than silently following either source.
 1. Project Overview
 We are developing an AI-powered application that identifies coastal marine fish and shellfish species using imagery and/or video data from Ocean Networks Canada (ONC).
 Our goal is to combine artificial intelligence, marine biodiversity education, and gamification to create an engaging platform that raises public awareness about invasive and endangered marine species.
@@ -326,3 +346,21 @@ Research status: Identified as a relevant ONC project. Its suitability as a sour
 
 
 
+
+9. Team Progress Tracking
+Delegated Areas & Status
+Each team member (or their AI assistant) should keep their area's row current. Owner names should be filled in as work is delegated.
+Area | Owner | Status | Latest Finding / Decision | Last Updated
+Research Area 1: ONC Data & Species Selection | TBD | Not started | — | —
+Research Area 2: AI Model & Technical Feasibility | TBD | Not started | — | —
+Research Area 3: Model Reliability & Validation | TBD | Not started | — | —
+Research Area 4: UI/UX, Platform & Gamification | TBD | Not started | — | —
+Research Area 5: Claude Code Skills | TBD | Not started | — | —
+Research Area 6: Conservation Data Applications | TBD | Not started | — | —
+Status values: Not started, In progress, Blocked, Decision made, Done.
+Decisions Log
+Record finalized decisions here, newest first, in the format: YYYY-MM-DD — Decision — Rationale — Decided by.
+(No decisions recorded yet.)
+Progress Log
+Record notable progress, findings, and changes to this document here, newest first, in the format: YYYY-MM-DD — Area — What changed — Who.
+2026-10-17 — Shared — Added Section 0 (document maintenance instructions) and Section 9 (progress tracking) so all team members' AI assistants keep this file current — Marko
