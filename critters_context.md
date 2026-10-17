@@ -1,366 +1,280 @@
-Project Scope: AI-Powered Coastal Marine Species Identification & Conservation Awareness
-Project Type: Hackathon Prototype
-Data Source: Ocean Networks Canada (ONC)
-Status: Research and Planning — Scope is evolving
-0. How to Use and Maintain This Document (Read First — All Team Members' AI Assistants)
-This file is the team's single shared source of truth. Every team member's Claude (or other AI assistant) should read it at the start of each session and treat it as current project context.
-This is a living document. It must be updated as the team makes progress so that every teammate's assistant stays on the same page.
-When to update this document:
-A decision has been made (e.g. target species chosen, model approach selected, platform picked).
-A research question in Section 5 has been answered, partially answered, or ruled out.
-New facts have been verified (e.g. dataset size, data access method, annotation quality).
-Something previously assumed has turned out to be wrong.
-Work has started, been completed, or become blocked in a delegated area.
-How to update it:
-Pull the latest version before editing (git pull) so you do not overwrite a teammate's changes.
-Update the relevant section in place rather than only appending notes at the end. If a decision changes an earlier statement (e.g. "no species has been finalized"), edit that statement.
-Add a dated one-line entry to the Progress Log (Section 9) describing what changed and who made the change.
-Update the area's row in the Delegated Areas & Status table (Section 9).
-Clearly label information as Confirmed, Proposed, or Assumption. Do not record a guess as a fact.
-Stay within your own delegated area unless the change affects shared decisions; if it does, note it in the Progress Log so others see it.
-Keep entries concise. Remove or rewrite information that is outdated rather than letting contradictions accumulate.
-Commit the change on its own with a clear message (e.g. "context: select European green crab as target species") and push it so teammates receive it.
-AI assistants should proactively suggest updating this document when a session produces a decision, finding, or status change, and should make the edit when the teammate agrees.
-If an AI assistant notices this document contradicts the code, the data, or something a teammate says, it should point out the discrepancy rather than silently following either source.
-1. Project Overview
-We are developing an AI-powered application that identifies coastal marine fish and shellfish species using imagery and/or video data from Ocean Networks Canada (ONC).
-Our goal is to combine artificial intelligence, marine biodiversity education, and gamification to create an engaging platform that raises public awareness about invasive and endangered marine species.
-Beyond education, we envision expanding the platform into a tool that processes ONC observations into useful ecological information to support marine conservation and invasive-species management.
-The hackathon prototype will focus on identifying one species, demonstrating an engaging educational experience, and communicating how the technology could eventually support larger-scale ecological monitoring.
-2. Core Project Components
-A. AI Species Identification
-Develop an AI/ML system capable of identifying coastal marine species using ONC datasets.
-Focus on one target species for the hackathon prototype.
-Select this species based on ONC data availability, identification feasibility, and conservation relevance.
-Prioritize coastal fish and shellfish, particularly invasive or endangered/threatened species.
-Potential species of interest include European green crab, rockfish, and lingcod, but no species has been finalized.
-The long-term goal is to support multiple species rather than just one.
-Prioritize reliable identification rather than forcing predictions when visual evidence is insufficient.
-Important constraint: We are using ONC data exclusively. We are not currently planning to collect identification photos or videos from users.
-Current Data Situation
-We have several potential sources of ONC data:
-Hackathon Dataset: Manually annotated frames extracted from video supplied for the hackathon. The existing dataset is relatively poor in quality, so its suitability for training and evaluation needs investigation.
-StarusGeo: A platform we understand can provide access to ONC imagery or geographic data. Its exact name, capabilities, and available datasets should be verified.
-ONC SeaTube: A source of publicly accessible underwater video footage that may provide additional training and demonstration material.
-Although we have access to data, we have not yet established which species has sufficient usable examples for a reliable prototype.
-Identification Reliability Principle
-Our proposed approach is conservative:
-If the AI cannot identify a species with sufficient reliability, it should not include that prediction as a confirmed species observation.
-For example, if an image is extremely blurry or the key visual features needed to identify a crab are hidden, the system should flag the observation rather than guess.
-Potential output states include:
-Identified: Sufficient evidence supports the identification.
-Unknown / Uncertain: The system cannot reliably identify the species.
-Needs Manual Review: The observation should be checked or annotated by a person.
-The specific confidence thresholds and validation methods are not yet decided.
-The long-term goal is to produce ecological observations that are useful and trustworthy, rather than simply maximizing the number of predictions.
-B. Gamification and Public Education
-We want to create an engaging experience loosely inspired by Pokémon GO, particularly its sense of discovery, collection, exploration, and progression.
-Potential concepts include:
-Discovering and collecting marine species in a digital collection.
-Learning about species, habitats, ecological roles, and conservation status.
-Educational challenges, achievements, and rewards.
-Raising awareness of invasive-species threats and endangered-species conservation.
-Exploring information associated with real species observations from ONC.
-These are possibilities, not finalized features.
-Species Information and Educational Content
-Identified species would have associated educational content within the interface.
-For example, a European green crab profile could describe:
-What the species is and how to recognize it.
-Why it is considered invasive in certain regions.
-Its impact on local coastal ecosystems.
-What organizations and researchers are doing to manage the invasion.
-How monitoring and observational data can contribute to conservation efforts.
-Equivalent educational content could focus on threats to endangered or vulnerable species.
-The goal is to make real marine biodiversity data accessible, engaging, and understandable to the general public.
-Unlike Pokémon GO, our application would work with ONC observations rather than requiring users to physically travel and photograph wildlife.
-The exact gameplay loop, platform, and user experience have not yet been finalized.
-C. Conservation and Invasive-Species Applications
-Our broader vision is to transform species identification results into useful ecological information.
-For example, if the AI identifies European green crabs within ONC footage, the system could eventually organize observations into information about:
-Species presence and possible distribution.
-Detection frequency across monitored locations.
-Changes in observed activity over time.
-Potential patterns relevant to invasive-species monitoring.
-Such findings would depend on dataset coverage, sampling conditions, and model reliability.
-ONC provides observational data, while conservation organizations, researchers, and relevant authorities can use ecological information to guide management decisions.
-Our application would aim to help bridge that gap by interpreting, organizing, validating, and presenting observations in accessible formats.
-Potential Conservation Data Workflow
-Obtain imagery or video from ONC.
-Process observations using the AI identification system.
-Separate reliable detections from uncertain predictions.
-Flag ambiguous observations for potential human review.
-Organize validated observations alongside available metadata, such as timestamps and camera locations.
-Eventually analyze and package this information for research or conservation applications.
-This represents a potential long-term workflow rather than a commitment to implement every step during the hackathon.
-We are not claiming that the prototype will directly prevent invasions, restore ecosystems, or independently establish species population trends.
-3. Hackathon Prototype Scope
-Due to limited development time, the prototype will demonstrate the core concept rather than implement the complete long-term vision.
-Prototype priorities:
-Select one species supported by usable ONC data.
-Implement a working AI-based identification or detection workflow.
-Demonstrate appropriate handling of uncertain predictions.
-Present the identification results in an accessible interface.
-Demonstrate at least a basic gamification or educational experience.
-Explain how validated observations could eventually support conservation applications.
-The exact implementation will depend on technical feasibility, dataset availability, and the team's development capacity.
-Prototype Success Considerations
-The team should aim to demonstrate:
-A functional identification workflow using actual ONC imagery.
-A model that can be meaningfully evaluated on held-out data.
-Appropriate handling of uncertain identifications.
-An interface connecting species identification to educational information.
-A clear explanation of how the prototype could expand into a multi-species conservation platform.
-We do not need to implement a complete ecological monitoring system, sophisticated game, or production-ready application during the hackathon.
-4. Future Vision
-After the hackathon, the platform could expand to include:
-Multi-species detection and identification.
-More extensive or automated analysis of ONC camera footage.
-Detection records connected to available timestamps and locations.
-Trends, visualizations, and ecological monitoring dashboards.
-Human-reviewed identification workflows.
-Exportable validated datasets or reports for conservation-related research.
-Expanded gamification, education, and discovery features.
-Improved monitoring capabilities for invasive or endangered species.
-These are potential future directions, not required prototype deliverables.
-5. Outstanding Research and Design Decisions
-The team has not yet finalized the following:
-Area
-Decision Needed
-Target Species
-Which species has suitable ONC data and offers a compelling demonstration?
-Dataset Quality
-Are the available images and labels sufficient for meaningful model development?
-Data Accessibility
-How can we obtain and process additional usable ONC imagery and footage?
-AI/ML
-Which model, training strategy, or pretrained approach is most suitable?
-Identification
-Image classification, object detection, video-based identification, or another method?
-Reliability
-How should uncertain or low-quality observations be handled and validated?
-Platform
-Website, mobile app, or another approach?
-UI/UX
-How should users explore marine species and interact with identification results?
-Gamification
-Which game mechanics are practical and meaningful for the prototype?
-Conservation Data
-How should AI-generated observations be organized and presented?
-Technical Architecture
-Which tools, frameworks, and deployment approach are most practical?
-Claude Code Skills
-Would existing or custom Claude Skills meaningfully improve development?
+# AI Species Detection (ONC Coastal Marine AI Hackathon)
 
-These decisions should be researched and evaluated rather than assumed.
-Research Area 1: ONC Data Availability, Quality & Species Selection
-What we already know:
-We have manually annotated frames from hackathon-provided video.
-The supplied dataset is relatively poor in quality.
-Additional imagery may be available through Starus Geo.
-ONC SeaTube provides access to underwater video footage.
-We will use ONC data exclusively for the prototype.
-Research questions:
-Which candidate coastal species are actually visible in accessible ONC imagery?
-Which species has enough suitable examples for the prototype?
-How many images of the target species are available, and what is their quality?
-Are existing annotations reliable?
-Could additional frames be extracted and annotated from SeaTube footage?
-Do we have examples without the target species to distinguish detections from non-detections?
-Are there visually similar species that could cause misidentification?
-What timestamps, location information, or other metadata accompany the observations?
-Are there restrictions on accessing, downloading, or reusing the data?
-Expected research outcome: Recommend a target species based on actual ONC data availability, data quality, feasibility, and conservation relevance.
-Research Area 2: AI Model Selection & End-to-End Technical Feasibility
-Research questions:
-Which model types best suit the project: image classifiers, object detectors, vision-language models, or another approach?
-Which pretrained models could be adapted for underwater imagery?
-Should we fine-tune an existing model, train a small classifier, use embeddings, or choose another approach?
-Which methods are best suited to limited, noisy, or low-quality labeled data?
-Can the model be trained or adapted with our available hardware and hackathon time?
-What are the expected inference speeds and compute requirements?
-How would the model integrate with the selected frontend and backend?
-Should footage be processed into frames before inference?
-Can the entire identification workflow be demonstrated reliably during the presentation?
-Expected research outcome: Choose an AI approach and technical architecture that can realistically be developed, evaluated, integrated, and demonstrated during the hackathon.
-Note: Research into full prototype feasibility, model integration, infrastructure, and deployment belongs in this area rather than a separate research category.
-Research Area 3: Model Reliability, Confidence & Human Review
-Guiding principle: An uncertain prediction should not be treated as a validated ecological observation.
-Research questions:
-How should identification confidence and reliability be evaluated?
-Can confidence scores be calibrated against actual model performance?
-What conditions should cause the model to return "Unknown"?
-When should an observation be flagged for manual annotation or review?
-How should we handle blurry images, poor lighting, occlusion, and missing identifying features?
-How can we distinguish similar-looking species?
-Which evaluation metrics are most relevant, such as precision, recall, and F1 score?
-How should we test generalization using footage or observations not present in the training data?
-How can we avoid introducing incorrect species detections into future conservation datasets?
-Expected research outcome: Define a practical validation and uncertainty-handling approach that prioritizes reliable identifications and minimizes false positives.
-Important distinction: A high model confidence score does not automatically mean the prediction is correct. Confidence thresholds should be supported by evaluation rather than assumed to indicate accuracy.
-Research Area 4: UI/UX, Platform Selection & Gamification
-Current direction:
-A digital marine-species discovery experience inspired loosely by Pokémon GO.
-A collection or discovery mechanic involving known marine species.
-Educational species profiles explaining identification, conservation status, ecological importance, and related threats.
-A connection between ONC observations and the species that users discover.
-Research questions:
-Should the prototype be a website, web app, or mobile application?
-Which approach is easiest to implement and demonstrate within the hackathon?
-What is the core user journey?
-How should users interact with ONC footage and identification results?
-How would users discover or collect species if they are not uploading their own observations?
-Which game mechanics would make the experience engaging without requiring substantial development?
-How should species profiles present scientific and conservation information?
-How can identification, educational information, and gameplay feel like one coherent experience?
-Expected research outcome: Determine the platform, interface direction, and core gameplay loop for the prototype.
-Research Area 5: Claude Code Skills & AI-Assisted Development
-We plan to use Claude Code for development and want to understand whether Claude Skills can meaningfully improve our workflow.
-Research questions:
-What are Claude Skills, and how do they function within Claude Code?
-How do Skills differ from ordinary prompts, CLAUDE.md project instructions, and MCP integrations?
-Are there existing Skills relevant to frontend development, AI/ML integration, testing, debugging, or project planning?
-Could Skills help enforce consistent development practices across teammates?
-Would creating custom Skills be worthwhile for this particular project?
-How much setup and maintenance do Skills require?
-Are there limitations or disadvantages to using Skills during a short hackathon?
-Which Skills, if any, offer enough practical value to justify incorporating them?
-Expected research outcome: Identify whether Claude Skills should be part of our implementation workflow and recommend only those with clear benefits.
-We should avoid adding unnecessary tools or workflows simply because they are available.
-Research Area 6: Conservation Data & Future Applications
-Research questions:
-What information should accompany each validated detection?
-How should predictions, uncertain observations, and human-reviewed identifications be distinguished?
-How could observations be organized by time, species, and location?
-How might future versions aggregate sightings into useful ecological summaries?
-What limitations arise from uneven camera coverage or unreliable identification?
-What information would researchers or conservation organizations actually need from an identification system?
-How could our results eventually support invasive-species monitoring or endangered-species conservation?
-Expected research outcome: Develop a technically credible conservation-data vision that can be explained during the presentation without requiring full implementation during the hackathon.
-Research Priorities
-Priority
-Research Area
-Reason
-P0
-ONC Data & Species Selection
-Determines which species can actually be identified
-P0
-AI Model & Technical Feasibility
-Determines what can realistically be built
-P0
-Model Reliability & Validation
-Establishes how trustworthy predictions will be
-P1
-UI/UX & Gamification
-Defines the public-facing prototype experience
-P1
-Claude Code Skills
-May improve development efficiency
-P2
-Conservation Data Applications
-Supports the future vision and presentation
+Prototype that identifies rockfish in Ocean Networks Canada (ONC) fixed-camera footage and turns the results into a public website: an identification demo, an interactive map and a crowd-review game (Digital Fishers 2.0).
 
-P0: Essential before committing to major implementation decisions.
-P1: Important for product design and the development process.
-P2: Primarily supports future expansion and communicating the project's broader impact.
-These priorities indicate decision importance, not necessarily a strict order of execution. Some research can happen in parallel.
-6. Project Boundaries and Important Clarifications
-ONC-only data: The AI uses Ocean Networks Canada data, not crowdsourced observations.
-Existing dataset limitations: We have manually annotated hackathon data, but its quality is poor and suitability is still being evaluated.
-Additional data sources: Starus Geo and ONC SeaTube are potential sources for supplementary imagery and footage.
-One-species prototype: Supporting additional species is a future expansion goal.
-Conservation focus: Invasive and endangered/threatened species are the primary areas of interest, but the exact target species is undecided.
-Gamification: Pokémon GO is inspiration, not a requirement to replicate its gameplay or GPS functionality.
-Educational component: Species profiles should provide useful scientific and conservation-related information rather than simply displaying predictions.
-Uncertainty handling: When identifying features are missing or predictions are unreliable, observations should be marked unknown or flagged for review rather than recorded as confirmed.
-Scientific limitations: AI identification results may contain errors and require validation before being relied on for scientific or management decisions.
-Not finalized: Species selection, user experience, machine learning approach, platform, and technical stack remain open.
-Claude Code: Planned as a development tool, but use of additional Skills or integrations remains subject to research.
-Hackathon feasibility: Prioritize a functional demonstration while communicating the broader conservation vision.
-Long-term conservation value: The ultimate goal is to help transform ONC observations into information useful to conservation efforts, not directly perform conservation interventions.
-7. Guidance for AI Assistants (ChatGPT / Claude / Claude Code)
-This document provides shared project context.
-When assisting the team:
-Treat this as an evolving scope rather than a finalized product specification.
-Do not assume the target species, model, platform, or architecture has already been selected.
-Distinguish confirmed information from proposed ideas and assumptions.
-Prioritize ONC dataset availability and practical hackathon feasibility.
-Account for the poor quality of the existing manually annotated dataset.
-Investigate additional ONC imagery and footage where relevant.
-When researching species, verify whether ONC has relevant usable data.
-Prioritize trustworthy identification over producing a prediction for every image.
-Do not assume that model confidence alone establishes scientific validity.
-Keep the educational/gamification component and conservation-data component conceptually distinct but connected.
-Treat Claude Skills as an option to evaluate, not an automatic requirement.
-Include technical feasibility when evaluating model approaches.
-Avoid promising ecological impacts that a single-species prototype cannot demonstrate.
-Help evaluate options and trade-offs before committing to an implementation.
-Do not unnecessarily expand the project scope with features unrelated to the core prototype.
-When Researching or Recommending Solutions
-AI assistants should:
-Clearly distinguish verified facts from assumptions.
-Explain why an option fits the hackathon constraints.
-Compare meaningful alternatives where appropriate.
-Identify important limitations and implementation risks.
-Prioritize evidence from actual ONC datasets when discussing species selection.
-Avoid selecting technical solutions solely because they are popular or sophisticated.
-Preserve the distinction between prototype deliverables and long-term ambitions.
-Do not begin implementing the application solely based on this scope document. The team is still evaluating its research findings and will prepare a more specific implementation proposal for Claude Code once the major decisions are made.
-8. One-Sentence Project Summary
-We are building an AI-powered coastal marine species discovery platform that uses Ocean Networks Canada data to identify marine life, gamify biodiversity education, and lay the groundwork for data-driven invasive-species monitoring and marine conservation.
+## Vision
 
-Current Project Stage: Refining scope, researching available data, evaluating technical approaches, investigating Claude Code Skills, and preparing a proposal for eventual implementation with Claude Code.
-Addition 1 — Section 2.A: Current Data Situation
-Add as the fourth data source:
-4. ONC Digital Fishers: Digital Fishers is an ONC citizen-science platform where volunteers examine underwater video clips and annotate observations of marine life and other features.
-It is relevant to our project in two ways:
-Potential annotation resource: Existing human-generated observations may help us locate relevant footage or provide supplementary labels, subject to availability, reliability, and access restrictions.
-Gamification reference: Digital Fishers demonstrates how ONC has already connected underwater observations, public participation, and scientific research through game-like interaction.
-The platform primarily describes deep-sea video analysis, so we must investigate whether its existing observations include suitable coastal fish or shellfish species.
-We should not assume its annotations are directly accessible, downloadable, or suitable for training without verification.
-Addition 2 — Section 2.B: Gamification and Public Education
-Add the following subsection:
-Existing ONC Inspiration: Digital Fishers
-ONC has already explored gamified marine observation through its Digital Fishers platform.
-Our team should investigate its interaction design and how it motivates users to explore underwater footage and contribute to scientific understanding.
-While Digital Fishers focuses on human annotation of video observations, our proposed application emphasizes AI-assisted species identification, marine species discovery, and conservation education.
-We should investigate how our proposed experience could differ from and potentially complement Digital Fishers, rather than recreating its existing functionality.
-Addition 3 — Section 5: Outstanding Research and Design Decisions
-Research Area 1: ONC Data Availability, Quality & Species Selection
-Add these questions:
-Does Digital Fishers contain observations of our candidate coastal species?
-Are Digital Fishers annotations accessible through ONC's annotation search tools or another supported method?
-Could existing human-generated annotations help us find suitable training or evaluation footage?
-How reliable and detailed are those annotations?
-Research Area 4: UI/UX, Platform Selection & Gamification
-Add these questions:
-What gamification mechanics does Digital Fishers already use?
-What lessons can we learn from its user experience?
-How can our application offer a distinct experience centered on AI-generated identifications and species education?
-Could the two approaches eventually complement one another?
-Research Area 6: Conservation Data & Future Applications
-Add this question:
-How could AI-generated observations complement existing human-annotated observations from systems such as Digital Fishers?
+An AI identifier scans ONC footage for rockfish and counts only the identifications it can back up. Anything it is unsure about goes to people instead of into the data. The website is a new "AI Species Detection" entry point inside ONC's Oceans 3.0 portal, with three features:
 
-Additional ONC Resource: Digital Fishers — Oceans 3.0
-Research status: Identified as a relevant ONC project. Its suitability as a source of coastal species annotations and potential training data has not yet been established.
+- **AI species identification** (the landing page and main feature): a demo of the identifier on ONC footage, linking to the other two features.
+- **Interactive Map**: confirmed sightings at ONC fixed cameras over time, alongside water temperature, dissolved oxygen and how usable each camera's footage was.
+- **Digital Fishers 2.0**: players settle the AI's unsure detections; a majority of three independent reviewers confirms a sighting. It is the only way to collect species, and it holds the Marine collection (the player's collection and every species profile).
 
+The AI is the core of the product, not an add-on: every game mechanic exists to confirm or correct its identifications. The aim is public discovery plus a trustworthy conservation signal, starting with rockfish presence over time at fixed cameras.
 
+**Core loop**
+1. The AI scans ONC footage, detects fish and classifies them.
+2. Confident results are **Identified**: counted and shown on the map.
+3. Unsure results go to Digital Fishers 2.0 instead of being counted.
+4. Three people review each clip. A majority confirms it as a sighting on the map, and reviewers who matched the majority add the species to their Marine collection.
 
+## Ground rules
 
-9. Team Progress Tracking
-Delegated Areas & Status
-Each team member (or their AI assistant) should keep their area's row current. Owner names should be filled in as work is delegated.
-Area | Owner | Status | Latest Finding / Decision | Last Updated
-Research Area 1: ONC Data & Species Selection | TBD | Not started | — | —
-Research Area 2: AI Model & Technical Feasibility | TBD | Not started | — | —
-Research Area 3: Model Reliability & Validation | TBD | Not started | — | —
-Research Area 4: UI/UX, Platform & Gamification | TBD | Not started | — | —
-Research Area 5: Claude Code Skills | TBD | Not started | — | —
-Research Area 6: Conservation Data Applications | TBD | Not started | — | —
-Status values: Not started, In progress, Blocked, Decision made, Done.
-Decisions Log
-Record finalized decisions here, newest first, in the format: YYYY-MM-DD — Decision — Rationale — Decided by.
-(No decisions recorded yet.)
-Progress Log
-Record notable progress, findings, and changes to this document here, newest first, in the format: YYYY-MM-DD — Area — What changed — Who.
-2026-10-17 — Shared — Added Section 0 (document maintenance instructions) and Section 9 (progress tracking) so all team members' AI assistants keep this file current — Marko
+- An uncertain prediction is never a confirmed observation. The AI must be able to decline: when evidence is thin, report a broader taxon (genus) or send the detection for review instead of forcing a species.
+- Use the status words exactly: Identified, Uncertain, Needs review.
+- Wireframe content (species, counts, readings, camera positions, players) is sample data. Never present it as fact.
+- Credit ONC wherever its data or footage appears ("Data: Ocean Networks Canada").
+- Build what the prototype needs; don't add unrelated features.
+- If a task depends on something under Open decisions, ask before choosing.
+
+## Prototype scope
+
+- **Build**: a responsive website running on pre-processed AI results. A website because it uses ONC data only (no phone camera, GPS or app store).
+- **Stretch**: live identification in the landing page's demo panel (see App architecture). Leave room for it in the design.
+- **Not in the prototype**: mobile app, database, user accounts.
+
+## Key files
+
+- `docs/labelling-guide.md`: the prompt used to label frames for rockfish. Keep it unchanged so new labels stay consistent with existing ones.
+- `doc/manifest.csv`: corrected labels CSV.
+- `docs/wireframes/`: wireframe screenshots (landing, map, Digital Fishers). They predate later changes (for example, they still say "Pokédex"); where they differ, this file wins.
+
+## Data: Ocean Networks Canada
+
+**Sources**
+- Hackathon dataset: annotated frames and ONC annotations from three fixed-camera sites, about 70 taxa.
+- ONC API: source videos, more frames and missing metadata.
+- Reference: SeaTube (every annotation links to it), ONC Digital Fishers, ONC Annotation Search. "Starus Geo" is unverified.
+
+**Sites** (each is very different)
+
+| Site | Habitat | Taxa seen (examples) | Image quality |
+|---|---|---|---|
+| Campbell River | Shallow reef, urchin barrens | kelp greenling, rockfish, lingcod, dogfish, herring, sea stars | 2019 camera mostly poor; newer camera much better |
+| China Creek | Deeper, muddy | squat lobster, Tanner crab, spot prawn, flatfish, spotted ratfish, eelpout | Clearest images; mostly fair to good |
+| Hartley Bay | — | rockfish, flatfish, squid, giant Pacific octopus, sunflower stars | Mostly fair to good |
+
+**Metadata**
+- On every annotation: UTC timestamp, fixed lat/lon per site, camera device code, annotator, source video filename and offset, SeaTube link.
+- Missing: depth (empty everywhere; fetch it from the ONC API), bounding boxes, review status (all review fields are empty).
+- Each site was labelled by only one to three people.
+
+**Quality**
+- Usable imagery is far below what the annotation counts suggest.
+- ONC's rockfish annotations are unreliable: re-labelling with Claude produced about 300 disagreements with ONC on whether a rockfish was present.
+
+**Licence**: free to download, reuse and redistribute, including mixed with other data, as long as ONC is credited.
+
+## Target species: rockfish (genus *Sebastes*)
+
+Why rockfish: they are reliable to identify at genus level, and their presence over time at fixed cameras ties into rockfish conservation (quillback rockfish is Threatened).
+
+**Demo species**: copper rockfish (*Sebastes caurinus*), the most common rockfish at these sites. It is the species the demo features; the AI still reports genus *Sebastes* unless species-level evidence is strong (see Training data → Gaps).
+
+**What can be told apart in this footage**
+- Rockfish: clear at genus level. Copper vs quillback is rarely separable, so default to genus.
+- Rockfish features and look-alikes: `docs/labelling-guide.md`.
+
+**Conservation status** (no invasive species were seen in the data)
+
+| Species | Status |
+|---|---|
+| Quillback rockfish | Threatened |
+| Copper rockfish | Not verified |
+
+## Training data
+
+**Corrected labels CSV** (`doc/manifest.csv`)
+- Frames re-labelled with Claude using `docs/labelling-guide.md`. Much better than ONC's original labels, but not fully correct.
+- Claude's "yes" labels are trusted; "no" and "uncertain" are unverified.
+
+Label fields as defined in the guide (check the CSV header for exact column names and the frame ID columns):
+
+| Field | Values |
+|---|---|
+| `rockfish_present` | `yes`, `no`, `uncertain` |
+| `confidence` | 0.0–1.0, confidence in `rockfish_present` |
+| `rockfish_count` | rockfish the labeller is confident about; 10 means 10 or more (a school, mentioned in `notes`) |
+| `rockfish_visibility` | `clear`, `partial`, `small_or_distant`, `none` |
+| `other_animals` | short common names; empty list if none |
+| `image_quality` | `good`, `murky`, `dark`, `blurry`, `obstructed` |
+| `reasoning` | one sentence naming the visible features behind the answer |
+| `notes` | anything unusual, or empty |
+
+**Getting more frames**
+- Download source videos through the ONC API using each annotation's video filename and offset.
+- Seek 2–5 s past the annotation offset to get a frame that actually shows the fish.
+- Sample one frame every 30 s per video to avoid near-identical frames.
+
+**Splits**
+- Split train/validation/test by source video so frames from one video never appear in two splits (exact scheme TBD).
+- The held-out set used to set the confidence cutoff needs verified labels.
+
+**Gaps**
+- Labels are per frame (presence, count, visibility), not per fish, and have no boxes, so turning them into per-crop training labels is unresolved.
+- Labels only say rockfish or not, so a trained classifier can separate rockfish from other fish but not copper from quillback.
+- Not decided: underwater preprocessing method, augmentation, annotation tooling beyond Claude plus manual fixes, and how much more manual verification is needed.
+
+## Machine learning pipeline
+
+Detect → crop → classify → taxonomic confidence rules → status.
+
+1. **Preprocess** each frame to improve visibility.
+2. **Detect fish** with the Community Fish Detector as primary. Compare it with MBARI 315k on ONC footage and keep whichever performs better as primary. Backups (MBARI 315k, SAM 3) run only when the primary finds nothing.
+3. **Crop** each detection.
+4. **Classify** each crop with BioCLIP 2.5. Pretrained BioCLIP is the baseline and also helps review existing labels. The adapted version adds a lightweight classifier trained on frozen BioCLIP image features using the corrected CSV.
+5. **Report** the most specific taxon the evidence supports (species, else genus *Sebastes*). Otherwise the detection becomes Needs review or Uncertain (see Reliability and review).
+
+| Approach | Pros | Cons |
+|---|---|---|
+| Pretrained only | Fast; no training | May struggle with ONC's underwater conditions |
+| Pretrained + lightweight classifier (**chosen**) | Needs little data and compute; adapts to ONC imagery | Only as good as the training labels |
+| Full fine-tuning | Possibly more accurate | Needs cleaner labels, more compute and time |
+
+- There are no boxes to train a detector on, so use pretrained detectors rather than training or heavily fine-tuning one.
+- General vision-language models (ChatGPT, Claude) can help review labels but are never the primary identifier.
+- **Compute**: a GPU environment such as Google Colab (Tesla T4) for inference and for training the lightweight classifier.
+- **Evaluation**: run on labelled ONC images, compare pretrained only against pretrained + classifier, and measure per-image inference time on GPU.
+
+## Reliability and review
+
+Uncertain predictions are never treated as confirmed observations.
+
+**Statuses** (provisional; validate on held-out data before relying on them)
+- **Identified**: enough visual evidence. Confidence is at or above a cutoff chosen on a verified held-out set so that Identified meets a precision target (e.g. 95% of auto-confirmed rockfish really are rockfish). Counted as confirmed, and the only status shown on the map by default.
+- **Needs review**: waiting for a person. Below the cutoff, or the model disagrees with an existing ONC annotation (ONC labels are often wrong, so neither side wins automatically).
+- **Uncertain**: not enough evidence; far below the cutoff (this second cutoff still needs a value). Not counted.
+
+A sighting is confirmed when it is Identified, or when Digital Fishers reaches majority agreement.
+
+**Metrics, most important first**
+1. Precision: share of Identified results that are correct. Wrong identifications contaminate conservation data.
+2. Recall: share of labelled fish the detector finds.
+3. F1 score.
+4. False-positive rate: fish identified in frames with no fish, or only other animals.
+5. Coverage: share of observations in each status.
+
+**Records**: store the model's output (species, confidence, status) separately from human outcomes (review answers, consensus), so a prediction is never mistaken for a validated observation.
+
+**Not decided**: how to handle poor-quality frames, missing key features and unknown look-alike species, and how to evaluate on genuinely unseen footage.
+
+## App architecture
+
+- **Frontend**: React + Vite. Map: Leaflet or MapLibre. Charts: a simple library such as Recharts. 3D models: Google's `<model-viewer>`.
+- **Data**: pre-processed results as static JSON files shipped with the site.
+- **Backend (stretch)**: one small Python FastAPI service with simple `POST /identify` and `GET /identify` endpoints that wrap the inference pipeline. It uses an API key; keep the key in a server-side environment variable, never in the repo or the frontend bundle (what the key is for and what `GET` returns: see Open decisions).
+- **Identify flow**: the landing page shows a still ONC frame; pressing Identify sends it to `/identify`; the site draws the returned box over the image and shows the result (Identified or Uncertain).
+- **Demo safety net**: keep a saved result for the demo image and show it whenever the service is slow or down.
+
+**Result format** (identical for `/identify` and the JSON files, so live and stored results look the same on screen)
+
+| Field | Meaning |
+|---|---|
+| `species` | most specific reliable taxon (may be genus, e.g. *Sebastes*) |
+| `box` | bounding box (format TBD) |
+| `confidence` | model confidence |
+| `status` | `Identified`, `Uncertain` or `Needs review` |
+| `camera` | ONC camera / device code |
+| `timestamp` | UTC |
+
+## Screens
+
+The landing page is the main feature (AI species identification). It links to the two other features, Interactive Map and Digital Fishers 2.0, and to two outside information pages.
+
+### Landing page
+- New "AI Species Detection" entry point inside ONC's Oceans 3.0 portal, built around a video demo: portal header (ONC logo, "Oceans 3.0 Data Portal", nav) and a breadcrumb tagged "New entry point".
+- Title and a one-line tagline.
+- Featured 16:9 panel: a demo-video placeholder for now, planned to become the live Identify panel (still ONC frame, Identify button, box and status drawn on the frame, then on into the features).
+- Intro text: the AI identifier, marine discovery, conservation purpose.
+- Feature cards: Interactive Map and Digital Fishers 2.0 side by side.
+- Two information cards, each with a picture and a short description: European green crab, and rockfish conservation. Each links to an existing information page (URLs: [add]). Green crab is educational only: it is not in the ONC data and the AI does not detect it.
+- Footer with "Data: Ocean Networks Canada".
+
+### Interactive Map
+Confirmed sightings at ONC fixed cameras over time, with temperature, oxygen and footage usability. Full window: filter sidebar left, map right, timeline floating along the bottom.
+
+- **Views**: an overview with one bubble per region showing its matching detections (click to zoom in), and zoomed areas with every camera as a labelled dot and detection markers just above the camera that recorded them. Zoom 100–800% toward the cursor (wheel, trackpad, pinch), drag to pan, +/−/Fit buttons; zooming out past 100% returns to the overview. Markers and labels keep their on-screen size. A toolbar shows the current location (e.g. "All camera sites › Pacific · Southern BC").
+- **Sidebar**: search; one checkbox per species, each with its own marker shape; status filter (only Identified on by default); environmental data (Off / Water temperature / Dissolved oxygen), which shades camera dots, adds a halo sized by the value and shows the readout tiles; a collapsible camera tree following ONC's hierarchy (Arctic › Cambridge Bay; Atlantic › Bay of Fundy › Minas Passage, Conception Bay; Pacific › BC North Coast, Northeast Pacific Ocean, Salish Sea, Vancouver Island), where each row shows a detection count and clicking it jumps there and opens that camera's trends; a footage-status legend; a live "N detections shown" count and Reset filters.
+- **Timeline** (always visible): play/pause, the selected period, a two-handle range slider over 52 weeks and a "Whole year" reset. Under the slider, a thin usable-footage strip: dark where every camera in view had clear footage, lighter where some were murky, blank where none recorded. Play moves the period forward a week at a time (a 4-week window if the whole year was selected). The period drives markers, bubble and tree counts, temperature and oxygen averages, and the outlined band in the trends panel.
+- **Temperature and oxygen tiles** (only when environmental data is on): the average for the area in view over the period, a small year-long trend line with the period shaded, and a dashed hypoxic line on oxygen. Clicking a tile switches which measure shades the map; clicking the active one turns it off.
+- **Footage status**: each camera dot's outline shows footage quality over the period (solid = usable, dashed = murky with e.g. "murky 69% of period", dotted grey = no footage). Sightings drop in poor weeks, so a gap must never read as the species leaving.
+- **Site trends panel** (from a camera dot, tree row or species card): three small charts on one shared 12-month axis: water temperature, dissolved oxygen (with a "hypoxic below 2 mg/L" line) and sightings per week for the current filters. Murky weeks are light bands; no-footage weeks are hatched. Hover shows a week's values and footage status; toggles hide temperature or oxygen; a plain-language auto-summary leaves out unusable weeks; a permanent note says patterns are correlations, not causes. Placeholders: a date-range menu and "Download this data".
+- **Species card** (click a marker): frame, common and scientific names, conservation tag, status badge with a line explaining that status, a short blurb, camera site, area, timestamp, model confidence; buttons for the species profile (in the Marine collection), this camera's temperature and oxygen, and the source clip.
+
+### Digital Fishers 2.0
+Where people settle the AI's unsure identifications, and the only way to collect species. Unsure detections come here instead of being counted (which statuses exactly: see Open decisions). It complements ONC's original Digital Fishers, where volunteers annotate whole clips from scratch.
+
+- **Layout**: header with breadcrumb and a collection progress shortcut; a four-step "How it works" strip (AI scans ONC footage → unsure cases come here → several people review → agreement confirms it); review task on the left, progress panel on the right.
+- **Review task**: a ~15 s fixed-camera clip with the AI's detection box, play and scrub controls and 0.5× speed, under a bar with clip number, camera site and area. Below it, the AI's guess and status and one focused question ("Is the highlighted animal a [species]?"). Answers: **Yes**; **No, it's something else** (opens a picker of regional look-alikes plus "Not sure what it is"); **Can't tell from this clip** (earns full points so nobody is pushed to guess).
+- **Identification guide** beside the question: the 3D model, an optional "What can you see in the clip?" feature checklist, and a tip.
+- **After answering**: +10 points and a row of 3 review dots showing where your answer landed. Other reviewers' answers stay hidden until all 3 are in.
+- **Consensus**: each clip needs 3 independent reviews (keep this a single config value); a simple majority confirms it. If yours is the last review, the result shows immediately: the agreement count, plus 5 bonus points if you matched.
+  - Match + species new to you: a "New species collected" card pops up and the species joins your collection.
+  - Match + already collected: logged as another confirmed sighting on that species' card.
+  - Different answer or "can't tell": points still awarded, nothing added, and the 3D model is suggested for comparison.
+  - Clips still waiting for agreement can unlock species later.
+- **Session end**: a "Session complete" summary linking to the Marine collection and the map.
+- **Progress panel**: session points, clips reviewed and day streak; a collection grid (species plus "Coming soon" slots); an active mission with a progress bar; a weekly leaderboard ranked by answers that matched agreement, not by speed.
+
+#### Marine collection (inside Digital Fishers 2.0)
+Called "Marine Pokédex" in the wireframes; use "Marine collection". The player's collection and the home of every species profile. Header "N of M species collected" with a progress bar; filter chips All, Collected, Not yet, Invasive.
+
+| Card state | Card shows | Detail panel shows |
+|---|---|---|
+| Collected | number, map symbol, name, conservation tag, "COLLECTED" | full profile |
+| Pending | name, "Waiting for agreement", dashed outline | locked 3D model, "You've reviewed a clip of this species", review dots (e.g. 2 of 3) |
+| Locked | "???", faded symbol, "Not collected yet" | locked 3D model, habitat hint, "Find one in Digital Fishers" |
+| Coming soon | dotted slot | not selectable: "More species as the AI learns them" |
+
+**Collected profile**: number, common and scientific names, conservation tag and "Collected" badge; the 3D viewer, large; your record (first collected with camera site and date, sightings you confirmed, camera sites); how to recognise it (key identifying features); four short sections: What it is, Why it matters (or Why it's invasive here), Its impact or status, What's being done (or How monitoring helps); buttons "See its sightings on the map" and "Review more clips".
+
+### 3D species model viewer (shared component)
+Used beside each Digital Fishers clip ("Compare with the 3D model") and, larger, in each Marine collection profile; the host screen sets the species and height. Drag to spin 360° and tilt; rotate-left and rotate-right buttons for keyboard users; Front, Side and Top presets with the current angle shown in a corner; a Key features toggle labels the identifying parts, and labels fade when that part faces away. Build with `<model-viewer>` and properly licensed models.
+
+## Shared conventions
+
+The same species, status words and symbols mean the same thing on every screen, so identification, learning and play read as one product.
+
+- **Status styling**: filled symbol = Identified; dashed outline = Uncertain; outline with "?" = Needs review.
+- **Species symbols**: one shape per species, used on the map, in filters and in the collection, so species stay distinct without colour (wireframe: green crab = square, rockfish = circle, lingcod = triangle).
+- **Camera footage outlines**: solid = usable, dashed = murky, dotted grey = no footage.
+- **Terms**: a detection is a species marker on the map; a sighting is a weekly count over time (to be confirmed).
+- **Conservation tags**: proposed colours red = critically endangered, yellow = endangered, green = not at risk, pink = invasive, always paired with a text label.
+- **Visual style**: grayscale until a style is chosen. IBM Plex Sans for text, IBM Plex Mono for labels and data (placeholders, not a brand choice).
+- **Accessibility**: real buttons, links and form controls; 44 px touch targets on main controls; nothing relies on colour alone; every layout stacks to one column on phones.
+
+## Wireframe sample data
+
+Made up to show behaviour. Never quote it as fact.
+- Species: European green crab, rockfish and lingcod are placeholders, as are the sample player's collection, the four sample Digital Fishers clips and the "Green Crab Watch" mission.
+- Which species appears at which camera, and every detection, sighting and review count, point total and leaderboard entry.
+- The 14 cameras use real names from ONC's fixed-camera list (Southern BC 9, BC North Coast 2, Atlantic 2, Arctic 1), but positions are approximate and coastlines schematic.
+- Temperature, oxygen and footage-quality values for every camera and week.
+- Bracketed fields such as [timestamp], [score], [ONC device] and [Reviewer] are slots for real data.
+- Each wireframe screen keeps its own demo data. The real build needs one shared player state so species collected in Digital Fishers appear in the Marine collection.
+
+## Open decisions
+
+- **Map scope**: real data covers three BC sites (Campbell River, China Creek, Hartley Bay); the wireframe's 14-camera, coast-to-coast map is sample data.
+- **Consensus without a backend**: reviewer consensus, the leaderboard and streaks need shared state, but the prototype has no database or accounts. Decide whether other reviewers' answers are simulated and whether player state lives in the browser.
+- **What reaches Digital Fishers**: the wireframe sends both Uncertain and Needs review detections; the reliability rules send only below-cutoff detections to review and leave far-below ones as Uncertain.
+- **Showing the AI's guess** to reviewers (easier for casual players) or hiding it (less bias toward "yes").
+- **Species profiles**: locked until collected, or basic info always readable with the 3D model and your record unlocking. Leaning towards always readable.
+- **Terms**: confirm "detection" vs "sighting".
+- **`/identify` details**: what `GET /identify` returns, and what the API key is for (ONC's API, or protecting `/identify`).
+- **Invasive filter** in the Marine collection: keep it, now that only rockfish can be collected?
+- **Names**: product name ("Critters" in the wireframe, "FinFinders" in the platform notes); "Marine collection" is the working name for now; check ONC is comfortable with "Digital Fishers 2.0".
+- **Deployment**: how and where the prototype is hosted.
+
+## To verify
+
+Blocking for real map and trend data:
+- Temperature and oxygen sensors exist at or near each camera, and their data can be pulled through Oceans 3.0.
+- Camera recording uptime is available (needed for the "no footage" status).
+- Footage clips can be embedded in the site (download through the ONC API is planned; reuse is allowed with credit).
+- The camera list and coordinates beyond the three data sites.
+
+Before the demo:
+- Species facts, identifying features and conservation status from DFO or the Species at Risk Act, including copper rockfish's status.
+- A licensed source for 3D models and reference images.
+- A simple blur and brightness score reliably separates clear footage from murky footage.
