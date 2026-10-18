@@ -96,9 +96,6 @@ export default function ReviewPage() {
   return (
     <Shell>
       <div className="page-head">
-        <nav className="breadcrumb mono" aria-label="Breadcrumb">
-          <a href="/">Machine Learning Species Identification</a> › <span aria-current="page">Digital Fishers 2.0</span>
-        </nav>
         <a className="collection-shortcut" href="#collection">
           Marine collection <span className="mono">{collectedCount}/{data.species.length}</span>
         </a>
@@ -186,6 +183,8 @@ export default function ReviewPage() {
   );
 }
 
+const BREADCRUMB = ['Oceans 3.0', 'Machine Learning Species Identification', 'Digital Fishers 2.0'];
+
 // Shared portal chrome (from the landing page) around the page content.
 function Shell({ children }) {
   return (
@@ -193,7 +192,7 @@ function Shell({ children }) {
       <a className="skip-link" href="#main">
         Skip to main content
       </a>
-      <PortalHeader />
+      <PortalHeader breadcrumb={BREADCRUMB} />
       <main id="main" className="review-page">
         {children}
       </main>

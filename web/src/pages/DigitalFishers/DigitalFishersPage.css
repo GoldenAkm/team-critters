@@ -1,6 +1,6 @@
 .review-page { max-width: 1320px; width: 100%; margin: 0 auto; padding: 20px 24px 40px; display: grid; gap: 20px; }
 
-.page-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.page-head { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 12px; }
 .breadcrumb { font-size: 0.85rem; color: var(--ink-2); }
 .collection-shortcut {
   display: inline-flex; gap: 8px; align-items: center; min-height: 44px; padding: 0 14px;
