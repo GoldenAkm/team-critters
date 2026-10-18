@@ -1,0 +1,1129 @@
+{
+  "fetchedAt": "2026-10-18T00:06:35.702Z",
+  "years": [
+    2019,
+    2024,
+    2025
+  ],
+  "api": "Ocean Networks Canada Oceans 3.0 API",
+  "notes": [
+    "Temperature and oxygen are weekly means of ONC daily averages (resamplePeriod=86400, avg).",
+    "Oxygen converted from ml/L to mg/L (x1.429).",
+    "Footage = at least one archived underwater video clip that week; clarity is not assessed.",
+    "Sightings: team-reviewed and corrected rockfish labels, plus ONC SeaTube annotations that pass an accuracy rule (see sightings_meta.json)."
+  ],
+  "sitesByYear": {
+    "2019": [
+      {
+        "cameraId": "cambridge_bay",
+        "cameraLocations": [
+          "CBYIP"
+        ],
+        "temperatureFrom": "CBYIP",
+        "oxygenFrom": "CBYIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 37,
+        "clips": 2218,
+        "weeksWithTemp": 22,
+        "weeksWithOxygen": 22
+      },
+      {
+        "cameraId": "minas_passage",
+        "cameraLocations": [],
+        "temperatureFrom": null,
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 0,
+        "weeksWithOxygen": 0
+      },
+      {
+        "cameraId": "conception_bay",
+        "cameraLocations": [],
+        "temperatureFrom": null,
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 0,
+        "weeksWithOxygen": 0
+      },
+      {
+        "cameraId": "chatham_sound",
+        "cameraLocations": [
+          "DIIP"
+        ],
+        "temperatureFrom": "DIIP.C1",
+        "oxygenFrom": "DIIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 51,
+        "clips": 8254,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "douglas_channel",
+        "cameraLocations": [
+          "KVIP"
+        ],
+        "temperatureFrom": "KVIP.C2",
+        "oxygenFrom": "KVIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8448,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "barkley_canyon",
+        "cameraLocations": [
+          "BACAX",
+          "BACME",
+          "BACND",
+          "BACUS"
+        ],
+        "temperatureFrom": "BACAX",
+        "oxygenFrom": "BACAX",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 51,
+        "clips": 12946,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "barkley_sound",
+        "cameraLocations": [
+          "FGPPN"
+        ],
+        "temperatureFrom": "FGPPN",
+        "oxygenFrom": "FGPPN",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 12,
+        "clips": 1768,
+        "weeksWithTemp": 12,
+        "weeksWithOxygen": 12
+      },
+      {
+        "cameraId": "cascadia_basin",
+        "cameraLocations": [],
+        "temperatureFrom": "NC27",
+        "oxygenFrom": "NC27",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "clayoquot_slope",
+        "cameraLocations": [],
+        "temperatureFrom": "NC89",
+        "oxygenFrom": "NC89",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 45
+      },
+      {
+        "cameraId": "endeavour",
+        "cameraLocations": [
+          "KEMFT",
+          "KEMO"
+        ],
+        "temperatureFrom": "RCNE1",
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 41,
+        "clips": 6451,
+        "weeksWithTemp": 33,
+        "weeksWithOxygen": 0
+      },
+      {
+        "cameraId": "discovery_passage",
+        "cameraLocations": [
+          "CRIP"
+        ],
+        "temperatureFrom": "CRIP.C1",
+        "oxygenFrom": "CRIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8214,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "saanich_inlet",
+        "cameraLocations": [
+          "YPVPF"
+        ],
+        "temperatureFrom": "PVIP.C1",
+        "oxygenFrom": "PVIP.O2",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 45,
+        "weeksWithOxygen": 37
+      },
+      {
+        "cameraId": "strait_of_georgia",
+        "cameraLocations": [],
+        "temperatureFrom": "SCVIP",
+        "oxygenFrom": "SCVIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "china_creek",
+        "cameraLocations": [
+          "CCIP"
+        ],
+        "temperatureFrom": "CCIP",
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 5,
+        "clips": 1019,
+        "weeksWithTemp": 5,
+        "weeksWithOxygen": 0
+      }
+    ],
+    "2024": [
+      {
+        "cameraId": "cambridge_bay",
+        "cameraLocations": [
+          "CBYIP"
+        ],
+        "temperatureFrom": "CBYIP",
+        "oxygenFrom": "CBYIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 2174,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 50
+      },
+      {
+        "cameraId": "minas_passage",
+        "cameraLocations": [],
+        "temperatureFrom": null,
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 0,
+        "weeksWithOxygen": 0
+      },
+      {
+        "cameraId": "conception_bay",
+        "cameraLocations": [
+          "HRBIP"
+        ],
+        "temperatureFrom": "HRBIP",
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 52,
+        "clips": 8828,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 0
+      },
+      {
+        "cameraId": "chatham_sound",
+        "cameraLocations": [
+          "DIIP"
+        ],
+        "temperatureFrom": "DIIP.C1",
+        "oxygenFrom": "DIIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8884,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 3
+      },
+      {
+        "cameraId": "douglas_channel",
+        "cameraLocations": [
+          "HBIP",
+          "KVIP"
+        ],
+        "temperatureFrom": "HBIP",
+        "oxygenFrom": "HBIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 47,
+        "clips": 13965,
+        "weeksWithTemp": 47,
+        "weeksWithOxygen": 47
+      },
+      {
+        "cameraId": "barkley_canyon",
+        "cameraLocations": [
+          "BACAX",
+          "BACUS"
+        ],
+        "temperatureFrom": "BACAX",
+        "oxygenFrom": "BACAX",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 12499,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "barkley_sound",
+        "cameraLocations": [
+          "FGPPN"
+        ],
+        "temperatureFrom": "FGPPN",
+        "oxygenFrom": "FGPPN",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8873,
+        "weeksWithTemp": 38,
+        "weeksWithOxygen": 38
+      },
+      {
+        "cameraId": "cascadia_basin",
+        "cameraLocations": [],
+        "temperatureFrom": "NC27",
+        "oxygenFrom": "NC27",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "clayoquot_slope",
+        "cameraLocations": [
+          "NC89"
+        ],
+        "temperatureFrom": "NC89",
+        "oxygenFrom": "NC89",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 2328,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "endeavour",
+        "cameraLocations": [
+          "KEMF",
+          "KEMFT",
+          "KEMO"
+        ],
+        "temperatureFrom": "ENEF",
+        "oxygenFrom": "ENEF",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 3526,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "discovery_passage",
+        "cameraLocations": [
+          "CRIP"
+        ],
+        "temperatureFrom": "CRIP.C1",
+        "oxygenFrom": "CRIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 42,
+        "clips": 9829,
+        "weeksWithTemp": 40,
+        "weeksWithOxygen": 19
+      },
+      {
+        "cameraId": "saanich_inlet",
+        "cameraLocations": [],
+        "temperatureFrom": "PVIP.C1",
+        "oxygenFrom": "PVIP.O2",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 45,
+        "weeksWithOxygen": 45
+      },
+      {
+        "cameraId": "strait_of_georgia",
+        "cameraLocations": [
+          "USDDL"
+        ],
+        "temperatureFrom": "SCVIP",
+        "oxygenFrom": "SCVIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "china_creek",
+        "cameraLocations": [
+          "CCIP"
+        ],
+        "temperatureFrom": "CCIP",
+        "oxygenFrom": "CCIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8525,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 46
+      }
+    ],
+    "2025": [
+      {
+        "cameraId": "cambridge_bay",
+        "cameraLocations": [
+          "CBYIP"
+        ],
+        "temperatureFrom": "CBYIP",
+        "oxygenFrom": "CBYIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 45,
+        "clips": 2096,
+        "weeksWithTemp": 45,
+        "weeksWithOxygen": 45
+      },
+      {
+        "cameraId": "minas_passage",
+        "cameraLocations": [],
+        "temperatureFrom": null,
+        "oxygenFrom": null,
+        "oxygenUnitConverted": null,
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 0,
+        "weeksWithOxygen": 0
+      },
+      {
+        "cameraId": "conception_bay",
+        "cameraLocations": [
+          "HRBIP"
+        ],
+        "temperatureFrom": "HRBIP",
+        "oxygenFrom": "HRBIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8791,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 8
+      },
+      {
+        "cameraId": "chatham_sound",
+        "cameraLocations": [
+          "DIIP"
+        ],
+        "temperatureFrom": "DIIP.C1",
+        "oxygenFrom": "DIIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 8930,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 16
+      },
+      {
+        "cameraId": "douglas_channel",
+        "cameraLocations": [
+          "HBIP",
+          "KVIP"
+        ],
+        "temperatureFrom": "HBIP",
+        "oxygenFrom": "HBIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 17235,
+        "weeksWithTemp": 38,
+        "weeksWithOxygen": 38
+      },
+      {
+        "cameraId": "barkley_canyon",
+        "cameraLocations": [
+          "BACAX",
+          "BACUS",
+          "BACVP"
+        ],
+        "temperatureFrom": "BACAX",
+        "oxygenFrom": "BACAX",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 16895,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "barkley_sound",
+        "cameraLocations": [
+          "FGPPN"
+        ],
+        "temperatureFrom": "FGPPN",
+        "oxygenFrom": "FGPPN",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 36,
+        "clips": 5963,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "cascadia_basin",
+        "cameraLocations": [
+          "CBC27"
+        ],
+        "temperatureFrom": "NC27",
+        "oxygenFrom": "NC27",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 18,
+        "clips": 2991,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "clayoquot_slope",
+        "cameraLocations": [
+          "NC89"
+        ],
+        "temperatureFrom": "NC89",
+        "oxygenFrom": "NC89",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 2201,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "endeavour",
+        "cameraLocations": [
+          "KEMFT",
+          "KEMO"
+        ],
+        "temperatureFrom": "ENEF",
+        "oxygenFrom": "ENEF",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 4517,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 52
+      },
+      {
+        "cameraId": "discovery_passage",
+        "cameraLocations": [
+          "CRIP"
+        ],
+        "temperatureFrom": "CRIP.C1",
+        "oxygenFrom": "CRIP.O1",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 34,
+        "clips": 5592,
+        "weeksWithTemp": 34,
+        "weeksWithOxygen": 22
+      },
+      {
+        "cameraId": "saanich_inlet",
+        "cameraLocations": [],
+        "temperatureFrom": "PVIP.C1",
+        "oxygenFrom": "PVIP.O2",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 47,
+        "weeksWithOxygen": 47
+      },
+      {
+        "cameraId": "strait_of_georgia",
+        "cameraLocations": [],
+        "temperatureFrom": "SCVIP",
+        "oxygenFrom": "SCVIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 0,
+        "clips": 0,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 46
+      },
+      {
+        "cameraId": "china_creek",
+        "cameraLocations": [
+          "CCIP"
+        ],
+        "temperatureFrom": "CCIP",
+        "oxygenFrom": "CCIP",
+        "oxygenUnitConverted": "ml/l",
+        "weeksWithFootage": 52,
+        "clips": 11350,
+        "weeksWithTemp": 52,
+        "weeksWithOxygen": 30
+      }
+    ]
+  },
+  "citations": [
+    {
+      "doi": "10.34943/7ffebf83-0e44-4695-813a-ce3662f541f6",
+      "citation": "Ocean Networks Canada Society. 2018. Cambridge Bay Video Camera Deployed 2018-07-26. Ocean Networks Canada Society. https://doi.org/10.34943/7ffebf83-0e44-4695-813a-ce3662f541f6."
+    },
+    {
+      "doi": "10.34943/b7d6131a-70f8-4adb-ae83-8add99427de5",
+      "citation": "Ocean Networks Canada Society. 2019. Cambridge Bay Video Camera Deployed 2019-07-31. Ocean Networks Canada Society. https://doi.org/10.34943/b7d6131a-70f8-4adb-ae83-8add99427de5."
+    },
+    {
+      "doi": "10.34943/40192126-dea4-46c5-8759-72cadeb9bb98",
+      "citation": "Ocean Networks Canada Society. 2018. Cambridge Bay Conductivity Temperature Depth Deployed 2018-07-26. Ocean Networks Canada Society. https://doi.org/10.34943/40192126-dea4-46c5-8759-72cadeb9bb98."
+    },
+    {
+      "doi": "10.34943/88e4918b-4328-4261-a4d2-164e45da4bdf",
+      "citation": "Ocean Networks Canada Society. 2019. Cambridge Bay Conductivity Temperature Depth Deployed 2019-07-31. Ocean Networks Canada Society. https://doi.org/10.34943/88e4918b-4328-4261-a4d2-164e45da4bdf."
+    },
+    {
+      "doi": "10.34943/612be18e-22c0-4fc9-b4c7-4fe5acb46ec2",
+      "citation": "Ocean Networks Canada Society. 2018. Cambridge Bay Oxygen Sensor Deployed 2018-07-26. Ocean Networks Canada Society. https://doi.org/10.34943/612be18e-22c0-4fc9-b4c7-4fe5acb46ec2."
+    },
+    {
+      "doi": "10.34943/3870c86d-fc80-449f-b9e2-2d529fa74700",
+      "citation": "Ocean Networks Canada Society. 2019. Cambridge Bay Oxygen Sensor Deployed 2019-07-31. Ocean Networks Canada Society. https://doi.org/10.34943/3870c86d-fc80-449f-b9e2-2d529fa74700."
+    },
+    {
+      "doi": "10.34943/5d1f4100-3cfa-4bb0-97ab-3e46762ce8e3",
+      "citation": "FORCE. 2016. Minas Passage Conductivity Temperature Depth Deployed 2016-01-29. Ocean Networks Canada Society. https://doi.org/10.34943/5d1f4100-3cfa-4bb0-97ab-3e46762ce8e3."
+    },
+    {
+      "doi": "10.34943/0f0ed3e1-5fbf-4f49-a57d-e8cfa092e02b",
+      "citation": "FORCE. 2016. Minas Passage Oxygen Sensor Deployed 2016-01-29. Ocean Networks Canada Society. https://doi.org/10.34943/0f0ed3e1-5fbf-4f49-a57d-e8cfa092e02b."
+    },
+    {
+      "doi": "10.34943/b15761dd-bae4-4e30-b484-4b223bd6e95c",
+      "citation": "Ocean Networks Canada Society. 2018. Chatham Sound Video Camera Deployed 2018-10-26. Ocean Networks Canada Society. https://doi.org/10.34943/b15761dd-bae4-4e30-b484-4b223bd6e95c."
+    },
+    {
+      "doi": "10.34943/afdb78f8-691e-4538-b718-d75b30a26d81",
+      "citation": "Ocean Networks Canada Society. 2019. Chatham Sound Video Camera Deployed 2019-08-29. Ocean Networks Canada Society. https://doi.org/10.34943/afdb78f8-691e-4538-b718-d75b30a26d81."
+    },
+    {
+      "doi": "10.34943/1cc3fcb2-fe4d-4179-a898-fc3ac2058c52",
+      "citation": "Ocean Networks Canada Society. 2018. Chatham Sound Conductivity Temperature Depth Deployed 2018-10-26. Ocean Networks Canada Society. https://doi.org/10.34943/1cc3fcb2-fe4d-4179-a898-fc3ac2058c52."
+    },
+    {
+      "doi": "10.34943/4922b3a8-7d76-4e21-90f7-4e83b8010929",
+      "citation": "Ocean Networks Canada Society. 2019. Chatham Sound Conductivity Temperature Depth Deployed 2019-08-29. Ocean Networks Canada Society. https://doi.org/10.34943/4922b3a8-7d76-4e21-90f7-4e83b8010929."
+    },
+    {
+      "doi": "10.34943/fe376bfe-b1f8-4d36-b0dd-c90c11e20042",
+      "citation": "Ocean Networks Canada Society. 2018. Chatham Sound Oxygen Sensor Deployed 2018-10-26. Ocean Networks Canada Society. https://doi.org/10.34943/fe376bfe-b1f8-4d36-b0dd-c90c11e20042."
+    },
+    {
+      "doi": "10.34943/905dcebf-d4c4-48d1-a47d-961065bbf76a",
+      "citation": "Ocean Networks Canada Society. 2019. Chatham Sound Oxygen Sensor Deployed 2019-08-29. Ocean Networks Canada Society. https://doi.org/10.34943/905dcebf-d4c4-48d1-a47d-961065bbf76a."
+    },
+    {
+      "doi": "10.34943/7135dac8-ad7f-4d12-a663-038dfc0f4ca5",
+      "citation": "Ocean Networks Canada Society. 2018. Douglas Channel Video Camera Deployed 2018-10-24. Ocean Networks Canada Society. https://doi.org/10.34943/7135dac8-ad7f-4d12-a663-038dfc0f4ca5."
+    },
+    {
+      "doi": "10.34943/e5b4ed48-d8f5-4d63-ae13-6a779c1f49c1",
+      "citation": "Ocean Networks Canada Society. 2018. Douglas Channel Conductivity Temperature Depth Deployed 2018-10-24. Ocean Networks Canada Society. https://doi.org/10.34943/e5b4ed48-d8f5-4d63-ae13-6a779c1f49c1."
+    },
+    {
+      "doi": "10.34943/3bf2bd30-ea68-478b-87fe-ce7a1f6b83f3",
+      "citation": "Ocean Networks Canada Society. 2018. Douglas Channel Oxygen Sensor Deployed 2018-10-24. Ocean Networks Canada Society. https://doi.org/10.34943/3bf2bd30-ea68-478b-87fe-ce7a1f6b83f3."
+    },
+    {
+      "doi": "10.34943/db55b4cc-94ff-464f-9f8f-c726924802a2",
+      "citation": "Ocean Networks Canada Society. 2018. Barkley Canyon Axis Video Camera Deployed 2018-06-22. Ocean Networks Canada Society. https://doi.org/10.34943/db55b4cc-94ff-464f-9f8f-c726924802a2."
+    },
+    {
+      "doi": "10.34943/3c9b5989-5714-4b01-8078-23921f3a8b4c",
+      "citation": "Ocean Networks Canada Society. 2019. Barkley Canyon Axis Video Camera Deployed 2019-09-23. Ocean Networks Canada Society. https://doi.org/10.34943/3c9b5989-5714-4b01-8078-23921f3a8b4c."
+    },
+    {
+      "doi": "10.34943/c3763ce8-8115-4f35-97da-9f8211637c37",
+      "citation": "Ocean Networks Canada Society. 2018. Barkley Canyon Mid-East Video Camera Deployed 2018-07-01. Ocean Networks Canada Society. https://doi.org/10.34943/c3763ce8-8115-4f35-97da-9f8211637c37."
+    },
+    {
+      "doi": "10.34943/e7a98416-5299-4fbe-9856-bf8599f745b8",
+      "citation": "Ocean Networks Canada Society. 2019. Barkley Canyon Video Camera Deployed 2019-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/e7a98416-5299-4fbe-9856-bf8599f745b8."
+    },
+    {
+      "doi": "10.34943/d3a19a7c-aae7-43e5-a660-059935879871",
+      "citation": "Ocean Networks Canada Society. 2019. Upper Slope South Video Camera Deployed 2019-09-07. Ocean Networks Canada Society. https://doi.org/10.34943/d3a19a7c-aae7-43e5-a660-059935879871."
+    },
+    {
+      "doi": "10.34943/065e2f0d-6d98-4a14-b1b7-489db8bf4b32",
+      "citation": "Ocean Networks Canada Society. 2018. Barkley Canyon Axis Conductivity Temperature Depth Deployed 2018-06-22. Ocean Networks Canada Society. https://doi.org/10.34943/065e2f0d-6d98-4a14-b1b7-489db8bf4b32."
+    },
+    {
+      "doi": "10.34943/282d0931-a7c7-4a96-a9e0-b3dbb2beaa19",
+      "citation": "Ocean Networks Canada Society. 2018. Barkley Canyon Axis Oxygen Sensor Deployed 2018-06-22. Ocean Networks Canada Society. https://doi.org/10.34943/282d0931-a7c7-4a96-a9e0-b3dbb2beaa19."
+    },
+    {
+      "doi": "10.34943/feb5b598-539f-4e7d-97ee-e258bfb7a901",
+      "citation": "Ocean Networks Canada Society. 2019. Folger Pinnacle Video Camera Deployed 2018-10-17. Ocean Networks Canada Society. https://doi.org/10.34943/feb5b598-539f-4e7d-97ee-e258bfb7a901."
+    },
+    {
+      "doi": "10.34943/ed6785f5-e5ee-4f07-a1ed-07e370db7193",
+      "citation": "Ocean Networks Canada Society. 2019. Folger Pinnacle Conductivity Temperature Depth Deployed 2019-07-03. Ocean Networks Canada Society. https://doi.org/10.34943/ed6785f5-e5ee-4f07-a1ed-07e370db7193."
+    },
+    {
+      "doi": "10.34943/930cf164-2dd9-4d32-b6c1-604030810db9",
+      "citation": "Ocean Networks Canada Society. 2019. Folger Pinnacle Oxygen Sensor Deployed 2019-07-03. Ocean Networks Canada Society. https://doi.org/10.34943/930cf164-2dd9-4d32-b6c1-604030810db9."
+    },
+    {
+      "doi": "10.34943/fb3bcb1d-fea0-41c5-a07d-7cdb8d633113",
+      "citation": "Ocean Networks Canada Society. 2017. ODP 1026 Conductivity Temperature Depth Deployed 2017-06-19. Ocean Networks Canada Society. https://doi.org/10.34943/fb3bcb1d-fea0-41c5-a07d-7cdb8d633113."
+    },
+    {
+      "doi": "10.34943/677124e2-8cfe-4a9c-9323-f2f5e725ce4e",
+      "citation": "Ocean Networks Canada Society. 2017. ODP 1026 Oxygen Sensor Deployed 2017-06-19. Ocean Networks Canada Society. https://doi.org/10.34943/677124e2-8cfe-4a9c-9323-f2f5e725ce4e."
+    },
+    {
+      "doi": "10.34943/3ea05ece-fbb3-4598-8d89-58e16e47c870",
+      "citation": "Ocean Networks Canada Society. 2018. Bullseye Conductivity Temperature Depth Deployed 2018-06-30. Ocean Networks Canada Society. https://doi.org/10.34943/3ea05ece-fbb3-4598-8d89-58e16e47c870."
+    },
+    {
+      "doi": "10.34943/2209b28d-ee84-4e58-9c70-4355d0b45574",
+      "citation": "Ocean Networks Canada Society. 2018. Bullseye Oxygen Sensor Deployed 2018-06-30. Ocean Networks Canada Society. https://doi.org/10.34943/2209b28d-ee84-4e58-9c70-4355d0b45574."
+    },
+    {
+      "doi": "10.34943/64b44910-2f1c-4bd8-902d-ae4a3245c5c0",
+      "citation": "Ocean Networks Canada Society. 2013. Main Endeavour Field Video Camera Deployed 2013-06-20. Ocean Networks Canada Society. https://doi.org/10.34943/64b44910-2f1c-4bd8-902d-ae4a3245c5c0."
+    },
+    {
+      "doi": "10.34943/dc644dd0-332d-4218-980c-e46460ee173c",
+      "citation": "Ocean Networks Canada Society. 2018. Mothra Video Camera Deployed 2018-07-25. Ocean Networks Canada Society. https://doi.org/10.34943/dc644dd0-332d-4218-980c-e46460ee173c."
+    },
+    {
+      "doi": "10.34943/e7fe96b6-808e-46e3-891c-74e26ecf8bfb",
+      "citation": "Ocean Networks Canada Society. 2019. Endeavour North Conductivity Temperature Depth Deployed 2018-06-27. Ocean Networks Canada Society. https://doi.org/10.34943/e7fe96b6-808e-46e3-891c-74e26ecf8bfb."
+    },
+    {
+      "doi": "10.34943/a3e0d747-6d5c-439c-b39e-8e225141d366",
+      "citation": "Ocean Networks Canada Society. 2013. Main Endeavour Field Oxygen Sensor Deployed 2013-06-20. Ocean Networks Canada Society. https://doi.org/10.34943/a3e0d747-6d5c-439c-b39e-8e225141d366."
+    },
+    {
+      "doi": "10.34943/c75264b4-aad0-453c-82da-0d7a05568a3c",
+      "citation": "Ocean Networks Canada Society. 2018. Discovery Passage Video Camera Deployed 2018-11-15. Ocean Networks Canada Society. https://doi.org/10.34943/c75264b4-aad0-453c-82da-0d7a05568a3c."
+    },
+    {
+      "doi": "10.34943/bf0ba19f-c3c6-48e6-8cbd-7bfd559c6da5",
+      "citation": "Ocean Networks Canada Society. 2018. Discovery Passage Conductivity Temperature Depth Deployed 2018-11-15. Ocean Networks Canada Society. https://doi.org/10.34943/bf0ba19f-c3c6-48e6-8cbd-7bfd559c6da5."
+    },
+    {
+      "doi": "10.34943/0d93074f-c4da-4cc4-abe3-f574d4004978",
+      "citation": "Ocean Networks Canada Society. 2018. Discovery Passage Oxygen Sensor Deployed 2018-11-15. Ocean Networks Canada Society. https://doi.org/10.34943/0d93074f-c4da-4cc4-abe3-f574d4004978."
+    },
+    {
+      "doi": "10.34943/ecf8c6bb-b5d1-4756-9d1d-a58ae46c7772",
+      "citation": "Ocean Networks Canada Society. 2013. Yarrow Point Video Camera Deployed 2013-08-24. Ocean Networks Canada Society. https://doi.org/10.34943/ecf8c6bb-b5d1-4756-9d1d-a58ae46c7772."
+    },
+    {
+      "doi": "10.34943/46dbd8e3-4dde-4ef2-b64c-840903501f21",
+      "citation": "Ocean Networks Canada Society. 2018. Patricia Bay Conductivity Temperature Depth Deployed 2018-09-30. Ocean Networks Canada Society. https://doi.org/10.34943/46dbd8e3-4dde-4ef2-b64c-840903501f21."
+    },
+    {
+      "doi": "10.34943/e3cb0f1b-4392-479e-b7f6-04be8a5c3779",
+      "citation": "Ocean Networks Canada Society. 2019. Patricia Bay Conductivity Temperature Depth Deployed 2019-03-10. Ocean Networks Canada Society. https://doi.org/10.34943/e3cb0f1b-4392-479e-b7f6-04be8a5c3779."
+    },
+    {
+      "doi": "10.34943/463531bf-e676-464d-b793-43b7ceb72bcd",
+      "citation": "Ocean Networks Canada Society. 2019. Patricia Bay Conductivity Temperature Depth Deployed 2019-09-12. Ocean Networks Canada Society. https://doi.org/10.34943/463531bf-e676-464d-b793-43b7ceb72bcd."
+    },
+    {
+      "doi": "10.34943/9179f333-e9d5-4d2c-9331-a731bd71515e",
+      "citation": "Ocean Networks Canada Society. 2020. Patricia Bay Conductivity Temperature Depth Deployed 2019-06-26. Ocean Networks Canada Society. https://doi.org/10.34943/9179f333-e9d5-4d2c-9331-a731bd71515e."
+    },
+    {
+      "doi": "10.34943/39618dc7-ab0b-42b4-bba4-9947a5b6dad9",
+      "citation": "Ocean Networks Canada Society. 2019. Patricia Bay Oxygen Sensor Deployed 2019-03-10. Ocean Networks Canada Society. https://doi.org/10.34943/39618dc7-ab0b-42b4-bba4-9947a5b6dad9."
+    },
+    {
+      "doi": "10.34943/4b46fcc2-c876-4ae5-b9c8-8e6bbbb52bfd",
+      "citation": "Ocean Networks Canada Society. 2019. Patricia Bay Oxygen Sensor Deployed 2019-09-12. Ocean Networks Canada Society. https://doi.org/10.34943/4b46fcc2-c876-4ae5-b9c8-8e6bbbb52bfd."
+    },
+    {
+      "doi": "10.34943/084b2dc3-71f4-4000-b3a8-4188fe8ecb2d",
+      "citation": "Ocean Networks Canada Society. 2020. Patricia Bay Oxygen Sensor Deployed 2019-06-26. Ocean Networks Canada Society. https://doi.org/10.34943/084b2dc3-71f4-4000-b3a8-4188fe8ecb2d."
+    },
+    {
+      "doi": "10.34943/29dc3330-4dd2-479e-aaea-7e6eae300efe",
+      "citation": "Ocean Networks Canada Society. 2018. Strait of Georgia Central Conductivity Temperature Depth Deployed 2018-09-30. Ocean Networks Canada Society. https://doi.org/10.34943/29dc3330-4dd2-479e-aaea-7e6eae300efe."
+    },
+    {
+      "doi": "10.34943/875eb5dc-cbdb-4d54-ba71-64732c84c02c",
+      "citation": "Ocean Networks Canada Society. 2018. Strait of Georgia Central Oxygen Sensor Deployed 2018-09-30. Ocean Networks Canada Society. https://doi.org/10.34943/875eb5dc-cbdb-4d54-ba71-64732c84c02c."
+    },
+    {
+      "doi": "10.34943/c1171f3f-db44-4e67-b2dd-0bc3d378f274",
+      "citation": "Ocean Networks Canada Society. 2019. China Creek Video Camera Deployed 2019-11-26. Ocean Networks Canada Society. https://doi.org/10.34943/c1171f3f-db44-4e67-b2dd-0bc3d378f274."
+    },
+    {
+      "doi": "10.34943/6206d057-bbcf-4c21-a16c-798c0204519c",
+      "citation": "Ocean Networks Canada Society. 2019. China Creek Conductivity Temperature Depth Deployed 2019-11-26. Ocean Networks Canada Society. https://doi.org/10.34943/6206d057-bbcf-4c21-a16c-798c0204519c."
+    },
+    {
+      "doi": "10.34943/e3f7d42f-bb99-4323-b346-17c1dc9ff7e6",
+      "citation": "Ocean Networks Canada Society. 2019. China Creek Oxygen Sensor Deployed 2019-11-26. Ocean Networks Canada Society. https://doi.org/10.34943/e3f7d42f-bb99-4323-b346-17c1dc9ff7e6."
+    },
+    {
+      "doi": "10.34943/72a02242-b629-45ee-80a5-6e633885d7d6",
+      "citation": "Ocean Networks Canada Society. 2023. Cambridge Bay Video Camera Deployed 2023-08-01. Ocean Networks Canada Society. https://doi.org/10.34943/72a02242-b629-45ee-80a5-6e633885d7d6."
+    },
+    {
+      "doi": "10.34943/6d582899-1afb-43de-9ff8-8e1effbd0532",
+      "citation": "Ocean Networks Canada Society. 2024. Cambridge Bay Video Camera Deployed 2024-08-29. Ocean Networks Canada Society. https://doi.org/10.34943/6d582899-1afb-43de-9ff8-8e1effbd0532."
+    },
+    {
+      "doi": "10.34943/55e2b10a-190a-4334-98b4-9cbda08ea2f1",
+      "citation": "Ocean Networks Canada Society. 2023. Cambridge Bay Conductivity Temperature Depth Deployed 2023-08-02. Ocean Networks Canada Society. https://doi.org/10.34943/55e2b10a-190a-4334-98b4-9cbda08ea2f1."
+    },
+    {
+      "doi": "10.34943/83c71dca-11d5-41f4-81c1-fa03bfb1f4a8",
+      "citation": "Ocean Networks Canada Society. 2024. Cambridge Bay Conductivity Temperature Depth Deployed 2024-08-29. Ocean Networks Canada Society. https://doi.org/10.34943/83c71dca-11d5-41f4-81c1-fa03bfb1f4a8."
+    },
+    {
+      "doi": "10.34943/2882c627-d51a-40f7-ab90-9acf0bf78704",
+      "citation": "Ocean Networks Canada Society. 2023. Cambridge Bay Oxygen Sensor Deployed 2023-08-02. Ocean Networks Canada Society. https://doi.org/10.34943/2882c627-d51a-40f7-ab90-9acf0bf78704."
+    },
+    {
+      "doi": "10.34943/d012c6b8-5f72-4e6c-a178-5b322b70aea1",
+      "citation": "Ocean Networks Canada Society. 2024. Cambridge Bay Oxygen Sensor Deployed 2024-08-29. Ocean Networks Canada Society. https://doi.org/10.34943/d012c6b8-5f72-4e6c-a178-5b322b70aea1."
+    },
+    {
+      "doi": "10.34943/f4acd98b-b71c-4d27-bd31-71b70c5f50da",
+      "citation": "Marine Institute of Memorial University. 2023. Conception Bay Video Camera Deployed 2023-12-13. Ocean Networks Canada Society. https://doi.org/10.34943/f4acd98b-b71c-4d27-bd31-71b70c5f50da."
+    },
+    {
+      "doi": "10.34943/50818734-86d5-40de-a596-e97ee448de76",
+      "citation": "Marine Institute of Memorial University. 2023. Conception Bay Conductivity Temperature Depth Deployed 2023-12-13. Ocean Networks Canada Society. https://doi.org/10.34943/50818734-86d5-40de-a596-e97ee448de76."
+    },
+    {
+      "doi": "10.34943/d1745c2c-a889-413b-a1ec-4ddcbc9df4ac",
+      "citation": "Ocean Networks Canada Society. 2023. Chatham Sound Video Camera Deployed 2023-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/d1745c2c-a889-413b-a1ec-4ddcbc9df4ac."
+    },
+    {
+      "doi": "10.34943/5d5e8d7b-373a-47e1-a15f-027ece50eb39",
+      "citation": "Ocean Networks Canada Society. 2023. Chatham Sound Conductivity Temperature Depth Deployed 2023-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/5d5e8d7b-373a-47e1-a15f-027ece50eb39."
+    },
+    {
+      "doi": "10.34943/51849837-685c-4194-82cb-c520d3e64bec",
+      "citation": "Ocean Networks Canada Society. 2023. Chatham Sound Oxygen Sensor Deployed 2023-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/51849837-685c-4194-82cb-c520d3e64bec."
+    },
+    {
+      "doi": "10.34943/13e750f4-d14f-4feb-853b-4a0ec85b3ab6",
+      "citation": "Gitga'at First Nation, Ocean Networks Canada Society. 2023. Douglas Channel Video Camera Deployed 2023-09-15. Ocean Networks Canada Society. https://doi.org/10.34943/13e750f4-d14f-4feb-853b-4a0ec85b3ab6."
+    },
+    {
+      "doi": "10.34943/011f95ec-e26a-49b7-906f-7a8c3b82773c",
+      "citation": "Ocean Networks Canada Society. 2023. Douglas Channel Video Camera Deployed 2023-09-14. Ocean Networks Canada Society. https://doi.org/10.34943/011f95ec-e26a-49b7-906f-7a8c3b82773c."
+    },
+    {
+      "doi": "10.34943/42b13719-559e-475a-9848-fcd517bc91ae",
+      "citation": "Gitga'at First Nation, Ocean Networks Canada Society. 2023. Douglas Channel Conductivity Temperature Depth Deployed 2023-09-15. Ocean Networks Canada Society. https://doi.org/10.34943/42b13719-559e-475a-9848-fcd517bc91ae."
+    },
+    {
+      "doi": "10.34943/a4ef1f72-8d40-4a54-825f-998c26a50388",
+      "citation": "Gitga'at First Nation, Ocean Networks Canada Society. 2023. Douglas Channel Oxygen Sensor Deployed 2023-09-15. Ocean Networks Canada Society. https://doi.org/10.34943/a4ef1f72-8d40-4a54-825f-998c26a50388."
+    },
+    {
+      "doi": "10.34943/a7535d8e-3dbf-40ad-85f0-c03c5ba02bbf",
+      "citation": "Ocean Networks Canada Society. 2022. Barkley Canyon Axis Video Camera Deployed 2022-07-28. Ocean Networks Canada Society. https://doi.org/10.34943/a7535d8e-3dbf-40ad-85f0-c03c5ba02bbf."
+    },
+    {
+      "doi": "10.34943/0d807a93-dd0a-4014-988f-8f2b9a2766f4",
+      "citation": "Ocean Networks Canada Society. 2024. Barkley Canyon Axis Video Camera Deployed 2024-06-25. Ocean Networks Canada Society. https://doi.org/10.34943/0d807a93-dd0a-4014-988f-8f2b9a2766f4."
+    },
+    {
+      "doi": "10.34943/f74eab58-6307-4162-b613-630c36224dbb",
+      "citation": "Ocean Networks Canada Society. 2022. Upper Slope South Video Camera Deployed 2022-09-24. Ocean Networks Canada Society. https://doi.org/10.34943/f74eab58-6307-4162-b613-630c36224dbb."
+    },
+    {
+      "doi": "10.34943/89dcb242-1e79-49f3-802c-923b504f91cd",
+      "citation": "Ocean Networks Canada Society. 2024. Upper Slope South Video Camera Deployed 2024-06-26. Ocean Networks Canada Society. https://doi.org/10.34943/89dcb242-1e79-49f3-802c-923b504f91cd."
+    },
+    {
+      "doi": "10.34943/ad06d4c6-5ec1-49fa-98b6-7c77637e5dd6",
+      "citation": "Ocean Networks Canada Society. 2021. Barkley Canyon Axis Conductivity Temperature Depth Deployed 2021-08-21. Ocean Networks Canada Society. https://doi.org/10.34943/ad06d4c6-5ec1-49fa-98b6-7c77637e5dd6."
+    },
+    {
+      "doi": "10.34943/f26b0a5f-5368-4e94-8334-2fde9cece4fb",
+      "citation": "Ocean Networks Canada Society. 2024. Barkley Canyon Axis Conductivity Temperature Depth Deployed 2024-06-25. Ocean Networks Canada Society. https://doi.org/10.34943/f26b0a5f-5368-4e94-8334-2fde9cece4fb."
+    },
+    {
+      "doi": "10.34943/b2b96521-dfa6-4d72-9e2e-f0b85dd7fe8c",
+      "citation": "Ocean Networks Canada Society. 2021. Barkley Canyon Axis Oxygen Sensor Deployed 2021-08-21. Ocean Networks Canada Society. https://doi.org/10.34943/b2b96521-dfa6-4d72-9e2e-f0b85dd7fe8c."
+    },
+    {
+      "doi": "10.34943/97e55f48-4709-43f4-a5eb-924c4b8d97d5",
+      "citation": "Ocean Networks Canada Society. 2024. Barkley Canyon Axis Oxygen Sensor Deployed 2024-06-25. Ocean Networks Canada Society. https://doi.org/10.34943/97e55f48-4709-43f4-a5eb-924c4b8d97d5."
+    },
+    {
+      "doi": "10.34943/91dadfdd-59ba-47a0-8dd5-2ff754f469bd",
+      "citation": "Ocean Networks Canada Society. 2023. Folger Pinnacle Conductivity Temperature Depth Deployed 2023-04-12. Ocean Networks Canada Society. https://doi.org/10.34943/91dadfdd-59ba-47a0-8dd5-2ff754f469bd."
+    },
+    {
+      "doi": "10.34943/e46c805f-9c51-4cc0-a058-c0b196ea3c7a",
+      "citation": "Ocean Networks Canada Society. 2024. Folger Pinnacle Conductivity Temperature Depth Deployed 2024-04-10. Ocean Networks Canada Society. https://doi.org/10.34943/e46c805f-9c51-4cc0-a058-c0b196ea3c7a."
+    },
+    {
+      "doi": "10.34943/b2236a6c-c0d3-429d-8b92-0565e1699cc5",
+      "citation": "Ocean Networks Canada Society. 2023. Folger Pinnacle Oxygen Sensor Deployed 2023-04-12. Ocean Networks Canada Society. https://doi.org/10.34943/b2236a6c-c0d3-429d-8b92-0565e1699cc5."
+    },
+    {
+      "doi": "10.34943/ef7b4fc8-ee72-4bb3-92bc-1450478cc3ed",
+      "citation": "Ocean Networks Canada Society. 2024. Folger Pinnacle Oxygen Sensor Deployed 2024-04-10. Ocean Networks Canada Society. https://doi.org/10.34943/ef7b4fc8-ee72-4bb3-92bc-1450478cc3ed."
+    },
+    {
+      "doi": "10.34943/948a0fb2-9467-42b8-8dde-56d74368915b",
+      "citation": "Ocean Networks Canada Society. 2023. ODP 1026 Conductivity Temperature Depth Deployed 2023-07-11. Ocean Networks Canada Society. https://doi.org/10.34943/948a0fb2-9467-42b8-8dde-56d74368915b."
+    },
+    {
+      "doi": "10.34943/4b7e8d34-ef01-4cef-88d5-4f539e6bbb09",
+      "citation": "Ocean Networks Canada Society. 2023. ODP 1026 Oxygen Sensor Deployed 2023-07-11. Ocean Networks Canada Society. https://doi.org/10.34943/4b7e8d34-ef01-4cef-88d5-4f539e6bbb09."
+    },
+    {
+      "doi": "10.34943/9e90bda4-1fce-4ab6-aa80-66979b92e3af",
+      "citation": "Ocean Networks Canada Society, Running Tide. 2023. Bullseye Video Camera Deployed 2023-09-07. Ocean Networks Canada Society. https://doi.org/10.34943/9e90bda4-1fce-4ab6-aa80-66979b92e3af."
+    },
+    {
+      "doi": "10.34943/c8074584-cd67-49c8-891f-2a3124d5b2e6",
+      "citation": "Ocean Networks Canada Society. 2023. Bullseye Conductivity Temperature Depth Deployed 2023-06-28. Ocean Networks Canada Society. https://doi.org/10.34943/c8074584-cd67-49c8-891f-2a3124d5b2e6."
+    },
+    {
+      "doi": "10.34943/809d70d2-3575-4ecf-8c9d-6058f66f09b1",
+      "citation": "Ocean Networks Canada Society. 2024. Bullseye Conductivity Temperature Depth Deployed 2024-06-23. Ocean Networks Canada Society. https://doi.org/10.34943/809d70d2-3575-4ecf-8c9d-6058f66f09b1."
+    },
+    {
+      "doi": "10.34943/64ff9fde-c29f-4878-b9aa-a2afbae8265d",
+      "citation": "Ocean Networks Canada Society. 2023. Bullseye Oxygen Sensor Deployed 2023-06-28. Ocean Networks Canada Society. https://doi.org/10.34943/64ff9fde-c29f-4878-b9aa-a2afbae8265d."
+    },
+    {
+      "doi": "10.34943/7b95de8d-1f67-4562-9a2e-3b27b3370b54",
+      "citation": "Ocean Networks Canada Society. 2024. Bullseye Oxygen Sensor Deployed 2024-06-23. Ocean Networks Canada Society. https://doi.org/10.34943/7b95de8d-1f67-4562-9a2e-3b27b3370b54."
+    },
+    {
+      "doi": "10.34943/01a507da-f4cd-45fe-80ef-c0bf2962efab",
+      "citation": "Ocean Networks Canada Society. 2021. Main Endeavour Field Video Camera Deployed 2021-08-23. Ocean Networks Canada Society. https://doi.org/10.34943/01a507da-f4cd-45fe-80ef-c0bf2962efab."
+    },
+    {
+      "doi": "10.34943/660fe1e3-2b90-40f9-92c2-8da3fdaf7728",
+      "citation": "Ocean Networks Canada Society. 2024. Main Endeavour Field Video Camera Deployed 2024-06-20. Ocean Networks Canada Society. https://doi.org/10.34943/660fe1e3-2b90-40f9-92c2-8da3fdaf7728."
+    },
+    {
+      "doi": "10.34943/c19da29d-735b-42e2-b932-865a9dd857f8",
+      "citation": "Ocean Networks Canada Society. 2020. Mothra Video Camera Deployed 2020-09-10. Ocean Networks Canada Society. https://doi.org/10.34943/c19da29d-735b-42e2-b932-865a9dd857f8."
+    },
+    {
+      "doi": "10.34943/93328419-fef9-4146-8a2d-87c68ad92263",
+      "citation": "Ocean Networks Canada Society. 2022. Endeavour East Conductivity Temperature Depth Deployed 2022-05-21. Ocean Networks Canada Society. https://doi.org/10.34943/93328419-fef9-4146-8a2d-87c68ad92263."
+    },
+    {
+      "doi": "10.34943/df142704-33e8-41de-ab6c-7330f1e9d8b3",
+      "citation": "Ocean Networks Canada Society. 2024. Endeavour East Conductivity Temperature Depth Deployed 2024-06-07. Ocean Networks Canada Society. https://doi.org/10.34943/df142704-33e8-41de-ab6c-7330f1e9d8b3."
+    },
+    {
+      "doi": "10.34943/3cb97bc9-c769-4214-ab3a-1744b2496d87",
+      "citation": "Ocean Networks Canada Society. 2022. Endeavour East Oxygen Sensor Deployed 2022-05-21. Ocean Networks Canada Society. https://doi.org/10.34943/3cb97bc9-c769-4214-ab3a-1744b2496d87."
+    },
+    {
+      "doi": "10.34943/1f469199-6335-47a7-b2ad-d56ee49e3cb0",
+      "citation": "Ocean Networks Canada Society. 2024. Endeavour East Oxygen Sensor Deployed 2024-06-07. Ocean Networks Canada Society. https://doi.org/10.34943/1f469199-6335-47a7-b2ad-d56ee49e3cb0."
+    },
+    {
+      "doi": "10.34943/a332caa1-d648-4ee1-abb0-20e193803ad4",
+      "citation": "Ocean Networks Canada Society. 2022. Discovery Passage Video Camera Deployed 2022-01-28. Ocean Networks Canada Society. https://doi.org/10.34943/a332caa1-d648-4ee1-abb0-20e193803ad4."
+    },
+    {
+      "doi": "10.34943/7f7ef6d3-5cb2-4e04-978b-8af6caba6063",
+      "citation": "Ocean Networks Canada Society. 2024. Discovery Passage Video Camera Deployed 2024-03-19. Ocean Networks Canada Society. https://doi.org/10.34943/7f7ef6d3-5cb2-4e04-978b-8af6caba6063."
+    },
+    {
+      "doi": "10.34943/2a4c5161-e112-4ee2-9dd1-6d92ef6c6581",
+      "citation": "Ocean Networks Canada Society. 2022. Discovery Passage Conductivity Temperature Depth Deployed 2022-01-28. Ocean Networks Canada Society. https://doi.org/10.34943/2a4c5161-e112-4ee2-9dd1-6d92ef6c6581."
+    },
+    {
+      "doi": "10.34943/50809b86-3289-4098-bcc0-edbee443b569",
+      "citation": "Ocean Networks Canada Society. 2024. Discovery Passage Conductivity Temperature Depth Deployed 2024-03-19. Ocean Networks Canada Society. https://doi.org/10.34943/50809b86-3289-4098-bcc0-edbee443b569."
+    },
+    {
+      "doi": "10.34943/8e17c21e-a437-4e26-8e16-96b53a40a30d",
+      "citation": "Ocean Networks Canada Society. 2022. Discovery Passage Oxygen Sensor Deployed 2022-01-28. Ocean Networks Canada Society. https://doi.org/10.34943/8e17c21e-a437-4e26-8e16-96b53a40a30d."
+    },
+    {
+      "doi": "10.34943/2a5b8616-a7f0-4569-aa0d-a604fb1e1552",
+      "citation": "Ocean Networks Canada Society. 2024. Discovery Passage Oxygen Sensor Deployed 2024-03-19. Ocean Networks Canada Society. https://doi.org/10.34943/2a5b8616-a7f0-4569-aa0d-a604fb1e1552."
+    },
+    {
+      "doi": "10.34943/33336aa8-6f07-4a76-9116-878538b59398",
+      "citation": "Ocean Networks Canada Society. 2023. Patricia Bay Conductivity Temperature Depth Deployed 2023-03-14. Ocean Networks Canada Society. https://doi.org/10.34943/33336aa8-6f07-4a76-9116-878538b59398."
+    },
+    {
+      "doi": "10.34943/d98f08c4-2141-46a8-9fec-53481beb25e5",
+      "citation": "Ocean Networks Canada Society. 2024. Patricia Bay Conductivity Temperature Depth Deployed 2024-03-12. Ocean Networks Canada Society. https://doi.org/10.34943/d98f08c4-2141-46a8-9fec-53481beb25e5."
+    },
+    {
+      "doi": "10.34943/6812b05f-6551-4efc-8f57-a26ebff2c0b4",
+      "citation": "Ocean Networks Canada Society. 2025. Patricia Bay Conductivity Temperature Depth Deployed 2024-11-21. Ocean Networks Canada Society. https://doi.org/10.34943/6812b05f-6551-4efc-8f57-a26ebff2c0b4."
+    },
+    {
+      "doi": "10.34943/1076837b-d02c-4990-9d3f-daf066f54b35",
+      "citation": "Ocean Networks Canada Society. 2023. Patricia Bay Oxygen Sensor Deployed 2023-03-14. Ocean Networks Canada Society. https://doi.org/10.34943/1076837b-d02c-4990-9d3f-daf066f54b35."
+    },
+    {
+      "doi": "10.34943/0c45fcba-b2f2-47fa-a6bf-e1a58f63d253",
+      "citation": "Ocean Networks Canada Society. 2024. Patricia Bay Oxygen Sensor Deployed 2024-03-12. Ocean Networks Canada Society. https://doi.org/10.34943/0c45fcba-b2f2-47fa-a6bf-e1a58f63d253."
+    },
+    {
+      "doi": "10.34943/073574c6-a650-4776-ba6b-a72041eef06c",
+      "citation": "Ocean Networks Canada Society. 2025. Patricia Bay Oxygen Sensor Deployed 2024-11-21. Ocean Networks Canada Society. https://doi.org/10.34943/073574c6-a650-4776-ba6b-a72041eef06c."
+    },
+    {
+      "doi": "10.34943/91d7184b-1317-4bca-9bc8-e51aa9fb161e",
+      "citation": "Ocean Networks Canada Society. 2023. Fraser River Delta Upper Slope Video Camera Deployed 2023-03-16. Ocean Networks Canada Society. https://doi.org/10.34943/91d7184b-1317-4bca-9bc8-e51aa9fb161e."
+    },
+    {
+      "doi": "10.34943/a984e736-06f1-4ed2-a78c-940d8129f798",
+      "citation": "Ocean Networks Canada Society. 2024. Strait of Georgia Central Conductivity Temperature Depth Deployed 2023-11-17. Ocean Networks Canada Society. https://doi.org/10.34943/a984e736-06f1-4ed2-a78c-940d8129f798."
+    },
+    {
+      "doi": "10.34943/4eef9d64-ba96-4553-b84b-a6e034b69daf",
+      "citation": "Ocean Networks Canada Society. 2026. Strait of Georgia Central Conductivity Temperature Depth Deployed 2024-07-17. Ocean Networks Canada Society. https://doi.org/10.34943/4eef9d64-ba96-4553-b84b-a6e034b69daf."
+    },
+    {
+      "doi": "10.34943/ce8f188d-7979-4868-bf5b-c667974c8dec",
+      "citation": "Ocean Networks Canada Society. 2024. Strait of Georgia Central Oxygen Sensor Deployed 2023-11-17. Ocean Networks Canada Society. https://doi.org/10.34943/ce8f188d-7979-4868-bf5b-c667974c8dec."
+    },
+    {
+      "doi": "10.34943/5c350ca2-47da-4f2d-a100-7dfdab1d4c97",
+      "citation": "Ocean Networks Canada Society. 2026. Strait of Georgia Central Oxygen Sensor Deployed 2024-07-17. Ocean Networks Canada Society. https://doi.org/10.34943/5c350ca2-47da-4f2d-a100-7dfdab1d4c97."
+    },
+    {
+      "doi": "10.34943/7a3a229b-8080-48e7-94d5-ef724a7c098e",
+      "citation": "Ocean Networks Canada Society. 2023. China Creek Video Camera Deployed 2023-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/7a3a229b-8080-48e7-94d5-ef724a7c098e."
+    },
+    {
+      "doi": "10.34943/80a68c24-2cd1-49ac-bc23-d122250ea558",
+      "citation": "Ocean Networks Canada Society. 2023. China Creek Conductivity Temperature Depth Deployed 2023-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/80a68c24-2cd1-49ac-bc23-d122250ea558."
+    },
+    {
+      "doi": "10.34943/bdb66e75-64ae-4424-80a1-c0f39fcd0371",
+      "citation": "Ocean Networks Canada Society. 2023. China Creek Oxygen Sensor Deployed 2023-09-16. Ocean Networks Canada Society. https://doi.org/10.34943/bdb66e75-64ae-4424-80a1-c0f39fcd0371."
+    },
+    {
+      "doi": "10.34943/6b196083-1ae7-46ae-b7d7-13e925b9a34a",
+      "citation": "Ocean Networks Canada Society. 2025. Cambridge Bay Video Camera Deployed 2025-07-17. Ocean Networks Canada Society. https://doi.org/10.34943/6b196083-1ae7-46ae-b7d7-13e925b9a34a."
+    },
+    {
+      "doi": "10.34943/12ae9a19-ec29-4cff-8b30-588a5508fa4b",
+      "citation": "Ocean Networks Canada Society. 2025. Cambridge Bay Conductivity Temperature Depth Deployed 2025-07-16. Ocean Networks Canada Society. https://doi.org/10.34943/12ae9a19-ec29-4cff-8b30-588a5508fa4b."
+    },
+    {
+      "doi": "10.34943/2c6a6592-7fd9-421c-8475-1cb10211c61a",
+      "citation": "Ocean Networks Canada Society. 2025. Cambridge Bay Oxygen Sensor Deployed 2025-07-16. Ocean Networks Canada Society. https://doi.org/10.34943/2c6a6592-7fd9-421c-8475-1cb10211c61a."
+    },
+    {
+      "doi": "10.34943/e42047bf-e94a-47b7-898e-d1d8c86a3ec3",
+      "citation": "Marine Institute of Memorial University. 2025. Conception Bay Video Camera Deployed 2025-11-04. Ocean Networks Canada Society. https://doi.org/10.34943/e42047bf-e94a-47b7-898e-d1d8c86a3ec3."
+    },
+    {
+      "doi": "10.34943/c3050567-a046-49f6-be21-89e5f1b3877e",
+      "citation": "Marine Institute of Memorial University. 2025. Conception Bay Conductivity Temperature Depth Deployed 2025-11-04. Ocean Networks Canada Society. https://doi.org/10.34943/c3050567-a046-49f6-be21-89e5f1b3877e."
+    },
+    {
+      "doi": "10.34943/1bd0d632-790a-4426-a050-e1fe045f8b28",
+      "citation": "Marine Institute of Memorial University. 2025. Conception Bay Oxygen Sensor Deployed 2025-11-04. Ocean Networks Canada Society. https://doi.org/10.34943/1bd0d632-790a-4426-a050-e1fe045f8b28."
+    },
+    {
+      "doi": "10.34943/be762f8a-bb83-4b16-806d-613a74ad2773",
+      "citation": "Ocean Networks Canada Society. 2025. Chatham Sound Video Camera Deployed 2025-09-12. Ocean Networks Canada Society. https://doi.org/10.34943/be762f8a-bb83-4b16-806d-613a74ad2773."
+    },
+    {
+      "doi": "10.34943/d8098841-0868-4fc1-a37d-f1d66b56f04c",
+      "citation": "Ocean Networks Canada Society. 2025. Chatham Sound Conductivity Temperature Depth Deployed 2025-09-12. Ocean Networks Canada Society. https://doi.org/10.34943/d8098841-0868-4fc1-a37d-f1d66b56f04c."
+    },
+    {
+      "doi": "10.34943/5cb2bbe0-75f1-4a1d-90e1-c93feb2de461",
+      "citation": "Ocean Networks Canada Society. 2025. Chatham Sound Oxygen Sensor Deployed 2025-09-12. Ocean Networks Canada Society. https://doi.org/10.34943/5cb2bbe0-75f1-4a1d-90e1-c93feb2de461."
+    },
+    {
+      "doi": "10.34943/8a8ace92-15b4-4b09-8b2b-de767cfc4032",
+      "citation": "Gitga'at First Nation, Ocean Networks Canada Society. 2025. Douglas Channel Video Camera Deployed 2025-09-11. Ocean Networks Canada Society. https://doi.org/10.34943/8a8ace92-15b4-4b09-8b2b-de767cfc4032."
+    },
+    {
+      "doi": "10.34943/1af0bfe4-1f85-4952-ac7b-c6c1a9f63f6c",
+      "citation": "Ocean Networks Canada Society. 2025. Douglas Channel Video Camera Deployed 2025-09-10. Ocean Networks Canada Society. https://doi.org/10.34943/1af0bfe4-1f85-4952-ac7b-c6c1a9f63f6c."
+    },
+    {
+      "doi": "10.34943/2a85d508-e82f-4a2a-833a-6d621c6aa567",
+      "citation": "Gitga'at First Nation, Ocean Networks Canada Society. 2025. Douglas Channel Conductivity Temperature Depth Deployed 2025-09-11. Ocean Networks Canada Society. https://doi.org/10.34943/2a85d508-e82f-4a2a-833a-6d621c6aa567."
+    },
+    {
+      "doi": "10.34943/5b8b1a7a-8d31-4cca-900b-fc72a3d93dfc",
+      "citation": "Gitga'at First Nation, Ocean Networks Canada Society. 2025. Douglas Channel Oxygen Sensor Deployed 2025-09-11. Ocean Networks Canada Society. https://doi.org/10.34943/5b8b1a7a-8d31-4cca-900b-fc72a3d93dfc."
+    },
+    {
+      "doi": "10.34943/e8429335-af95-4256-adcf-cd1976773c13",
+      "citation": "Ocean Networks Canada Society. 2025. Upper Slope South Video Camera Deployed 2025-08-28. Ocean Networks Canada Society. https://doi.org/10.34943/e8429335-af95-4256-adcf-cd1976773c13."
+    },
+    {
+      "doi": "10.34943/3e949735-9e3e-43ca-9056-375994d101c6",
+      "citation": "Ocean Networks Canada Society. 2025. Barkley Upper Slope Video Camera Deployed 2025-05-27. Ocean Networks Canada Society. https://doi.org/10.34943/3e949735-9e3e-43ca-9056-375994d101c6."
+    },
+    {
+      "doi": "10.34943/ae028b65-5000-446f-ac9f-ad2029ee98a1",
+      "citation": "Ocean Networks Canada Society. 2025. Folger Pinnacle Conductivity Temperature Depth Deployed 2025-09-04. Ocean Networks Canada Society. https://doi.org/10.34943/ae028b65-5000-446f-ac9f-ad2029ee98a1."
+    },
+    {
+      "doi": "10.34943/64131975-838d-44e0-9df6-77a88825d391",
+      "citation": "Ocean Networks Canada Society. 2025. Folger Pinnacle Oxygen Sensor Deployed 2025-09-04. Ocean Networks Canada Society. https://doi.org/10.34943/64131975-838d-44e0-9df6-77a88825d391."
+    },
+    {
+      "doi": "10.34943/fca327dd-1cbc-45fd-b43c-6b1ccae9a582",
+      "citation": "Ocean Networks Canada Society. 2025. ODP 1027C Video Camera Deployed 2025-08-31. Ocean Networks Canada Society. https://doi.org/10.34943/fca327dd-1cbc-45fd-b43c-6b1ccae9a582."
+    },
+    {
+      "doi": "10.34943/c6b19e2a-7925-49a3-95a8-2aabe94cabbb",
+      "citation": "Ocean Networks Canada Society. 2025. Discovery Passage Video Camera Deployed 2025-08-01. Ocean Networks Canada Society. https://doi.org/10.34943/c6b19e2a-7925-49a3-95a8-2aabe94cabbb."
+    },
+    {
+      "doi": "10.34943/8ffd5010-219d-4d7c-ba0a-c051e7ddda86",
+      "citation": "Ocean Networks Canada Society. 2025. Discovery Passage Conductivity Temperature Depth Deployed 2025-08-01. Ocean Networks Canada Society. https://doi.org/10.34943/8ffd5010-219d-4d7c-ba0a-c051e7ddda86."
+    },
+    {
+      "doi": "10.34943/18883333-a48a-4503-942e-7a632d1a7527",
+      "citation": "Ocean Networks Canada Society. 2025. Discovery Passage Oxygen Sensor Deployed 2025-08-01. Ocean Networks Canada Society. https://doi.org/10.34943/18883333-a48a-4503-942e-7a632d1a7527."
+    },
+    {
+      "doi": "10.34943/2eac128b-4320-4f0a-b574-bf3aa1e958ce",
+      "citation": "Ocean Networks Canada Society. 2025. Patricia Bay Conductivity Temperature Depth Deployed 2025-03-19. Ocean Networks Canada Society. https://doi.org/10.34943/2eac128b-4320-4f0a-b574-bf3aa1e958ce."
+    },
+    {
+      "doi": "10.34943/1a48d489-9686-49ac-9756-a6f7db78d96c",
+      "citation": "Ocean Networks Canada Society. 2026. Patricia Bay Conductivity Temperature Depth Deployed 2025-11-28. Ocean Networks Canada Society. https://doi.org/10.34943/1a48d489-9686-49ac-9756-a6f7db78d96c."
+    },
+    {
+      "doi": "10.34943/0c171eb3-3f8d-464f-9f78-d09e486380bf",
+      "citation": "Ocean Networks Canada Society. 2025. Patricia Bay Oxygen Sensor Deployed 2025-03-19. Ocean Networks Canada Society. https://doi.org/10.34943/0c171eb3-3f8d-464f-9f78-d09e486380bf."
+    },
+    {
+      "doi": "10.34943/07e48313-a3f4-49ab-bdbc-253ec621535a",
+      "citation": "Ocean Networks Canada Society. 2026. Patricia Bay Oxygen Sensor Deployed 2025-11-28. Ocean Networks Canada Society. https://doi.org/10.34943/07e48313-a3f4-49ab-bdbc-253ec621535a."
+    },
+    {
+      "doi": "10.34943/9e1ff69a-da7d-4c49-b755-06c8099b7146",
+      "citation": "Ocean Networks Canada Society. 2025. Strait of Georgia Central Conductivity Temperature Depth Deployed 2025-03-20. Ocean Networks Canada Society. https://doi.org/10.34943/9e1ff69a-da7d-4c49-b755-06c8099b7146."
+    },
+    {
+      "doi": "10.34943/33777fdc-2a93-410a-9a3c-d1bd84ea2606",
+      "citation": "Ocean Networks Canada Society. 2025. Strait of Georgia Central Oxygen Sensor Deployed 2025-03-20. Ocean Networks Canada Society. https://doi.org/10.34943/33777fdc-2a93-410a-9a3c-d1bd84ea2606."
+    },
+    {
+      "doi": "10.34943/e6c13b93-8153-40dc-87c0-3a9fb3e9b993",
+      "citation": "Ocean Networks Canada Society. 2025. China Creek Video Camera Deployed 2025-06-05. Ocean Networks Canada Society. https://doi.org/10.34943/e6c13b93-8153-40dc-87c0-3a9fb3e9b993."
+    },
+    {
+      "doi": "10.34943/d6639a05-4813-4651-8298-dbae86ba4b65",
+      "citation": "Ocean Networks Canada Society. 2025. China Creek Conductivity Temperature Depth Deployed 2025-06-05. Ocean Networks Canada Society. https://doi.org/10.34943/d6639a05-4813-4651-8298-dbae86ba4b65."
+    },
+    {
+      "doi": "10.34943/bc7d0fd7-4d0b-4cf4-b702-820b8101c29b",
+      "citation": "Ocean Networks Canada Society. 2025. China Creek Oxygen Sensor Deployed 2025-06-05. Ocean Networks Canada Society. https://doi.org/10.34943/bc7d0fd7-4d0b-4cf4-b702-820b8101c29b."
+    }
+  ]
+}

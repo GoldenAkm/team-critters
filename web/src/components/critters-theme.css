@@ -1,0 +1,42 @@
+/* Theme for the Interactive Map and Digital Fishers 2.0 pages. Everything is scoped to .critters-app so it
+   never leaks into other pages; shared base styles still come from src/index.css.
+   Palette follows the Ocean Networks Canada Oceans 3.0 tool pages (data.oceannetworks.ca). */
+.critters-app {
+  --onc-teal: #129cc0;          /* ONC title, logo block, links */
+  --onc-teal-dark: #237e91;     /* ONC active tabs, primary buttons */
+  --onc-green: #7ac142;         /* ONC tool-name green */
+  --onc-lime: #97d700;          /* ONC portal highlights */
+  --onc-navy: #1d428a;          /* ONC portal banner (index.css calls it --onc-blue) */
+  --onc-orange: #ce712f;        /* SeaTube accent: temperature */
+  --onc-seatube-blue: #2e6ba1;  /* SeaTube accent: oxygen */
+  --onc-red: #b83726;           /* SeaTube accent: warnings / hypoxia */
+  --onc-amber: #fdb917;         /* SeaTube accent: needs review */
+
+  --ink: #16232b;
+  --muted: #5d6b74;
+  --line: #e2e8ec;
+  --surface: #ffffff;
+  --surface-2: #f4f7f9;
+  --tint: #e8f5f9;              /* teal at low strength for hovers/selected */
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow-1: 0 1px 2px rgb(16 32 40 / 0.06), 0 1px 3px rgb(16 32 40 / 0.08);
+  --shadow-2: 0 10px 30px rgb(16 32 40 / 0.14), 0 2px 6px rgb(16 32 40 / 0.06);
+  --font-body: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Rajdhani', 'Roboto', Arial, sans-serif;
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: normal;
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+/* :where() keeps these at zero specificity so component classes always win */
+:where(.critters-app) button, :where(.critters-app) input, :where(.critters-app) select { font: inherit; color: inherit; }
+:where(.critters-app) a { color: var(--onc-teal-dark); }
+:where(.critters-app) :focus-visible { outline: 2px solid var(--onc-teal); outline-offset: 2px; }

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "green_crab",
+    "name": "European green crab",
+    "sci": "Carcinus maenas",
+    "tag": "Invasive",
+    "shape": "square",
+    "model": "green-crab",
+    "features": [
+      "Five spines on each side of the shell edge, behind the eyes",
+      "Three rounded bumps between the eyes"
+    ],
+    "blurb": "Invasive on both the Pacific and Atlantic coasts of Canada. Competes with native crabs and damages eelgrass habitat."
+  },
+  {
+    "id": "rockfish",
+    "name": "Rockfish",
+    "sci": "Sebastes spp.",
+    "tag": "Some species at risk",
+    "shape": "circle",
+    "model": "rockfish",
+    "features": [
+      "Spiny dorsal fin running most of the back",
+      "Large eyes and a bony ridge under each eye"
+    ],
+    "blurb": "Long-lived fish that can take decades to mature. Several BC rockfish species are listed as at risk, so populations recover slowly from overfishing."
+  },
+  {
+    "id": "lingcod",
+    "name": "Lingcod",
+    "sci": "Ophiodon elongatus",
+    "tag": "Species of interest",
+    "shape": "triangle",
+    "model": "lingcod",
+    "features": [
+      "Long body with a large mouth and many sharp teeth",
+      "Mottled brown-grey colouring; one long continuous dorsal fin"
+    ],
+    "blurb": "A top predator on rocky reefs. Not a true cod. Males guard egg masses in winter, which makes them sensitive to disturbance."
+  }
+]

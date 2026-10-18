@@ -7,12 +7,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "onc-data": "node scripts/fetch-onc-data.mjs",
+    "sightings": "../.venv/bin/python scripts/build_sightings.py"
   },
   "dependencies": {
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.59.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-leaflet": "^5.0.0",
+    "recharts": "^2.15.4"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
