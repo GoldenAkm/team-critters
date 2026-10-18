@@ -29,6 +29,23 @@
           "normal": "-0.6 0 0.8"
         }
       ],
+      "modelVariants": [
+        {
+          "id": "copper",
+          "label": "Copper",
+          "model": "copper-rockfish"
+        },
+        {
+          "id": "olive",
+          "label": "Olive",
+          "model": "copper-rockfish-olive"
+        },
+        {
+          "id": "pale",
+          "label": "Pale",
+          "model": "copper-rockfish-pale"
+        }
+      ],
       "views": {
         "Front": [
           -90,
