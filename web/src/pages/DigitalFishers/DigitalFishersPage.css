@@ -3,14 +3,32 @@
 .df-page { flex: 1; display: flex; flex-direction: column; }
 
 /* ---------- hero ---------- */
+/* Same water as the 3D viewer's background shader (BG_FS in underwater/UnderwaterViewer.js):
+   its pow(y, 1.5) top-to-bottom gradient sampled at quarter steps, its edge vignette, and god rays
+   that fade out with depth. */
 .df-hero {
   position: relative;
   color: #fff;
   background:
-    linear-gradient(115deg, transparent 0 38%, rgb(140 220 225 / 0.07) 42%, transparent 48%),
-    linear-gradient(115deg, transparent 0 58%, rgb(140 220 225 / 0.05) 61%, transparent 66%),
-    linear-gradient(180deg, var(--ocean-light) 0%, var(--ocean-mid) 45%, var(--ocean-deep) 100%);
+    radial-gradient(ellipse 75% 120% at 50% 45%, transparent 55%, rgb(0 0 0 / 0.3) 100%),
+    linear-gradient(180deg, rgb(18 69 77) 0%, rgb(12 49 56) 25%, rgb(8 33 38) 50%, rgb(4 20 24) 75%, rgb(3 13 17) 100%);
   overflow: hidden;
+  isolation: isolate;
+}
+.df-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* 65deg stripes run from upper left to lower right, ~25deg off vertical, like the shader's rays
+     (x shifted by 0.35 of the width per height) at the viewer's usual 260 x 200 size. */
+  background:
+    linear-gradient(65deg, transparent 0 30%, rgb(110 220 220 / 0.09) 34%, transparent 39%),
+    linear-gradient(65deg, transparent 0 52%, rgb(110 220 220 / 0.07) 55%, transparent 59%),
+    linear-gradient(65deg, transparent 0 70%, rgb(110 220 220 / 0.05) 72%, transparent 75%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
 }
 .df-hero__inner { max-width: 1240px; margin: 0 auto; padding: 36px 20px 28px; display: grid; gap: 24px; }
 .df-hero__top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
