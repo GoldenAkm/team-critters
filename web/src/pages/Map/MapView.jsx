@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react'
 import L from 'leaflet'
 import { MapContainer, TileLayer, Marker, ZoomControl, useMapEvents } from 'react-leaflet'
-import { species, cameras } from '../../components/data.js'
-import { STATUS_LABEL } from '../../components/status.js'
-import { symbolSvg } from './speciesSymbolSvg.js'
-import { BUBBLE_GROUPS, BUBBLE_ZOOM, envAverage, envColor, envHaloPx, fmtEnv, footageSummary } from './derive.js'
+import { cameras } from '../../components/data.js'
+import { BUBBLE_GROUPS, BUBBLE_ZOOM, envAverage, envColor, envHaloPx, fmtEnv } from './derive.js'
 
 const ALL_BOUNDS = L.latLngBounds(cameras.map((c) => [c.lat, c.lon]))
+// One fixed position per camera: react-leaflet moves a marker whenever it gets a new position array, which also
+// moves its open tag and pans the map, so a new array on every render loops through the map's move events.
+const NO_DATA = envColor('temp', null)
+const CAM_POS = Object.fromEntries(cameras.map((c) => [c.id, [c.lat, c.lon]]))
 const FIT_OPTS = { paddingTopLeft: [40, 60], paddingBottomRight: [40, 150] }
-const speciesById = Object.fromEntries(species.map((s) => [s.id, s]))
-const STATUS_ORDER = ['identified', 'needs_review', 'uncertain']
 const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]))
 
 function ViewTracker({ onView }) {
@@ -24,71 +24,56 @@ function ViewTracker({ onView }) {
   return null
 }
 
-function cameraIcon(c, { envMode, range, year }) {
-  const foot = footageSummary(c.id, range, year)
+// Each environmental measure that is on shades the dot (split in half when both are on) and adds a halo sized by its value
+function cameraIcon(c, count, { envOn, range, year }) {
   const notes = []
-  let style = '', halo = ''
-  if (envMode !== 'off') {
-    const v = envAverage(c.id, envMode, range, year)
-    style = `background:${envColor(envMode, v)}`
-    const px = envHaloPx(envMode, v)
-    if (px) halo = `<span class="cam-halo" style="width:${px * 2}px;height:${px * 2}px;background:${envColor(envMode, v)}"></span>`
-    notes.push(fmtEnv(envMode, v))
+  const shades = []
+  let halo = ''
+  for (const m of ['temp', 'oxygen'].filter((m) => envOn[m])) {
+    const v = envAverage(c.id, m, range, year)
+    const colour = envColor(m, v)
+    shades.push(colour)
+    const px = envHaloPx(m, v)
+    if (px) halo += `<span class="cam-halo" style="width:${px * 2}px;height:${px * 2}px;background:color-mix(in srgb, ${colour} 22%, transparent);border-color:${colour}"></span>`
+    notes.push(fmtEnv(m, v))
   }
-  if (foot.state === 'murky') notes.push(`murky ${foot.murkyPct}% of period`)
-  if (foot.state === 'none') notes.push('no footage in period')
+  // On a shaded dot the camera glyph turns white, except on the light grey of "no data"
+  const glyph = shades.length && !shades.every((s) => s === NO_DATA) ? ';--glyph:#fff' : ''
+  const style = (shades.length === 2 ? `background:linear-gradient(90deg, ${shades[0]} 50%, ${shades[1]} 50%)`
+    : shades.length ? `background:${shades[0]}` : '') + glyph
   return L.divIcon({
     className: 'cam-icon',
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-    html: `${halo}<span class="cam-dot foot-${foot.state}" style="${style}"></span>
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+    html: `${halo}<span class="cam-dot" style="${style}"></span>${count ? `<span class="cam-count">${count}</span>` : ''}
       <span class="cam-label"><b>${esc(c.name)}</b>${notes.map((n) => `<small>${esc(n)}</small>`).join('')}</span>`,
   })
 }
 
-function detectionIcon(group, i, n) {
-  const sp = speciesById[group.speciesId]
-  const x = (i - (n - 1) / 2) * 24
-  return L.divIcon({
-    className: 'det-icon',
-    iconSize: [22, 22],
-    iconAnchor: [11 - x, 11 + 22],
-    html: symbolSvg(sp.shape, group.status, 22) + (group.count > 1 ? `<span class="det-badge">${group.count}</span>` : ''),
-  })
-}
+// The count fills the circle; the region's name sits on a tag beside it, so it never has to squeeze inside.
+// The two BC regions are close together, so their circles are nudged apart (px) and tagged above and below.
+const BUBBLE_LAYOUT = { bc_north: { tag: 'above', nudge: [-6, -12] }, southern_bc: { tag: 'below', nudge: [6, 12] } }
 
 function bubbleIcon(group, count) {
-  const size = 46 + Math.min(30, Math.sqrt(count) * 3)
+  const size = 38 + Math.min(20, Math.sqrt(count) * 3)
+  const { tag = 'left', nudge: [dx, dy] = [0, 0] } = BUBBLE_LAYOUT[group.id] ?? {}
   return L.divIcon({
     className: 'bubble-icon',
     iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    html: `<div class="bubble" style="width:${size}px;height:${size}px"><b>${count}</b><small>${esc(group.name)}</small></div>`,
+    iconAnchor: [size / 2 - dx, size / 2 - dy],
+    html: `<div class="bubble bubble--tag-${tag}${count ? '' : ' bubble--empty'}" style="width:${size}px;height:${size}px"><b>${count}</b><small>${esc(group.name)}</small></div>`,
   })
 }
 
-export default function MapView({ mapRef, filtered, cameraCounts, envMode, range, year, areaName, onView, onMarkerClick, onCameraClick }) {
+export default function MapView({ mapRef, cameraCounts, envOn, range, year, areaName, onView, onCameraClick }) {
   const [zoom, setZoom] = useState(3)
+  // Zoom of the starting view (every camera in view); "Zoom out" shows only when closer than this
+  const [homeZoom, setHomeZoom] = useState(3)
   const [tilesFailed, setTilesFailed] = useState(false)
   const showBubbles = zoom < BUBBLE_ZOOM
 
-  // One marker per camera + species + status, carrying the latest detection in the period.
-  const groupsByCamera = useMemo(() => {
-    const out = {}
-    for (const d of filtered) {
-      const key = `${d.speciesId}|${d.status}`
-      const list = (out[d.cameraId] ||= {})
-      const g = (list[key] ||= { speciesId: d.speciesId, status: d.status, count: 0, latest: d })
-      g.count++
-      if (d.timestamp > g.latest.timestamp) g.latest = d
-    }
-    const speciesOrder = species.map((s) => s.id)
-    return Object.fromEntries(Object.entries(out).map(([cam, groups]) => [cam, Object.values(groups).sort((a, b) =>
-      speciesOrder.indexOf(a.speciesId) - speciesOrder.indexOf(b.speciesId) || STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status))]))
-  }, [filtered])
-
   const camIcons = useMemo(() => Object.fromEntries(cameras.map((c) =>
-    [c.id, cameraIcon(c, { envMode, range, year })])), [envMode, range, year])
+    [c.id, cameraIcon(c, cameraCounts[c.id] || 0, { envOn, range, year })])), [cameraCounts, envOn, range, year])
 
   return (
     <div className="map-wrap">
@@ -101,7 +86,7 @@ export default function MapView({ mapRef, filtered, cameraCounts, envMode, range
         minZoom={2}
         maxZoom={12}
         className="leaflet-map"
-        whenReady={(e) => setZoom(e.target.getZoom())}
+        whenReady={(e) => { setZoom(e.target.getZoom()); setHomeZoom(e.target.getZoom()) }}
       >
         <ZoomControl position="topright" />
         <TileLayer
@@ -123,29 +108,25 @@ export default function MapView({ mapRef, filtered, cameraCounts, envMode, range
         })}
 
         {!showBubbles && cameras.map((c) => (
-          <Marker key={c.id} position={[c.lat, c.lon]} icon={camIcons[c.id]} title={`${c.name}: open site trends`}
-            eventHandlers={{ click: () => onCameraClick(c.id) }} />
+          // Cameras with sightings open the latest one in the species card; empty cameras aren't clickable for now
+          cameraCounts[c.id]
+            ? <Marker key={c.id} position={CAM_POS[c.id]} icon={camIcons[c.id]} title={`${c.name}: ${cameraCounts[c.id]} sightings`}
+                eventHandlers={{ click: () => onCameraClick(c.id) }} />
+            : <Marker key={c.id} position={CAM_POS[c.id]} icon={camIcons[c.id]} interactive={false} />
         ))}
 
-        {!showBubbles && cameras.flatMap((c) => {
-          const groups = groupsByCamera[c.id] || []
-          return groups.map((g, i) => (
-            <Marker key={`${c.id}-${g.speciesId}-${g.status}`} position={[c.lat, c.lon]} zIndexOffset={500}
-              icon={detectionIcon(g, i, groups.length)}
-              title={`${speciesById[g.speciesId].name}, ${STATUS_LABEL[g.status]} at ${c.name} (${g.count})`}
-              eventHandlers={{ click: () => onMarkerClick(g.latest, g.count) }} />
-          ))
-        })}
       </MapContainer>
 
       <nav className="map-toolbar" aria-label="Map location">
         <button type="button" className="crumb" onClick={() => mapRef.current?.flyToBounds(ALL_BOUNDS, { ...FIT_OPTS, duration: 0.8 })}>
-          All camera sites
+          All regions
         </button>
         {areaName && <span className="crumb-sep">› {areaName}</span>}
-        <button type="button" className="fit-btn" onClick={() => mapRef.current?.flyToBounds(ALL_BOUNDS, { ...FIT_OPTS, duration: 0.8 })}>
-          Fit
-        </button>
+        {zoom > homeZoom && (
+          <button type="button" className="fit-btn" onClick={() => mapRef.current?.flyToBounds(ALL_BOUNDS, { ...FIT_OPTS, duration: 0.8 })}>
+            Zoom out
+          </button>
+        )}
       </nav>
       {tilesFailed && <p className="tiles-note" role="status">Map background unavailable offline. Camera positions are still accurate.</p>}
     </div>

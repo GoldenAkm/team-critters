@@ -132,7 +132,7 @@ export default function ReviewPage() {
         )}
 
         <p className="demo-note">
-          Data: Ocean Networks Canada. Prototype: frames marked as samples, and every vote and score, are illustrative.{' '}
+          Data: Ocean Networks Canada. Frames marked as samples, and every vote and score, are illustrative.{' '}
           <button type="button" className="link-button" onClick={collection.reset}>
             Reset demo progress
           </button>

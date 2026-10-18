@@ -15,7 +15,7 @@ export default function Timeline({ range, setRange, year, setYear, playing, onTo
         </button>
         <div className="tl-label">
           <strong>{periodLabel(range, year)}, {year}</strong>
-          <small>{weeks} week{weeks === 1 ? '' : 's'} · {areaName || 'All camera sites'}</small>
+          <small>{weeks} week{weeks === 1 ? '' : 's'} · {areaName || 'All regions'}</small>
         </div>
         <label className="year-select">
           <span className="visually-hidden">Year</span>
@@ -24,7 +24,7 @@ export default function Timeline({ range, setRange, year, setYear, playing, onTo
           </select>
         </label>
         <button type="button" className="link-btn" onClick={() => setRange([0, WEEKS - 1])} disabled={weeks === WEEKS}>
-          Whole year
+          Show all of {year}
         </button>
       </div>
 

@@ -16,7 +16,7 @@ const INFO_CARDS = [
     imageAlt: 'European green crab',
     credit: 'Photo: Weyenbergh Jacky / PublicDomainPictures.net',
     description:
-      "An invasive crab on both of Canada's coasts, and why spotting it early matters. It isn't in this ONC footage, so the AI doesn't look for it.",
+      "Read about this invasive crab on Canada's coasts. A tool like ours could be trained to spot it early and help researchers stop its spread.",
   },
   {
     tag: 'Conservation',
@@ -26,7 +26,7 @@ const INFO_CARDS = [
     imageAlt: 'Copper rockfish',
     credit: 'Photo: Chad King / NOAA MBNMS (Wikimedia Commons)',
     description:
-      'Why some BC rockfish species are at risk, and how long-term camera monitoring can help.',
+      'Read why slow-growing rockfish are at risk. Our tool may help show whether conservation efforts are working and numbers are rising.',
   },
 ]
 

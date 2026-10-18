@@ -3,9 +3,10 @@ import oncLogo from '../assets/onc-logo.png'
 import styles from './PortalHeader.module.css'
 
 // Oceans 3.0 portal header, modelled on data.oceannetworks.ca: the ONC logo
-// hangs below the bar on the left; help, documentation and system status
-// buttons and Log In sit on the right. The page's breadcrumb sits just under
-// the bar, beside the logo.
+// hangs below the bar on the left, beside "Ocean Networks Canada" and the
+// page's name; help, documentation and system status buttons and Log In sit
+// on the right. The page's breadcrumb sits just under the bar, beside the logo.
+// Every page uses it (the map and Digital Fishers through AppHeader).
 const PORTAL_LINKS = [
   { label: 'Help and support', href: 'https://www.oceannetworks.ca/help/', Icon: CircleHelp },
   { label: 'Oceans 3.0 documentation', href: 'https://wiki.oceannetworks.ca/display/O2KB', Icon: LibraryBig },
@@ -14,17 +15,27 @@ const PORTAL_LINKS = [
 
 const LOG_IN_URL = 'https://data.oceannetworks.ca/Login?service=https://data.oceannetworks.ca'
 
-// breadcrumb: labels from the portal down to this page, e.g.
-// ['Oceans 3.0', 'Machine Learning Species Identification']
-export default function PortalHeader({ breadcrumb = [] }) {
+// name: the page's name, shown after "Ocean Networks Canada". On every page
+//   the title links to the landing page.
+// breadcrumb: from the portal down to this page. Each item is a label, or
+//   { label, href } to make it a link, e.g.
+//   ['Oceans 3.0', { label: 'Machine Learning Species Identification', href: '/' }, 'Interactive Map']
+// band: background for the strip under the bar, on pages whose banner starts
+//   right below it: the banner's colour, or 'transparent' over a photo banner.
+//   The landing page, with its full-page photo, leaves it out.
+export default function PortalHeader({ name = 'ML Species Identifier', breadcrumb = [], band }) {
   return (
-    <div className={styles.top}>
+    <div
+      className={band ? `${styles.top} ${styles.band}` : styles.top}
+      style={band ? { '--band': band } : undefined}
+    >
       <header className={styles.header}>
         <a className={styles.logoLink} href="https://www.oceannetworks.ca/">
           <img className={styles.logo} src={oncLogo} alt="Ocean Networks Canada" />
         </a>
+        {/* Non-breaking spaces keep the page name on one line when the title wraps */}
         <a className={styles.portalName} href="/">
-          Ocean Networks Canada ML Species Identifier
+          {`Ocean Networks Canada ${name.replaceAll(' ', ' ')}`}
         </a>
         <nav aria-label="Oceans 3.0">
           <ul className={styles.actions}>
@@ -47,11 +58,14 @@ export default function PortalHeader({ breadcrumb = [] }) {
       {breadcrumb.length > 0 && (
         <nav className={styles.breadcrumbNav} aria-label="Breadcrumb">
           <ol className={styles.breadcrumb}>
-            {breadcrumb.map((label, i) => (
-              <li key={label} aria-current={i === breadcrumb.length - 1 ? 'page' : undefined}>
-                {label}
-              </li>
-            ))}
+            {breadcrumb.map((item, i) => {
+              const crumb = typeof item === 'string' ? { label: item } : item
+              return (
+                <li key={crumb.label} aria-current={i === breadcrumb.length - 1 ? 'page' : undefined}>
+                  {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : crumb.label}
+                </li>
+              )
+            })}
           </ol>
         </nav>
       )}

@@ -7,7 +7,18 @@
   --ocean-light: #12505a;
   --glass: rgb(255 255 255 / 0.92);
 }
-.mp-page { flex: 1; display: flex; flex-direction: column; }
+/* The page is a deep ocean: teal under the banner, darker with depth. Its own stacking context keeps the wave
+   canvas (z-index -1) above this background and below everything else. */
+.mp-page {
+  --sea-top: #0e4a5e;
+  /* Page content width (centred, with space either side on wide screens) and its side padding */
+  --page-gutter: 20px;
+  --page-max: 1240px;
+  position: relative; isolation: isolate;
+  flex: 1; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, var(--sea-top) 0, #08303f 900px, #051d2a 100%);
+}
+.mp-waves { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
 .mp-page h1, .mp-page h2, .mp-page h3 { margin: 0; line-height: 1.15; }
 .mp-page p { margin: 0; }
 
@@ -34,61 +45,96 @@
 .btn.primary:hover { background: #1c6879; border-color: #1c6879; }
 .btn:disabled { color: var(--muted); background: var(--surface-2); border-color: var(--line); cursor: default; }
 
-/* ---------- hero (same pattern as .df-hero) ---------- */
-.mp-hero {
-  color: #fff;
+/* ---------- hero: coastline photo ---------- */
+/* The photo reaches up behind the site header's see-through strip (never more than 120px tall), so the
+   breadcrumb and hanging logo sit on it as on the landing page. The header stays on top: its white bar hides
+   the rest. */
+.mp-hero { position: relative; z-index: 0; color: #fff; }
+.mp-hero::before {
+  content: '';
+  position: absolute;
+  inset: -120px 0 0;
+  z-index: -1;
   background:
-    linear-gradient(115deg, transparent 0 38%, rgb(140 220 225 / 0.07) 42%, transparent 48%),
-    linear-gradient(115deg, transparent 0 58%, rgb(140 220 225 / 0.05) 61%, transparent 66%),
-    linear-gradient(180deg, var(--ocean-light) 0%, var(--ocean-mid) 45%, var(--ocean-deep) 100%);
+    /* A haze on the left, behind the breadcrumb and the title block, fading out to the right so the bluffs
+       stay bright and crisp */
+    var(--text-scrim),
+    url('../../assets/coast-bluffs.webp') 72% 40% / cover no-repeat var(--ocean-deep);
+  /* The photo's water fades out at the bottom into the page's sea, where the wave lines carry on. The fade
+     stays below the foot of the bluffs (the photo sits at 40% so they're above it at every width). */
+  -webkit-mask: linear-gradient(180deg, #000 calc(100% - 90px), transparent);
+  mask: linear-gradient(180deg, #000 calc(100% - 90px), transparent);
+  /* Even to about two-thirds of the way across the text, then gone a little past its end. The text column
+     starts one gutter inside the centred page width and is up to 640px wide. */
+  --text-start: max(var(--page-gutter), calc(50% - var(--page-max) / 2 + var(--page-gutter)));
+  --text-scrim: linear-gradient(90deg, rgb(3 20 30 / 0.6) 0, rgb(3 20 30 / 0.5) calc(var(--text-start) + 400px),
+    rgb(3 20 30 / 0) calc(var(--text-start) + 800px));
 }
-.mp-hero__inner { max-width: 1240px; margin: 0 auto; padding: 36px 20px 28px; display: grid; gap: 24px; }
-.mp-hero__top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
-.mp-hero__text { display: grid; gap: 10px; max-width: 640px; }
-.mp-eyebrow {
-  justify-self: start; padding: 3px 10px; border-radius: 999px;
-  background: rgb(255 255 255 / 0.12); color: #bfeaf3;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+/* Same height as the banner had with its four steps. The text sits low, over the water. */
+.mp-hero__inner {
+  max-width: var(--page-max); min-height: 310px; margin: 0 auto; padding: 36px var(--page-gutter) 72px;
+  display: grid; align-content: end; gap: 24px;
+}
+.mp-hero__text {
+  display: grid; gap: 10px; max-width: 640px;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6), 0 0 18px rgb(0 0 0 / 0.45), 0 0 4px rgb(0 0 0 / 0.35);
 }
 .mp-hero h1 { font-family: var(--font-display); font-size: 44px; font-weight: 700; line-height: 1.02; color: #fff; }
-.mp-hero p { font-size: 16px; line-height: 1.5; color: rgb(255 255 255 / 0.82); }
-.mp-hero__actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.mp-pill {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px;
-  border-radius: 999px; background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.22);
-  color: #fff; font-size: 13px; font-weight: 500; text-decoration: none; backdrop-filter: blur(6px);
-}
-.mp-pill b { font-family: var(--font-display); font-size: 17px; }
-.mp-pill--link { background: #fff; color: var(--onc-teal-dark); border-color: #fff; }
-.mp-pill--link:hover { background: var(--tint); }
+.mp-hero p { font-size: 16px; line-height: 1.5; color: rgb(255 255 255 / 0.9); }
 .mp-hero :focus-visible { outline-color: #9fe3f2; }
 
-.mp-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.mp-steps li {
-  display: flex; gap: 12px; padding: 14px; border-radius: var(--radius-lg);
-  background: rgb(255 255 255 / 0.07); border: 1px solid rgb(255 255 255 / 0.14);
+
+/* Filter bar above the map: sightings count, species chips, camera picker, environmental layers, left-aligned */
+/* Above the map in the stacking order, so the camera dropdown covers Leaflet's controls */
+.filter-bar { position: relative; z-index: 1100; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 16px; }
+/* Toggles in a group sit joined as one control */
+.pill-group { display: flex; }
+.pill-group .mp-pill { border-radius: 0; margin-left: -1px; }
+.pill-group .mp-pill:first-child { border-radius: 999px 0 0 999px; margin-left: 0; }
+.pill-group .mp-pill:last-child { border-radius: 0 999px 999px 0; }
+.pill-group .count { margin-left: 2px; }
+.mp-pill {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px;
+  border-radius: 999px; background: var(--surface); border: 1px solid var(--line);
+  color: var(--ink); font-size: 13px; font-weight: 500; text-decoration: none;
 }
-.mp-steps strong { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
-.mp-steps p { margin-top: 2px; font-size: 13px; line-height: 1.4; color: rgb(255 255 255 / 0.72); }
-.mp-steps__n {
-  flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-  background: linear-gradient(135deg, var(--onc-teal), var(--onc-green)); color: #fff;
-  font-family: var(--font-display); font-weight: 700; font-size: 15px;
+.mp-pill b { font-family: var(--font-display); font-size: 17px; }
+.mp-pill--toggle { cursor: pointer; position: relative; }
+.mp-pill--toggle:has(input:checked) { z-index: 1; }
+.mp-pill--toggle:hover { background: var(--surface-2); }
+.mp-pill--toggle input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.mp-pill--toggle:has(input:checked) { border-color: var(--onc-teal); }
+.mp-pill--toggle:has(input:focus-visible) { outline: 2px solid var(--onc-teal); outline-offset: 2px; }
+/* Camera picker: a pill that opens the camera tree */
+.cam-menu { position: relative; }
+.cam-menu__btn { cursor: pointer; font: inherit; font-size: 13px; font-weight: 500; }
+.cam-menu__btn b { font-family: inherit; font-size: 13px; font-weight: 700; }
+.cam-menu__btn::after { content: ''; width: 6px; height: 6px; margin: -3px 0 0 4px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); }
+.cam-menu__btn:hover { background: var(--surface-2); }
+.cam-menu__btn[aria-expanded="true"] { border-color: var(--onc-teal); }
+.cam-menu__panel {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 1000; width: 320px; max-height: min(520px, 70vh); overflow-y: auto;
+  display: grid; gap: 10px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-2);
 }
+.cam-menu__head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 13px; }
+.cam-menu__head span { color: var(--muted); font-size: 12px; }
+.tree-row[aria-current] { background: var(--tint); color: var(--onc-teal-dark); font-weight: 600; }
 
 /* ---------- body ---------- */
-.mp-body { width: 100%; max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; }
-.mp-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
-.mp-main { display: grid; gap: 20px; min-width: 0; }
+.mp-body { width: 100%; max-width: var(--page-max); margin: 0 auto; padding: 24px var(--page-gutter) 48px; }
 .mp-card {
   min-width: 0; background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-1); overflow: hidden;
 }
 
-/* Map card: the map with its timeline docked underneath */
-.map-main { position: relative; height: min(640px, 70vh); min-height: 420px; }
+/* One frame: map (left) and its chart (right) side by side, with the timeline underneath both */
+.mp-frame__top { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); height: min(640px, 72vh); min-height: 480px; }
+.map-main { position: relative; min-width: 0; }
 .map-wrap, .leaflet-map { position: absolute; inset: 0; }
-.leaflet-map { background: #c9dde6; font-family: var(--font-body); }
+.leaflet-map { background: #3e87b0; font-family: var(--font-body); }
+/* Deep-teal look: the Esri Ocean tiles darker and more saturated. Only the tiles; markers and labels keep their
+   colours. The background above is the tiles' sea colour after this filter, shown while they load. */
+.leaflet-tile-pane { filter: saturate(1.7) brightness(0.72) contrast(1.15) hue-rotate(-12deg); }
 .leaflet-top.leaflet-right { margin-top: 4px; }
 .leaflet-bar { border: 0 !important; border-radius: var(--radius) !important; box-shadow: var(--shadow-2) !important; overflow: hidden; }
 .leaflet-bar a { color: var(--ink); width: 34px !important; height: 34px !important; line-height: 34px !important; }
@@ -106,15 +152,8 @@
 .fit-btn:hover { background: #1c6879; }
 .tiles-note { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); z-index: 500; margin: 0; background: #fff8e1; border: 1px solid #f0d58a; border-radius: var(--radius); padding: 6px 12px; font-size: 12px; }
 
-/* ---------- side panels (same pattern as Digital Fishers .panel) ---------- */
-.mp-side { display: grid; gap: 14px; align-items: start; min-width: 0; }
-.mp-panel {
-  display: grid; gap: 10px; align-content: start; padding: 16px; border-radius: var(--radius-lg);
-  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-1); min-width: 0;
-}
-.mp-panel h3 { font-size: 11px; font-family: var(--font-body); font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-.mp-panel__head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 
+.sym { flex: none; }
 .search { display: block; }
 .search input {
   width: 100%; padding: 9px 12px 9px 34px; border: 1px solid var(--line); border-radius: var(--radius);
@@ -122,20 +161,11 @@
   transition: border-color 0.15s, background-color 0.15s;
 }
 .search input:focus { outline: none; border-color: var(--onc-teal); background-color: var(--surface); box-shadow: 0 0 0 3px rgb(18 156 192 / 0.15); }
-.check-row, .radio-row { display: flex; align-items: center; gap: 10px; padding: 7px 8px; margin: 0 -8px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-.check-row:hover, .radio-row:hover { background: var(--surface-2); }
-.check-row input, .radio-row input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; flex: none; }
-.row-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
-.row-text strong { font-weight: 500; }
-.row-text small { color: var(--muted); font-size: 12px; }
-.sym { flex: none; }
 
-/* Environmental data as a segmented control */
-.segmented { display: grid; grid-template-columns: repeat(3, 1fr); padding: 3px; gap: 3px; background: var(--surface-2); border-radius: var(--radius); }
-.segmented .radio-row { margin: 0; padding: 8px 4px; justify-content: center; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); border-radius: 8px; }
-.segmented .radio-row input { position: absolute; opacity: 0; pointer-events: none; }
-.segmented .radio-row:has(input:checked) { background: var(--surface); color: var(--onc-teal-dark); box-shadow: var(--shadow-1); }
-.segmented .radio-row:has(input:focus-visible) { outline: 2px solid var(--onc-teal); }
+/* Environmental data toggles (filter bar): swatch in the measure's line colour */
+.env-swatch { flex: none; width: 12px; height: 12px; border-radius: 50%; }
+.env-swatch.temp { background: var(--onc-orange); }
+.env-swatch.oxygen { background: var(--onc-seatube-blue); }
 
 .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
 .tree ul { padding-left: 12px; margin-left: 6px; border-left: 1px solid var(--line); }
@@ -147,55 +177,49 @@
 .tree-row { display: flex; align-items: center; width: 100%; gap: 6px; background: none; border: 0; padding: 5px 6px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 13px; color: var(--ink); }
 .tree-row:hover, .tree-row:focus-visible { background: var(--tint); color: var(--onc-teal-dark); }
 
-.footage-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted); }
-.footage-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.dot-sample { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid var(--onc-navy); }
-.dot-sample.murky { border-style: dashed; }
-.dot-sample.none { border-style: dotted; border-color: #8a969d; }
+/* Every camera is the same round marker with a video-camera glyph (--glyph sets its colour) */
+.cam-dot { --glyph: var(--onc-navy); border-radius: 50%; background: #fff; border: 2px solid var(--onc-navy); }
+.cam-dot::after {
+  content: ''; position: absolute; inset: 3px; background: var(--glyph);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5'/%3E%3Crect x='2' y='6' width='14' height='12' rx='2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 
-.sample-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
 .sources { font-size: 12px; color: var(--muted); }
 .sources summary { cursor: pointer; color: var(--accent); font-weight: 500; }
-.sources ul { margin: 6px 0; padding-left: 16px; max-height: 180px; overflow-y: auto; }
+.sources ul { margin: 6px 0; padding-left: 16px; }
 .sources li { margin-bottom: 3px; }
 
 /* ---------- map markers (sizes are fixed in screen pixels) ---------- */
-.cam-icon, .det-icon, .bubble-icon { background: none; border: 0; }
+.cam-icon, .bubble-icon { background: none; border: 0; }
 .cam-icon { overflow: visible; }
-.cam-dot { position: absolute; inset: 0; border-radius: 50%; background: #fff; border: 2.5px solid var(--onc-navy); box-shadow: 0 0 0 2px rgb(255 255 255 / 0.9), 0 2px 4px rgb(0 0 0 / 0.25); }
-.cam-dot.foot-murky { border-style: dashed; }
-.cam-dot.foot-none { border-style: dotted; border-color: #7d8a91; }
-.cam-halo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; opacity: 0.25; pointer-events: none; }
-.cam-label { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); white-space: nowrap; text-align: center; display: flex; flex-direction: column; line-height: 1.2; pointer-events: none; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff; }
+.cam-dot { position: absolute; inset: 0; border-width: 2.5px; box-shadow: 0 0 0 2px rgb(255 255 255 / 0.9), 0 2px 4px rgb(0 0 0 / 0.25); }
+/* Sightings (Identified) at the camera in the period */
+.cam-count { position: absolute; top: -11px; left: 16px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--onc-teal-dark); color: #fff; font-size: 11px; font-weight: 700; line-height: 20px; text-align: center; box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+/* Fill and outline colours are set inline; the outline keeps two overlapping halos (temperature + oxygen) apart */
+.cam-halo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 1.5px solid; pointer-events: none; }
+.cam-label { position: absolute; top: 27px; left: 50%; transform: translateX(-50%); white-space: nowrap; text-align: center; display: flex; flex-direction: column; line-height: 1.2; pointer-events: none; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 4px #fff; }
 .cam-label b { font-size: 12px; font-weight: 700; color: var(--ink); }
 .cam-label small { font-size: 11px; color: #33424a; }
-.det-icon svg { display: block; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.3)); }
-.det-badge { position: absolute; top: -8px; right: -10px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--onc-teal-dark); color: #fff; font-size: 10px; font-weight: 700; line-height: 18px; text-align: center; box-shadow: 0 0 0 2px #fff; }
+/* Region bubbles, kept flat and plain: a solid deep-teal circle with a thin white edge and the count inside; the
+   region's name on a small white tag beside it. Regions with nothing to show are outlined only. */
 .bubble {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #2bb3d6, var(--onc-teal) 60%, var(--onc-teal-dark));
-  color: #fff; border: 3px solid #fff; box-shadow: 0 6px 16px rgb(18 100 130 / 0.35); cursor: pointer; line-height: 1.05;
+  position: relative; display: grid; place-items: center; border-radius: 50%;
+  background: #0e4a5e; color: #fff; border: 2px solid #fff; cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
   transition: transform 0.15s;
 }
 .bubble:hover { transform: scale(1.06); }
-.bubble b { font-size: 20px; font-family: var(--font-display); }
-.bubble small { font-size: 10px; font-weight: 500; text-align: center; max-width: 90%; }
-
-/* ---------- environmental tiles (over the map) ---------- */
-.env-tiles { position: absolute; top: 14px; left: 14px; z-index: 500; display: flex; flex-direction: column; gap: 10px; }
-.env-tile {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; width: 176px;
-  padding: 10px 12px; background: var(--glass); backdrop-filter: blur(8px); border: 1px solid rgb(255 255 255 / 0.6);
-  border-radius: var(--radius-lg); cursor: pointer; color: var(--tile-color); box-shadow: var(--shadow-2); transition: box-shadow 0.15s;
+.bubble b { font-family: var(--font-display); font-size: 19px; font-weight: 700; line-height: 1; }
+.bubble small {
+  position: absolute; padding: 2px 8px; border-radius: 4px; background: #fff; color: var(--ink);
+  font-size: 11px; font-weight: 600; line-height: 1.4; white-space: nowrap; box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
 }
-.env-tile.temp { --tile-color: var(--onc-orange); }
-.env-tile.oxygen { --tile-color: var(--onc-seatube-blue); }
-.env-tile.active { box-shadow: 0 0 0 2px var(--tile-color), var(--shadow-2); }
-.env-tile-label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; }
-.env-tile-label::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--tile-color); }
-.env-tile-label small { font-size: 11px; }
-.env-tile strong { font-size: 22px; color: var(--ink); font-family: var(--font-display); }
-.hypoxic-note { font-size: 10px; color: var(--onc-red); }
+.bubble--tag-left small { top: 50%; right: calc(100% + 6px); transform: translateY(-50%); }
+.bubble--tag-above small { bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); }
+.bubble--tag-below small { top: calc(100% + 6px); left: 50%; transform: translateX(-50%); }
+.bubble--empty { background: #fff; color: var(--muted); border: 1.5px solid #9aa5ab; }
+.bubble--empty b { font-size: 16px; }
+
 
 /* ---------- species card (over the map) ---------- */
 .species-card {
@@ -203,19 +227,23 @@
   background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-2); font-size: 13px;
 }
 .species-card .close-btn { position: absolute; top: 10px; right: 10px; z-index: 1; background: rgb(255 255 255 / 0.9); }
-.species-card > header, .species-card > p, .species-card > dl, .species-card > .card-actions { margin-left: 16px; margin-right: 16px; }
+.species-card > header, .species-card > p, .species-card > .status-badge, .species-card > section, .species-card > dl, .species-card > .card-actions { margin-left: 16px; margin-right: 16px; }
 .frame { position: relative; aspect-ratio: 4 / 3; background: #1b2e36; display: grid; place-items: center; color: #9fb6c0; font-size: 12px; overflow: hidden; }
 .frame img { width: 100%; height: 100%; object-fit: cover; }
 .frame-box { position: absolute; border: 2px solid var(--onc-lime); border-radius: 4px; }
 .species-card h2 { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--ink); margin: 14px 0 0; display: flex; align-items: center; gap: 8px; }
+.species-card .sci-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; margin-top: 4px; }
 .species-card .sci { margin: 0; font-style: italic; color: var(--muted); }
-.species-card .tag { display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 999px; background: #fbeae7; color: var(--onc-red); font-size: 11px; font-weight: 700; letter-spacing: 0.02em; }
-.species-card .status-badge { display: block; margin-top: 12px; margin-bottom: 8px; padding: 8px 12px; border-radius: var(--radius); background: #eef7e6; color: #2f5a14; font-weight: 400; font-size: 13px; }
-.species-card .status-badge strong { color: #24480d; }
+.species-card .tag { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #fbeae7; color: var(--onc-red); font-size: 11px; font-weight: 700; letter-spacing: 0.02em; }
+.species-card .status-badge { display: flex; flex-direction: column; gap: 2px; margin-top: 14px; margin-bottom: 14px; padding: 10px 12px; border-radius: var(--radius); background: #eef7e6; color: #2f5a14; font-weight: 400; font-size: 13px; line-height: 1.4; }
+.species-card .status-badge strong { color: #24480d; font-size: 14px; }
+/* Where the label came from, set apart under the status */
+.species-card .status-source { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgb(0 0 0 / 0.08); font-size: 12px; opacity: 0.85; }
 .species-card .status-badge.status-uncertain { background: var(--surface-2); color: var(--muted); border: 1px dashed #9aa6ac; }
 .species-card .status-badge.status-needs_review { background: #fff6dd; color: #6b4e00; }
-.source-note { margin-top: 0; margin-bottom: 10px; font-size: 12px; color: var(--muted); }
-.species-card .blurb { margin-top: 0; margin-bottom: 12px; line-height: 1.5; }
+.species-card .card-about { margin-bottom: 14px; }
+.species-card .card-about h3 { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.species-card .card-about p { margin: 0; line-height: 1.5; }
 .species-card dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin-top: 0; margin-bottom: 14px; padding: 12px; border-radius: var(--radius); background: var(--surface-2); }
 .species-card dt { color: var(--muted); }
 .species-card dd { margin: 0; font-weight: 500; }
@@ -248,50 +276,56 @@
 .tl-months { position: relative; height: 18px; font-size: 11px; color: var(--muted); }
 .tl-months span { position: absolute; top: 3px; }
 
-/* ---------- site trends card (below the map) ---------- */
-.trends { padding: 16px 20px; scroll-margin-top: 16px; }
-.trends-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.trends-head h2 { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--ink); }
-.trends-head h2 small { margin-left: 6px; font-family: var(--font-body); font-weight: 400; color: var(--muted); font-size: 13px; }
-.trends-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-left: auto; font-size: 13px; }
-.trends-controls label { display: inline-flex; align-items: center; gap: 6px; }
-.trends-controls input { accent-color: var(--accent); }
-.trends-controls select { padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
-.trend-chart h3 { font-size: 12px; font-weight: 500; color: var(--muted); margin: 12px 0 0 36px; }
+/* ---------- trends (beside the map) ---------- */
+.trends { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding: 16px 18px 12px; border-left: 1px solid var(--line); }
+.trends-head { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.trends-head h2 { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--ink); }
+.trends-head small { color: var(--muted); font-size: 13px; }
+.trends-head .link-btn { margin-top: 4px; }
+.trends-hint { margin-top: 6px; color: var(--muted); font-size: 12px; }
+.trend-chart { flex: 1; min-height: 200px; }
+/* Colour legend for the chart's lines; each entry is also the checkbox that shows or hides its line */
+.trend-legend { display: flex; flex-wrap: wrap; gap: 0 14px; min-width: 0; margin: 10px 0 0; padding: 0; border: 0; font-size: 13px; }
+.trend-legend label { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; cursor: pointer; }
+.trend-legend input { margin: 0; accent-color: var(--accent); }
+.lg-line { position: relative; flex: none; display: inline-block; width: 18px; height: 3px; border-radius: 2px; background: var(--c); }
+.lg-line--dot::after {
+  content: ''; position: absolute; top: 50%; left: 50%; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c); transform: translate(-50%, -50%);
+}
+/* In place of the chart when it has nothing to draw, at the chart's height */
+.trend-empty { display: grid; place-items: center; flex: 1; min-height: 200px; margin-top: 8px; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); font-size: 13px; text-align: center; padding: 0 16px; }
+.trend-axes { display: flex; justify-content: space-between; margin-top: 4px; color: var(--muted); font-size: 11px; }
 .chart-tip { display: flex; flex-direction: column; gap: 1px; background: var(--surface); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: var(--shadow-2); }
-.trends-foot { font-size: 13px; margin-top: 6px; display: grid; gap: 6px; }
+.chart-tip span { display: flex; align-items: center; gap: 6px; }
+.chart-tip .lg-line { width: 12px; }
+.trends-foot { font-size: 12px; margin-top: 6px; display: grid; gap: 6px; }
 .trends-legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: 12px; }
 .trends-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .lg { width: 14px; height: 10px; display: inline-block; border-radius: 2px; }
 .lg.murky { background: #dfe6ea; }
-.lg.none { background: repeating-linear-gradient(45deg, #fff 0 2px, #999 2px 4px); }
+.lg.gap { width: 18px; height: 0; border-top: 2px dashed #9aa5ab; border-radius: 0; }
 .lg.sel { border: 1.5px solid var(--onc-teal); }
-.summary { padding: 10px 12px; border-radius: var(--radius); background: var(--tint); color: #134d5b; }
-.caveat { font-style: italic; color: var(--muted); font-size: 12px; }
+.summary { padding: 6px 10px; border-radius: var(--radius); background: var(--tint); color: #134d5b; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1100px) {
-  .mp-layout { grid-template-columns: minmax(0, 1fr); }
-  .mp-steps { grid-template-columns: repeat(2, 1fr); }
-  .mp-side { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+@media (max-width: 1000px) {
+  .mp-frame__top { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .map-main { height: 62vh; min-height: 400px; }
+  .trends { border-left: 0; border-top: 1px solid var(--line); }
+  .trend-chart { flex: none; height: 280px; }
 }
 @media (max-width: 760px) {
-  .mp-hero__inner { padding: 24px 16px 20px; gap: 18px; }
+  .mp-page { --page-gutter: 16px; }
+  .mp-hero__inner { padding: 24px var(--page-gutter) 64px; gap: 18px; }
+  /* On phones the text spans the width, so the shading does too, up to the top of the text block */
+  .mp-hero::before { --text-scrim: linear-gradient(0deg, rgb(3 20 30 / 0.45) 0, rgb(3 20 30 / 0.35) 270px, rgb(3 20 30 / 0) 400px); }
   .mp-hero h1 { font-size: 34px; }
   .mp-hero p { font-size: 15px; }
-  /* Keep the map near the top on phones: compact 2x2 steps, titles only */
-  .mp-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .mp-steps li { padding: 10px; gap: 8px; align-items: center; }
-  .mp-steps strong { font-size: 15px; line-height: 1.15; }
-  .mp-steps p { display: none; }
-  .mp-steps__n { width: 24px; height: 24px; font-size: 13px; }
-  .mp-body { padding: 16px 16px 40px; }
+  .mp-body { padding: 16px var(--page-gutter) 40px; }
   .map-main { height: 62vh; min-height: 360px; }
   .leaflet-control-attribution { font-size: 9px; }
   .species-card { top: 60px; left: 8px; right: 8px; bottom: 8px; width: auto; }
-  .env-tiles { top: 60px; left: 8px; flex-direction: row; }
-  .env-tile { width: 140px; }
-  .env-tile svg { width: 110px; }
   .map-toolbar { max-width: calc(100% - 64px); left: 8px; transform: none; }
   .timeline { padding: 10px 12px 6px; }
   .tl-head { gap: 8px; }
@@ -304,8 +338,10 @@
 }
 
 /* Data note under the map */
-.mp-note { display: grid; gap: 6px; padding: 0 4px; }
-.mp-note .sample-note, .mp-note .sources { font-size: 12px; }
+.mp-note { display: grid; gap: 6px; max-width: 900px; margin-top: 16px; }
+/* Light text: the note sits in the dark sea-coloured footer */
+.mp-note .sources { font-size: 12px; color: rgb(255 255 255 / 0.75); }
+.mp-note .sources summary { color: #8fdcef; }
 
 /* ---------- AI model check (species card) ---------- */
 .species-card > .model-check { margin: 0 16px 12px; }

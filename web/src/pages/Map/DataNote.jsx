@@ -1,13 +1,9 @@
-// Data provenance and ONC citations, shown under the map (like the Digital Fishers footnote).
+// Data provenance and ONC citations, shown in the page footer under the credits.
 import { sources, sightingsMeta } from '../../components/data.js'
 
 export default function DataNote() {
   return (
     <section className="mp-note" aria-label="About the data">
-      <p className="sample-note">
-        Real Ocean Networks Canada data ({sources.years.join(', ')}). Sightings are human-reviewed rockfish frames plus
-        ONC annotations that pass an accuracy check; they are not model output yet.
-      </p>
       <details className="sources">
         <summary>Data sources &amp; citations</summary>
         <ul>

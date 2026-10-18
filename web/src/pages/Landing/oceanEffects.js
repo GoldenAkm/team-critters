@@ -83,8 +83,11 @@ function createSunbeams() {
       const unit = Math.max(width, height) / 100
       const sunX = SUN_X * width
       const sunDistance = SUN_DISTANCE * Math.max(width, height)
+      // Clear the whole layer in its own pixels: it is rounded up, so clearing width x height at this scale
+      // could leave its last column uncleared, where the beams would pile up into a bright bar
+      layerCtx.setTransform(1, 0, 0, 1, 0, 0)
+      layerCtx.clearRect(0, 0, layer.width, layer.height)
       layerCtx.setTransform(scale, 0, 0, scale, 0, 0)
-      layerCtx.clearRect(0, 0, width, height)
       layerCtx.globalCompositeOperation = 'lighter'
       for (const beam of beams) {
         beam.life += dt / beam.lifespan
@@ -104,7 +107,7 @@ function createSunbeams() {
       }
       ctx.globalCompositeOperation = 'lighter'
       ctx.globalAlpha = amount
-      ctx.drawImage(layer, 0, 0, width, height)
+      ctx.drawImage(layer, 0, 0, width * scale, height * scale, 0, 0, width, height)
     },
   }
 }
