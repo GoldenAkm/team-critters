@@ -1,10 +1,12 @@
 .ocean {
-  --depth: 0;
+  --midwater: 0;
+  --deep: 0;
 
   position: fixed;
   inset: 0;
   z-index: -1;
   background: #03101a;
+  pointer-events: none;
 }
 
 .layer {
@@ -14,29 +16,24 @@
   background-size: cover;
 }
 
-/* The surface photo lives in public/depths/ and stays out of git until we
-   have a licensed version. Without it the gradient shows instead. */
+/* Blue rockfish in a kelp forest (Chad King/NOAA, public domain) */
 .surface {
-  background-image:
-    url('/depths/1-surface-kelp.webp'),
-    linear-gradient(180deg, #2e8a92 0%, #11505f 55%, #07283a 100%);
-  background-position:
-    40% 35%,
-    center;
+  background-image: url('../../assets/depths/1-surface-kelp.webp');
+  background-position: 15% 40%;
 }
 
-/* Fades in between 15% and 40% of the way down the page */
+/* The midwater and deep photos fade in as you scroll (how far down the page
+   is set in OceanBackground.jsx) */
 .midwater {
   background-image: url('../../assets/depths/2-midwater-jelly.webp');
   background-position: 78% 50%;
-  opacity: clamp(0, (var(--depth) - 0.15) * 4, 1);
+  opacity: var(--midwater);
 }
 
-/* Fades in between 55% and 80% of the way down the page */
 .deep {
   background-image: url('../../assets/depths/3-deep-seafloor.webp');
   background-position: 38% 50%;
-  opacity: clamp(0, (var(--depth) - 0.55) * 4, 1);
+  opacity: var(--deep);
 }
 
 /* Darkens the photos so white text stays readable */
@@ -49,4 +46,13 @@
     rgb(2 10 18 / 0.35) 45%,
     rgb(2 10 18 / 0.55) 100%
   );
+}
+
+/* Sunbeams, bubbles and marine snow (oceanEffects.js), over the shade so the
+   light and specks stay bright */
+.effects {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
