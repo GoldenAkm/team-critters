@@ -1,32 +1,18 @@
-// Site header shared by every page. Tabs are plain links: each page is its own directory/HTML document.
-import oncLogo from '../assets/onc-logo.png'
-import './AppHeader.css'
+// Site header for the Interactive Map and Digital Fishers 2.0: the landing page's Oceans 3.0 portal header
+// (PortalHeader) with this page's name, and a breadcrumb back to the landing page.
+import PortalHeader from './PortalHeader.jsx'
 
-const PAGES = [
-  { id: 'map', href: '/map/', label: 'Interactive Map' },
-  { id: 'digital-fishers', href: '/digital-fishers/', label: 'Digital Fishers 2.0' },
-]
+const PAGE_NAMES = { map: 'Interactive Map', 'digital-fishers': 'Digital Fishers 2.0' }
 
-export default function AppHeader({ active }) {
+// band: the strip under the bar. By default it takes the colour at the top of the page's deep-ocean hero; a page
+// whose hero is a photo passes 'transparent' and runs the photo up behind it.
+export default function AppHeader({ active, band = 'var(--ocean-light, #12505a)' }) {
+  const name = PAGE_NAMES[active]
   return (
-    <header className="app-header">
-      <a href="/" className="brand" aria-label="Critters home">
-        <img className="brand-mark" src={oncLogo} alt="" width="40" height="40" />
-        <span className="brand-text">
-          <b>Critters</b>
-          <small>with Ocean Networks Canada data</small>
-        </span>
-      </a>
-      <nav className="app-tabs" aria-label="Main">
-        {PAGES.map((p) => (
-          <a key={p.id} href={p.href} className={`tab${active === p.id ? ' active' : ''}`} aria-current={active === p.id ? 'page' : undefined}>
-            {p.label}
-          </a>
-        ))}
-      </nav>
-      <a className="app-ext" href="https://data.oceannetworks.ca/SeaTube" target="_blank" rel="noreferrer">
-        SeaTube <span aria-hidden="true">↗</span>
-      </a>
-    </header>
+    <PortalHeader
+      name={name}
+      breadcrumb={['Oceans 3.0', { label: 'Machine Learning Species Identification', href: '/' }, name]}
+      band={band}
+    />
   )
 }

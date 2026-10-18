@@ -3,6 +3,16 @@
   --logo-size: 96px;
 
   position: relative;
+  /* The same type on every page, whatever the page's own theme */
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* And the same focus ring (the shared one from index.css) */
+.top :focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
 }
 
 .header {
@@ -119,6 +129,59 @@
 .breadcrumb [aria-current='page'] {
   color: #fff;
   font-weight: 500;
+}
+
+.breadcrumb a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.breadcrumb a:hover {
+  color: #fff;
+}
+
+/* The page's usual focus ring is dark or teal, too faint on the dark strip */
+.breadcrumb a:focus-visible {
+  outline-color: #fff;
+}
+
+/* Pages whose banner starts right under the bar (Interactive Map, Digital
+   Fishers 2.0): the strip takes the banner's colour, or stays see-through over
+   a photo banner, so the logo and breadcrumb sit on the banner as they do on
+   the landing page's photo */
+.band {
+  display: flow-root;
+  z-index: 1; /* keeps the logo and the fade below above the banner */
+  background: var(--band);
+}
+
+/* The banner's faint light rays start at its top edge. Fading the strip into
+   the banner lets them fade in instead of starting on a hard line. */
+.band::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: -1; /* under the breadcrumb's focus ring */
+  height: 20px;
+  background: linear-gradient(var(--band), transparent);
+  pointer-events: none;
+}
+
+/* The breadcrumb joins the flow, so the strip grows to fit it if it wraps
+   instead of running into the banner. (Range syntax, so no width falls
+   between this and the phone layout at browser zoom levels.) */
+@media (width > 560px) {
+  .band .header:has(+ .breadcrumbNav) {
+    margin-bottom: 0;
+  }
+
+  .band .breadcrumbNav {
+    position: static;
+    min-height: calc(var(--logo-size) - var(--bar-height) - 3px);
+    padding: 13px var(--gutter) 0 calc(var(--gutter) + var(--logo-size) + 20px);
+  }
 }
 
 @media (max-width: 560px) {

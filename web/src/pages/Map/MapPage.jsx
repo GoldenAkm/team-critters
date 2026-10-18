@@ -16,6 +16,13 @@ const FULL_YEAR = [0, WEEKS - 1]
 const DEFAULT_STATUS = { identified: true, uncertain: false, needs_review: false }
 const PLAY_WINDOW = 4
 
+// The site trends panel is always shown. It opens on the camera with the most sightings for the starting filters.
+function busiestCamera() {
+  const all = new Set(species.map((s) => s.id))
+  const counts = countBy(filterDetections(detections, { speciesOn: all, statusOn: DEFAULT_STATUS, range: FULL_YEAR, year: DEFAULT_YEAR }), 'cameraId')
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0] ?? cameras[0].id
+}
+
 export default function MapPage() {
   const [speciesOn, setSpeciesOn] = useState(() => new Set(species.map((s) => s.id)))
   const [statusOn, setStatusOn] = useState(DEFAULT_STATUS)
@@ -25,9 +32,10 @@ export default function MapPage() {
   const [playing, setPlaying] = useState(false)
   const [search, setSearch] = useState('')
   const [card, setCard] = useState(null) // { detection, count }
-  const [trendsCameraId, setTrendsCameraId] = useState(null)
+  const [trendsCameraId, setTrendsCameraId] = useState(busiestCamera)
   const [view, setView] = useState({ zoom: 3, inView: cameras.map((c) => c.id) })
   const mapRef = useRef(null)
+  const trendsRef = useRef(null)
 
   const filtered = useMemo(
     () => filterDetections(detections, { speciesOn, statusOn, range, year }),
@@ -68,6 +76,9 @@ export default function MapPage() {
     const c = cameras.find((x) => x.id === cameraId)
     mapRef.current?.flyTo([c.lat, c.lon], 8, { duration: 0.8 })
     setTrendsCameraId(cameraId)
+    // The trends panel sits below the map card: bring it into view once it shows this camera (even if it already did)
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    requestAnimationFrame(() => trendsRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' }))
   }
 
   function resetFilters() {
@@ -85,7 +96,8 @@ export default function MapPage() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to main content</a>
-      <AppHeader active="map" />
+      {/* The hero's photo runs up behind the header's strip */}
+      <AppHeader active="map" band="transparent" />
       <main id="main" className="mp-page">
         <MapHero
           shown={filtered.length} year={year} reviewCount={reviewCount}
@@ -127,12 +139,7 @@ export default function MapPage() {
                 />
               </section>
 
-              {trendsCameraId && (
-                <TrendsPanel
-                  cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year}
-                  onClose={() => setTrendsCameraId(null)}
-                />
-              )}
+              <TrendsPanel ref={trendsRef} cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year} />
 
               <DataNote />
             </div>
