@@ -2,6 +2,51 @@
   "_note": "Illustrative sample data. Species facts, features and conservation tags must be checked against DFO / SARA before the demo.",
   "species": [
     {
+      "id": "rockfish",
+      "name": "Rockfish",
+      "sci": "Sebastes spp.",
+      "rank": "genus",
+      "number": 5,
+      "tag": "Some species at risk",
+      "tagKind": "at_risk",
+      "shape": "square",
+      "model": "copper-rockfish",
+      "modelNote": "Genus-level entry for the rockfish model, which cannot tell rockfish species apart. The 3D model is an example rockfish (copper).",
+      "features": [
+        "Spiny dorsal fin running along most of the back",
+        "Large head with big eyes and a wide mouth",
+        "Deep, stocky body, often resting on the bottom"
+      ],
+      "hotspots": [
+        {
+          "label": "Spiny dorsal fin",
+          "position": "-0.0175 0.0823 0.0",
+          "normal": "0 0.6 0.8"
+        },
+        {
+          "label": "Large head and mouth",
+          "position": "-0.196 -0.0192 0.0158",
+          "normal": "-0.6 0 0.8"
+        }
+      ],
+      "views": {
+        "Front": [
+          -90,
+          90
+        ],
+        "Side": [
+          0,
+          90
+        ],
+        "Top": [
+          0,
+          0
+        ]
+      },
+      "blurb": "The rockfish model's clips ask only whether this is a rockfish (genus Sebastes). Several BC rockfish species are at risk, and they live for decades, so reliable sightings matter.",
+      "habitatHint": "Rocky reefs and boulders, often still on the bottom near cover."
+    },
+    {
       "id": "copper_rockfish",
       "name": "Copper rockfish",
       "sci": "Sebastes caurinus",
