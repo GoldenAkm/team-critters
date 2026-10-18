@@ -1,7 +1,11 @@
-.header {
+.top {
   --bar-height: 60px;
   --logo-size: 96px;
 
+  position: relative;
+}
+
+.header {
   position: relative;
   display: flex;
   align-items: center;
@@ -84,12 +88,53 @@
   color: var(--onc-blue);
 }
 
+/* Breadcrumb: just under the bar, lined up with the portal name and clear of
+   the hanging logo. Light text, as it sits on the page's photo. */
+.breadcrumbNav {
+  position: absolute;
+  top: calc(var(--bar-height) + 3px + 10px);
+  right: var(--gutter);
+  left: calc(var(--gutter) + var(--logo-size) + 20px);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: rgb(255 255 255 / 0.85);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 0.35);
+}
+
+.breadcrumb li + li::before {
+  content: '›';
+  margin-right: 8px;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.breadcrumb [aria-current='page'] {
+  color: #fff;
+  font-weight: 500;
+}
+
 @media (max-width: 560px) {
-  .header {
+  .top {
     --bar-height: 56px;
     --logo-size: 68px;
+  }
 
+  .header {
     justify-content: flex-end;
+  }
+
+  /* No room beside the smaller logo, so it goes under it */
+  .breadcrumbNav {
+    position: static;
+    padding: 10px var(--gutter) 0;
   }
 
   .portalName {

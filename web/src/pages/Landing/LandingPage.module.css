@@ -18,36 +18,10 @@
 }
 
 /* Text sitting directly on the photos */
-.breadcrumb,
 .hero,
 .intro,
 .eyebrow {
   text-shadow: 0 1px 14px rgb(0 0 0 / 0.35);
-}
-
-/* Breadcrumb */
-
-.breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--color-ink-muted);
-  font-family: var(--font-mono);
-  font-size: 13px;
-}
-
-.breadcrumb li + li::before {
-  content: '›';
-  margin-right: 8px;
-  color: var(--color-ink-faint);
-}
-
-.breadcrumb [aria-current='page'] {
-  color: var(--color-ink);
-  font-weight: 500;
 }
 
 /* Title */
@@ -66,11 +40,32 @@
 }
 
 .tagline {
-  max-width: 46ch;
-  margin: 12px auto 0;
+  margin-top: 16px;
   color: var(--color-ink-muted);
   font-size: clamp(1rem, 2.2vw, 1.1875rem);
-  line-height: 1.5;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+
+/* The first phrase always has a line to itself (two on phones), and on phones
+   the other two phrases share the lines below it */
+.tagline span:first-child {
+  display: block;
+}
+
+/* Wide enough for one phrase per line */
+@media (min-width: 600px) {
+  .tagline span {
+    display: block;
+  }
+}
+
+/* Small phones: a touch smaller, so "Ocean Networks Canada's underwater
+   footage," still fits on one line */
+@media (max-width: 374px) {
+  .tagline {
+    font-size: 0.9375rem;
+  }
 }
 
 /* Sections */
@@ -99,6 +94,7 @@
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 .introText {
