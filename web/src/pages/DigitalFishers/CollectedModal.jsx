@@ -17,7 +17,7 @@ export default function CollectedModal({ species, camera, onClose }) {
           <ConservationTag species={species} />
         </div>
         <div className="species-card__art">
-          <SpeciesSymbol shape={species.shape} size={64} />
+          <SpeciesSymbol species={species.id} size={72} />
         </div>
         <h2 id="collected-title">{species.name}</h2>
         <p className="sci">{species.sci}</p>

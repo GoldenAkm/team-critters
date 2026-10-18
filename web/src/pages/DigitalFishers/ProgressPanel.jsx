@@ -33,7 +33,7 @@ export default function ProgressPanel({ player, session, species, comingSoonSlot
             const pending = !collected && player.pending[s.id];
             return (
               <li key={s.id} className={`slot ${collected ? 'is-collected' : pending ? 'is-pending' : 'is-locked'}`}>
-                <SpeciesSymbol shape={s.shape} variant={collected ? 'identified' : 'locked'} size={22} />
+                <SpeciesSymbol species={s.id} variant={collected ? 'identified' : 'locked'} size={34} />
                 <span>{collected ? s.name : pending ? s.name : '???'}</span>
                 {pending && <span className="slot__note">Waiting for agreement</span>}
               </li>

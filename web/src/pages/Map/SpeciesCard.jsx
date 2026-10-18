@@ -39,7 +39,7 @@ export default function SpeciesCard({ detection: d, count, onClose, onTrends }) 
         )}
       </div>
       <header>
-        <h2><SpeciesSymbol shape={sp.shape} status={d.status} /> {sp.name}</h2>
+        <h2><SpeciesSymbol species={sp.id} status={d.status} size={36} /> {sp.name}</h2>
         <p className="sci">{d.taxon && d.taxon !== sp.sci ? `${sp.sci} · labelled ${d.taxon}` : sp.sci}</p>
         <span className="tag">{sp.tag}</span>
       </header>

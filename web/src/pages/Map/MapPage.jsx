@@ -8,6 +8,7 @@ import EnvTiles from './EnvTiles.jsx'
 import SpeciesCard from './SpeciesCard.jsx'
 import TrendsPanel from './TrendsPanel.jsx'
 import AppHeader from '../../components/AppHeader.jsx'
+import SiteFooter from '../../components/SiteFooter.jsx'
 import MapHero, { MapStats } from './MapHero.jsx'
 import OceanWaves, { OCEAN_LOOK } from './OceanWaves.jsx'
 import DataNote from './DataNote.jsx'
@@ -16,6 +17,15 @@ import './map.css'
 const FULL_YEAR = [0, WEEKS - 1]
 const DEFAULT_STATUS = { identified: true, uncertain: false, needs_review: false }
 const PLAY_WINDOW = 4
+const CREDITS = [
+  {
+    label: 'Top photo',
+    text: 'Sandstone bluffs northwest of Port Renfrew, British Columbia: Roy Luck, via Wikimedia Commons, CC BY 2.0 (cropped and sharpened)',
+    href: 'https://creativecommons.org/licenses/by/2.0/',
+  },
+  { label: 'Data', text: 'Ocean Networks Canada', href: 'https://www.oceannetworks.ca/' },
+  { label: 'Map tiles', text: 'Esri; sources: GEBCO, NOAA, CHS, National Geographic and others' },
+]
 
 // The site trends panel is always shown. It opens on the camera with the most sightings for the starting filters.
 function busiestCamera() {
@@ -102,7 +112,7 @@ export default function MapPage() {
         <MapHero />
 
         <div className="mp-body">
-          <MapStats shown={filtered.length} year={year} cameraCount={cameras.length} />
+          <MapStats shown={filtered.length} year={year} />
           <div className="mp-layout">
             <div className="mp-main">
               <section className="mp-card mp-map-card" aria-label="Map of ONC camera sites">
@@ -139,7 +149,6 @@ export default function MapPage() {
 
               <TrendsPanel ref={trendsRef} cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year} />
 
-              <DataNote />
             </div>
 
             <Sidebar
@@ -153,6 +162,9 @@ export default function MapPage() {
           </div>
         </div>
       </main>
+      <SiteFooter credits={CREDITS} tone="sea">
+        <DataNote />
+      </SiteFooter>
     </>
   )
 }

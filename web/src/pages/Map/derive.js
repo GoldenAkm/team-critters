@@ -119,14 +119,3 @@ export const fmtEnv = (measure, v) => (v == null ? 'no data' : measure === 'temp
 
 const clamp = (t) => Math.min(1, Math.max(0, t))
 const hexRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-
-export function pearson(xs, ys) {
-  const n = xs.length
-  if (n < 4) return null
-  const mx = xs.reduce((a, b) => a + b, 0) / n, my = ys.reduce((a, b) => a + b, 0) / n
-  let num = 0, dx = 0, dy = 0
-  for (let i = 0; i < n; i++) {
-    num += (xs[i] - mx) * (ys[i] - my); dx += (xs[i] - mx) ** 2; dy += (ys[i] - my) ** 2
-  }
-  return dx && dy ? num / Math.sqrt(dx * dy) : null
-}

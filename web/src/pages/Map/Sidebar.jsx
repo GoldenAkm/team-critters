@@ -1,4 +1,4 @@
-import { species, footageQualityAssessed } from '../../components/data.js'
+import { species, cameras, footageQualityAssessed } from '../../components/data.js'
 import { STATUSES } from '../../components/status.js'
 import SpeciesSymbol from './SpeciesSymbol.jsx'
 import { cameraTree } from './derive.js'
@@ -52,7 +52,7 @@ export default function Sidebar({
           {visibleSpecies.map((s) => (
             <label key={s.id} className="check-row">
               <input type="checkbox" checked={speciesOn.has(s.id)} onChange={() => toggleSpecies(s.id)} />
-              <SpeciesSymbol shape={s.shape} />
+              <SpeciesSymbol species={s.id} />
               <span className="row-text"><strong>{s.name}</strong><small>{s.tag}</small></span>
               <span className="count">{speciesCounts[s.id] || 0}</span>
             </label>
@@ -68,7 +68,7 @@ export default function Sidebar({
             <label key={st.id} className="check-row">
               <input type="checkbox" checked={statusOn[st.id]}
                 onChange={() => setStatusOn({ ...statusOn, [st.id]: !statusOn[st.id] })} />
-              <SpeciesSymbol shape="circle" status={st.id} />
+              <SpeciesSymbol species="rockfish" status={st.id} />
               <span className="row-text"><strong>{st.label}</strong><small>{st.hint}</small></span>
             </label>
           ))}
@@ -88,7 +88,10 @@ export default function Sidebar({
       </section>
 
       <section className="mp-panel">
-        <h3>Camera locations</h3>
+        <div className="mp-panel__head">
+          <h3>Camera locations</h3>
+          <span className="mp-panel__count">{cameras.length} cameras</span>
+        </div>
         <ul className="tree">
           {tree.map((r) => (
             <li key={r.name}>

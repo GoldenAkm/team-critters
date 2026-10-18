@@ -149,7 +149,7 @@ export default function ReviewPage() {
                         <span className="muted">AI's guess</span>
                         <strong>{clip.species.name}</strong>
                         <em className="sci">{clip.species.sci}</em>
-                        <StatusBadge status={clip.detection.status} shape={clip.species.shape} />
+                        <StatusBadge status={clip.detection.status} species={clip.species.id} />
                         <span className="ai-guess__conf">Confidence {Math.round(clip.detection.confidence * 100)}%</span>
                       </div>
                     )}
@@ -185,7 +185,7 @@ export default function ReviewPage() {
         </div>
 
         <p className="demo-note">
-          Data: Ocean Networks Canada. Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
+          Data: Ocean Networks Canada. Species, clips, votes and scores shown are illustrative sample data.{' '}
           <button type="button" className="link-button" onClick={collection.reset}>
             Reset demo progress
           </button>

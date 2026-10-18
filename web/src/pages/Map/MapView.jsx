@@ -3,7 +3,7 @@ import L from 'leaflet'
 import { MapContainer, TileLayer, Marker, ZoomControl, useMapEvents } from 'react-leaflet'
 import { species, cameras } from '../../components/data.js'
 import { STATUS_LABEL } from '../../components/status.js'
-import { symbolSvg } from './speciesSymbolSvg.js'
+import { speciesIconSvg } from '../../components/speciesIcon.js'
 import { BUBBLE_GROUPS, BUBBLE_ZOOM, envAverage, envColor, envHaloPx, fmtEnv, footageSummary } from './derive.js'
 
 const ALL_BOUNDS = L.latLngBounds(cameras.map((c) => [c.lat, c.lon]))
@@ -48,27 +48,34 @@ function cameraIcon(c, { envMode, range, year }) {
 
 function detectionIcon(group, i, n) {
   const sp = speciesById[group.speciesId]
-  const x = (i - (n - 1) / 2) * 24
+  const x = (i - (n - 1) / 2) * 38
   return L.divIcon({
     className: 'det-icon',
-    iconSize: [22, 22],
-    iconAnchor: [11 - x, 11 + 22],
-    html: symbolSvg(sp.shape, group.status, 22) + (group.count > 1 ? `<span class="det-badge">${group.count}</span>` : ''),
+    iconSize: [36, 36],
+    iconAnchor: [18 - x, 18 + 28],
+    html: speciesIconSvg(sp.id, group.status, 36) + (group.count > 1 ? `<span class="det-badge">${group.count}</span>` : ''),
   })
 }
 
+// The count fills the circle; the region's name sits on a tag beside it, so it never has to squeeze inside.
+// The two BC regions are close together, so their circles are nudged apart (px) and tagged above and below.
+const BUBBLE_LAYOUT = { bc_north: { tag: 'above', nudge: [-6, -12] }, southern_bc: { tag: 'below', nudge: [6, 12] } }
+
 function bubbleIcon(group, count) {
-  const size = 46 + Math.min(30, Math.sqrt(count) * 3)
+  const size = 38 + Math.min(20, Math.sqrt(count) * 3)
+  const { tag = 'left', nudge: [dx, dy] = [0, 0] } = BUBBLE_LAYOUT[group.id] ?? {}
   return L.divIcon({
     className: 'bubble-icon',
     iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    html: `<div class="bubble" style="width:${size}px;height:${size}px"><b>${count}</b><small>${esc(group.name)}</small></div>`,
+    iconAnchor: [size / 2 - dx, size / 2 - dy],
+    html: `<div class="bubble bubble--tag-${tag}${count ? '' : ' bubble--empty'}" style="width:${size}px;height:${size}px"><b>${count}</b><small>${esc(group.name)}</small></div>`,
   })
 }
 
 export default function MapView({ mapRef, filtered, cameraCounts, envMode, range, year, areaName, onView, onMarkerClick, onCameraClick }) {
   const [zoom, setZoom] = useState(3)
+  // Zoom of the starting view (every camera in view); "Zoom out" shows only when closer than this
+  const [homeZoom, setHomeZoom] = useState(3)
   const [tilesFailed, setTilesFailed] = useState(false)
   const showBubbles = zoom < BUBBLE_ZOOM
 
@@ -101,7 +108,7 @@ export default function MapView({ mapRef, filtered, cameraCounts, envMode, range
         minZoom={2}
         maxZoom={12}
         className="leaflet-map"
-        whenReady={(e) => setZoom(e.target.getZoom())}
+        whenReady={(e) => { setZoom(e.target.getZoom()); setHomeZoom(e.target.getZoom()) }}
       >
         <ZoomControl position="topright" />
         <TileLayer
@@ -140,12 +147,14 @@ export default function MapView({ mapRef, filtered, cameraCounts, envMode, range
 
       <nav className="map-toolbar" aria-label="Map location">
         <button type="button" className="crumb" onClick={() => mapRef.current?.flyToBounds(ALL_BOUNDS, { ...FIT_OPTS, duration: 0.8 })}>
-          All camera sites
+          All regions
         </button>
         {areaName && <span className="crumb-sep">› {areaName}</span>}
-        <button type="button" className="fit-btn" onClick={() => mapRef.current?.flyToBounds(ALL_BOUNDS, { ...FIT_OPTS, duration: 0.8 })}>
-          Fit
-        </button>
+        {zoom > homeZoom && (
+          <button type="button" className="fit-btn" onClick={() => mapRef.current?.flyToBounds(ALL_BOUNDS, { ...FIT_OPTS, duration: 0.8 })}>
+            Zoom out
+          </button>
+        )}
       </nav>
       {tilesFailed && <p className="tiles-note" role="status">Map background unavailable offline. Camera positions are still accurate.</p>}
     </div>

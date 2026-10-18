@@ -1,7 +1,7 @@
-// Species shape + status styling: identified = filled, uncertain = dashed outline, needs_review = outline with "?".
-import { symbolSvg } from './speciesSymbolSvg.js'
+// Species marker: a drawn animal in a round marker whose style shows the status (see speciesIcon.js)
+import { speciesIconSvg } from '../../components/speciesIcon.js'
 
-export default function SpeciesSymbol({ shape, status = 'identified', size = 18 }) {
+export default function SpeciesSymbol({ species, status = 'identified', size = 30 }) {
   return <span className="sym" style={{ display: 'inline-flex', width: size, height: size }}
-    dangerouslySetInnerHTML={{ __html: symbolSvg(shape, status, size) }} />
+    dangerouslySetInnerHTML={{ __html: speciesIconSvg(species, status, size) }} />
 }

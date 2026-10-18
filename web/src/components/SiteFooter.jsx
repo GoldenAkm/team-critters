@@ -7,10 +7,13 @@ const DEFAULT_CREDITS = [
 
 // credits: { label, text, href? } lines, shown in order. A page that lists its
 // own credits should still include the ONC data line.
-export default function SiteFooter({ credits = DEFAULT_CREDITS }) {
+// tone: 'deep' (the landing page's seafloor colours) or 'sea' (the Interactive
+// Map's wave-line colours)
+// children: more notes under the credits, such as a page's data sources
+export default function SiteFooter({ credits = DEFAULT_CREDITS, tone = 'deep', children }) {
   return (
-    <footer className={styles.footer}>
-      <p className={styles.project}>Machine Learning Species Identification · prototype</p>
+    <footer className={`${styles.footer} ${tone === 'sea' ? styles.sea : ''}`}>
+      <p className={styles.project}>Machine Learning Species Identification</p>
       <dl className={styles.credits}>
         {credits.map(({ label, text, href }) => (
           <div key={label} className={styles.creditRow}>
@@ -19,6 +22,7 @@ export default function SiteFooter({ credits = DEFAULT_CREDITS }) {
           </div>
         ))}
       </dl>
+      {children}
     </footer>
   )
 }
