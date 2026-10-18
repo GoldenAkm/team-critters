@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine } from 'recharts'
 import { detections, yearData, footageQualityAssessed, weekOf, weekDate, WEEKS } from '../../components/data.js'
 import { footageLabel } from '../../components/status.js'
@@ -45,6 +45,13 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, year
   const [showTemp, setShowTemp] = useState(true)
   const [showOxygen, setShowOxygen] = useState(true)
   const cam = cameraById[cameraId]
+  const ref = useRef(null)
+
+  // The panel sits below the map card: bring it into view whenever a camera is opened
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ref.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
+  }, [cameraId])
 
   const rows = useMemo(() => {
     const sightings = Array(WEEKS).fill(0)
@@ -102,7 +109,7 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, year
   ].filter(Boolean)
 
   return (
-    <section className="trends" aria-label={`Site trends for ${cam.name}`}>
+    <section ref={ref} className="mp-card trends" aria-label={`Site trends for ${cam.name}`}>
       <header className="trends-head">
         <h2>{cam.name} <small>{cam.area} · weekly, {year}</small></h2>
         <div className="trends-controls">
