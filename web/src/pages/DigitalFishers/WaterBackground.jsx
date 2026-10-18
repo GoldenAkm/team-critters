@@ -69,13 +69,13 @@ float snow(vec2 p, float n, float size, float sink, float par, float t) {
 // Returns (shell, glint).
 vec2 bubbles(vec2 p, float aspect, float t) {
   float shell = 0., glint = 0.;
-  for (int s = 0; s < 10; s++) {
+  for (int s = 0; s < 5; s++) {
     float fs = float(s);
     float sx = (.03 + .94 * hash(vec2(fs, 9.2))) * aspect;
     if (abs(p.x - sx) > .07) continue;
-    for (int k = 0; k < 7; k++) {
+    for (int k = 0; k < 4; k++) {
       vec2 h = hash2(vec2(fs * 7.1 + 1., float(k) * 3.7 + 2.));
-      float y = fract(t * (.04 + .03 * h.x) + h.y + uScroll * .3) * 1.3 - .15;
+      float y = fract(t * (.028 + .02 * h.x) + h.y + uScroll * .3) * 1.3 - .15;
       float r = (.005 + .01 * h.x * h.x) * (.8 + .4 * y);
       vec2 c = vec2(sx + (h.y - .5) * .03 + .008 * sin(y * 13. + h.x * 6.3 + t * 1.4), y);
       vec2 d = (p - c) * vec2(1., 1.15);
@@ -238,7 +238,7 @@ void main() {
   float flakes = snow(p, 34., .09, .004, .08, t) * .4 + snow(p + 3.7, 15., .06, .007, .25, t) * .5 + snow(p + 9.1, 5., .22, .012, .6, t) * .12;
   col += vec3(.8, .92, .9) * flakes * glow * .5;
   vec2 b = bubbles(p, aspect, t);
-  col += vec3(.55, .85, .9) * b.x * .35 + vec3(1.) * b.y * .55;
+  col += vec3(.55, .85, .9) * b.x * .28 + vec3(1.) * b.y * .45;
 
   col *= .97 + .06 * noise(t * .9);
 

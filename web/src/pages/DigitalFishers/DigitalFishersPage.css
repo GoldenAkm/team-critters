@@ -67,6 +67,7 @@
    in the AI's colours (white on the frame's dark water, the score in the box's lime). */
 .ai-frame.has-verdict .ai-frame__stage { border-radius: var(--radius) var(--radius) 0 0; }
 .ai-frame__verdict {
+  position: relative; overflow: hidden;
   margin-top: -6px; padding: 14px 18px; border-radius: 0 0 var(--radius) var(--radius);
   background: linear-gradient(180deg, #10323a, #0b262d); box-shadow: var(--shadow-1);
   border-top: 1px solid rgb(255 255 255 / 0.08);
@@ -93,6 +94,77 @@
   background: var(--onc-lime); color: #16232b; font-size: 11px; font-weight: 700; white-space: nowrap; border-radius: 4px;
 }
 .detection-box__label.is-inside { bottom: auto; top: 2px; left: 2px; margin: 0; }
+
+/* Confirming, on the frame (ConfirmTrace.jsx, AiFrame.jsx). A lime dot appears in the top-left corner and runs once
+   round the image drawing a border (0.2 s wait, 1.8 s round, moved by ConfirmTrace's frame loop); as it gets back to
+   the corner (2 s) it melts into the stamp, which grows out of it; then the AI's box lights up and a shine crosses
+   the answer band. Glows are soft strokes and gradients rather than blur filters, so nothing heavy repaints. */
+.confirm-trace { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible; }
+.confirm-trace__glow { fill: none; stroke: rgb(151 215 0 / 0.28); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+.confirm-trace__line { fill: none; stroke: var(--onc-lime); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.confirm-trace__core { fill: #e9ffb8; }
+.confirm-trace__dot {
+  transform-box: fill-box; transform-origin: center;
+  animation: trace-dot-in 0.3s cubic-bezier(.22, 1, .36, 1) both, trace-dot-out 0.35s ease-out 1.95s forwards;
+}
+@keyframes trace-dot-in { from { transform: scale(0); opacity: 0; } }
+@keyframes trace-dot-out { to { transform: scale(1.8); opacity: 0; } }
+.ai-frame__stamp {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px 8px 12px; border-radius: 999px;
+  background: var(--onc-lime); color: #16232b;
+  font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: 0.01em;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.35);
+  transform: rotate(-2deg); transform-origin: 8px 8px; will-change: transform, opacity;
+  animation: stamp-pop 0.6s cubic-bezier(.22, 1, .36, 1) 1.95s both;
+}
+/* One soft ring pulses out of the stamp once it has landed (transform and opacity only) */
+.ai-frame__stamp::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 2px var(--onc-lime); opacity: 0;
+  animation: stamp-ring 0.9s ease-out 2.35s both;
+}
+@keyframes stamp-pop {
+  0% { opacity: 0; transform: rotate(-2deg) scale(0.3); }
+  60% { opacity: 1; transform: rotate(-2deg) scale(1.04); }
+  100% { opacity: 1; transform: rotate(-2deg) scale(1); }
+}
+@keyframes stamp-ring { from { opacity: 0.85; transform: scale(1); } to { opacity: 0; transform: scale(1.18, 1.5); } }
+
+.detection-box.is-confirmed {
+  border-color: var(--onc-lime);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 0 22px rgb(151 215 0 / 0.6), inset 0 0 18px rgb(151 215 0 / 0.25);
+  animation: box-confirm 0.6s cubic-bezier(.22, 1, .36, 1) 2.1s both;
+}
+@keyframes box-confirm { from { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35); } 40% { transform: scale(1.06); } }
+.ai-frame.is-confirmed .ai-frame__verdict::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgb(151 215 0 / 0.35) 50%, transparent 70%);
+  animation: verdict-shine 1.1s ease-out 2.2s both;
+}
+@keyframes verdict-shine { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* Underwater confetti from the Confirm tile (Celebration.jsx) */
+.celebration { position: fixed; z-index: 50; pointer-events: none; }
+.celebration__ring {
+  position: absolute; inset: 0; border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 3px var(--onc-lime), 0 0 28px rgb(151 215 0 / 0.55);
+  animation: celebrate-ring 0.7s ease-out both;
+}
+.celebration__bubble {
+  position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.95), rgb(190 240 90 / 0.45) 42%, rgb(151 215 0 / 0.12) 70%);
+  box-shadow: inset 0 0 0 1px rgb(225 255 170 / 0.7), 0 0 10px rgb(151 215 0 / 0.35);
+  animation: celebrate-rise var(--d) cubic-bezier(.15, .7, .3, 1) var(--delay) both;
+}
+@keyframes celebrate-ring { from { transform: scale(1); opacity: 1; } to { transform: scale(1.22); opacity: 0; } }
+@keyframes celebrate-rise {
+  0% { transform: translate(0, 0) scale(0.3); opacity: 0; }
+  15% { opacity: 1; }
+  70% { opacity: 0.9; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
+}
 
 .question { font-size: 22px; }
 
@@ -152,6 +224,11 @@
 .review-dot.review-dot--unsure .review-dot__circle { background: color-mix(in srgb, #fff 18%, var(--accent)); color: #fff; }
 .review-dot.is-you .review-dot__circle { outline: 2px solid #fff; outline-offset: 2px; }
 .review-dot.is-empty .review-dot__circle { border-style: dashed; border-color: var(--ink-3); }
+/* The review dots pop in one by one, then the outcome fades in under them */
+.review-dot__circle { animation: dot-pop 0.42s cubic-bezier(.2, 1.6, .4, 1) calc(var(--i, 0) * 120ms + 60ms) both; }
+@keyframes dot-pop { from { transform: scale(0.3); opacity: 0; } }
+.result > p { animation: result-in 0.4s ease-out 0.45s both; }
+@keyframes result-in { from { opacity: 0; transform: translateY(6px); } }
 .review-dot__label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--onc-navy); min-height: 1em; }
 
 /* Liquid glass, for every card on the page: the water behind shows through, blurred and brightened,
@@ -361,5 +438,8 @@ ol.model-viewer__features li::before {
 }
 @media (prefers-reduced-motion: reduce) {
   .answer:hover { transform: none; }
+  .celebration, .ai-frame.is-confirmed .ai-frame__verdict::after { display: none; }
+  .ai-frame__stamp, .detection-box.is-confirmed, .review-dot__circle, .result > p { animation: none; }
+  .ai-frame__stamp::after { animation: none; }
   .model-viewer__menu, .model-viewer__chevron { transition: none; }
 }

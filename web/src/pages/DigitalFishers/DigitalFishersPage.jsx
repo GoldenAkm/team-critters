@@ -8,6 +8,7 @@ import { SHOW_AI_GUESS } from './config.js';
 import AppHeader from '../../components/AppHeader.jsx';
 import AiFrame from './AiFrame.jsx';
 import AnswerPanel from './AnswerPanel.jsx';
+import Celebration from './Celebration.jsx';
 import IdGuide from './IdGuide.jsx';
 import ResultPanel from './ResultPanel.jsx';
 import SessionComplete from './SessionComplete.jsx';
@@ -29,6 +30,8 @@ export default function ReviewPage() {
   const [result, setResult] = useState(null);
   const [session, setSession] = useState(EMPTY_SESSION);
   const [done, setDone] = useState(false);
+  // The burst of bubbles from the Confirm tile: { from, big, key } while it plays.
+  const [celebration, setCelebration] = useState(null);
   // While the Key features menu is open it pushes the decision card down. The card normally stretches to end level
   // with the frame, so it would give up the space instead: hold its height until the menu has folded away again.
   const decision = useRef(null);
@@ -54,11 +57,24 @@ export default function ReviewPage() {
 
   // Open decision (config.js): reviewers may only see the AI's answer once they have given theirs.
   const showAi = SHOW_AI_GUESS || Boolean(result);
+  // What the frame celebrates: a sighting the reviewers agreed on, or your confirmation while it waits for theirs.
+  const celebrate = !result
+    ? null
+    : result.consensus?.winner === 'yes'
+      ? 'sighting'
+      : result.answer.kind === 'yes' && !result.consensus
+        ? 'mine'
+        : null;
 
-  function submit(answer) {
+  // from: where the answer was given (the Confirm tile's rect), for the celebration.
+  function submit(answer, from) {
     const votes = addVote(clip.priorVotes, answer.kind);
     const consensus = resolveConsensus(votes);
     const outcome = outcomeFor(answer.kind, consensus);
+    // Celebrate your confirmation, unless the majority has just said otherwise; bigger when it completes a sighting.
+    if (answer.kind === 'yes' && from && consensus?.winner !== 'no' && consensus?.winner !== 'unsure') {
+      setCelebration({ from, big: consensus?.winner === 'yes', key: Date.now() });
+    }
 
     collection.markReviewed(null, outcome.matched);
     if (consensus?.winner === 'yes') collection.addConfirmation(toConfirmedDetection(clip.detection));
@@ -103,6 +119,7 @@ export default function ReviewPage() {
                   detection={clip.detection}
                   speciesName={clip.species.name}
                   meta={`${clip.camera.name} · ${clip.camera.area} · ${formatTime(clip.detection.timestamp)}`}
+                  celebrate={celebrate}
                 >
                   {showAi && <AiConfidence detection={clip.detection} species={clip.species} />}
                 </AiFrame>
@@ -144,6 +161,10 @@ export default function ReviewPage() {
           </button>
         </p>
       </div>
+
+      {celebration && (
+        <Celebration key={celebration.key} from={celebration.from} big={celebration.big} onDone={() => setCelebration(null)} />
+      )}
     </Shell>
   );
 }

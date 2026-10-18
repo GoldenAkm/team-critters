@@ -24,6 +24,7 @@ export default function ReviewDots({ needed, priorVotes, you, revealed }) {
         <span
           key={i}
           className={`review-dot ${d.kind ? 'is-filled' : 'is-empty'} ${shown(d) ? `review-dot--${d.kind}` : ''} ${d.who === 'You' ? 'is-you' : ''}`}
+          style={{ '--i': i }}
         >
           <span className="review-dot__circle">{shown(d) && <AnswerIcon kind={d.kind} size={16} />}</span>
           <span className="review-dot__label">{d.who === 'You' ? 'YOU' : ''}</span>
