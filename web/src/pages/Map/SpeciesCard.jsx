@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { species, sightingsMeta } from '../../components/data.js'
 import { STATUSES } from '../../components/status.js'
 import SpeciesSymbol from './SpeciesSymbol.jsx'
 import { cameraById, fmtDate } from './derive.js'
+import ModelCheck from './ModelCheck.jsx'
 
 // Where a sighting's label came from, in plain words (build_sightings.py sets `source`)
 function sourceText(d) {
@@ -22,6 +24,7 @@ export default function SpeciesCard({ detection: d, count, onClose, onTrends }) 
   const st = STATUSES.find((s) => s.id === d.status)
   const when = fmtDate(new Date(d.timestamp), { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
   const source = sourceText(d)
+  const [modelBox, setModelBox] = useState(null)
 
   return (
     <article className="species-card" aria-label={`${sp.name} sighting`}>
@@ -29,6 +32,11 @@ export default function SpeciesCard({ detection: d, count, onClose, onTrends }) 
       <div className="frame">
         {d.frameUrl ? <img src={d.frameUrl} alt={`ONC camera frame at ${cam.name}, ${when}`} /> : <span>Frame not available</span>}
         {d.box && <i className="frame-box" style={{ left: `${d.box.x * 100}%`, top: `${d.box.y * 100}%`, width: `${d.box.w * 100}%`, height: `${d.box.h * 100}%` }} />}
+        {modelBox && (
+          <i className="frame-box frame-box--model" style={{ left: `${modelBox.x * 100}%`, top: `${modelBox.y * 100}%`, width: `${modelBox.w * 100}%`, height: `${modelBox.h * 100}%` }}>
+            <span>AI model</span>
+          </i>
+        )}
       </div>
       <header>
         <h2><SpeciesSymbol shape={sp.shape} status={d.status} /> {sp.name}</h2>
@@ -48,6 +56,7 @@ export default function SpeciesCard({ detection: d, count, onClose, onTrends }) 
         {d.confidence != null && <><dt>Model confidence</dt><dd>{Math.round(d.confidence * 100)}%</dd></>}
         {count > 1 && <><dt>In this period</dt><dd>{count} sightings</dd></>}
       </dl>
+      <ModelCheck detection={d} onBox={setModelBox} />
       <div className="card-actions">
         <button type="button" className="btn primary" onClick={() => onTrends(cam.id)}>Temperature &amp; oxygen at {cam.name}</button>
         {d.clipUrl
