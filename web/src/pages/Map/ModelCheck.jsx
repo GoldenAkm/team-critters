@@ -1,8 +1,9 @@
 // "Check with the AI model": runs the team's rockfish model on this sighting's ONC frame, live,
-// and lets a "Needs review" result be sent to Digital Fishers 2.0.
+// and lets any result the model couldn't settle (Needs review or Uncertain) be sent to Digital Fishers 2.0.
 import { useState } from 'react'
 import { describeModelError, predictRockfish } from '../../lib/rockfishModel.js'
 import { addToReviewQueue, isQueued } from '../../lib/reviewQueue.js'
+import { appStatus } from '../../lib/modelReadout.js'
 
 // Map camera sites -> Digital Fishers camera ids (public/data/cameras.json)
 const DF_CAMERA = { discovery_passage: 'campbell_river', douglas_channel: 'hartley_bay', china_creek: 'china_creek' }
@@ -37,12 +38,12 @@ export default function ModelCheck({ detection, onBox }) {
     const { result, box } = state
     const det = {
       id: queueId, species: 'rockfish', camera: DF_CAMERA[detection.cameraId], timestamp: detection.timestamp,
-      status: 'Needs review', confidence: result.score, box, clipUrl: null, frameUrl: detection.frameUrl,
-      source: 'model', modelVersion: result.model_version,
+      status: appStatus(result.status), confidence: result.score, box, clipUrl: null, frameUrl: detection.frameUrl,
+      source: 'model', modelVersion: result.model_version, model: result,
     }
     const clip = {
       id: `map-c-${detection.id}`, detectionId: det.id, lookAlikes: ['lingcod', 'kelp_greenling', 'Other fish'],
-      tip: TIP, priorVotes: { yes: 0, no: 0, unsure: 0 }, mission: 'rockfish_watch',
+      tip: TIP, priorVotes: { yes: 0, no: 0, unsure: 0 },
     }
     addToReviewQueue({ detection: det, clip })
     setSent(true)
@@ -69,7 +70,7 @@ export default function ModelCheck({ detection, onBox }) {
   }
 
   const { result } = state
-  const canSend = result.status === 'Needs review' && DF_CAMERA[detection.cameraId]
+  const canSend = appStatus(result.status) !== 'Identified' && DF_CAMERA[detection.cameraId]
   return (
     <div className="model-check" aria-live="polite">
       <p className={`model-check__status model-${STATUS_CLASS[result.status] ?? 'none'}`}>

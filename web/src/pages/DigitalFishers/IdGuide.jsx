@@ -1,27 +1,16 @@
+import { useRef } from 'react';
 import ModelViewer from '../../components/ModelViewer.jsx';
 
-// Side column: 3D comparison, optional feature checklist, and the clip's tip.
-export default function IdGuide({ clip, checked, onToggle, locked, highlight }) {
+// Reference panel that hangs from the top of the page: the 3D model to compare with the frame.
+// Complementary to the task; the question and answers have their own card below it.
+// Bringing the model into focus slides this whole panel to the middle of the window first.
+// onMenuChange: passed through to the viewer, so the page can let the Key features menu push the decision card down.
+export default function IdGuide({ clip, highlight, onMenuChange }) {
+  const panel = useRef(null);
   return (
-    <aside className={`id-guide ${highlight ? 'is-highlighted' : ''}`} aria-label="Identification guide">
+    <aside ref={panel} className={`id-guide glass ${highlight ? 'is-highlighted' : ''}`} aria-label="Compare with the 3D model">
       <h3>Compare with the 3D model</h3>
-      <ModelViewer key={clip.species.id} species={clip.species} height={200} />
-
-      <fieldset className="checklist" disabled={locked}>
-        <legend>What can you see in the clip? <span className="muted">(optional)</span></legend>
-        {clip.species.features.map((f) => (
-          <label key={f}>
-            <input type="checkbox" checked={checked.includes(f)} onChange={() => onToggle(f)} />
-            {f}
-          </label>
-        ))}
-      </fieldset>
-
-      {clip.tip && (
-        <p className="tip">
-          <strong>Tip:</strong> {clip.tip}
-        </p>
-      )}
+      <ModelViewer key={clip.species.id} species={clip.species} height="clamp(170px, 16.5vw, 240px)" focusFrom={panel} onMenuChange={onMenuChange} />
     </aside>
   );
 }

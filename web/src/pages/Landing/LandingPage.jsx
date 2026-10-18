@@ -31,7 +31,7 @@ const FEATURES = [
     title: 'Digital Fishers 2.0',
     href: '/digital-fishers',
     Icon: ScanEye,
-    description: "Help settle the AI's unsure detections and build your Marine collection.",
+    description: "Help settle the frames the AI couldn't decide on.",
   },
 ]
 

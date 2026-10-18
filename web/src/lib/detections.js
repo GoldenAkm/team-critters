@@ -2,7 +2,8 @@ import { statusKey } from './status.js';
 
 // The ONLY place that knows the raw detection format. The model pipeline
 // (and the future /identify endpoint) emits records like:
-//   { species, camera, timestamp, status: "Needs review", confidence, box, clipUrl?, frameUrl? }
+//   { species, camera, timestamp, status: "Needs review", confidence, box, clipUrl?, frameUrl?, model? }
+// `model` is the rockfish model's result JSON as returned (see rockfishModel.js and modelReadout.js).
 // Everything else in the app works with the normalized shape returned here.
 export function normalizeDetection(raw) {
   return {
@@ -16,6 +17,7 @@ export function normalizeDetection(raw) {
     clipUrl: raw.clipUrl ?? null,
     frameUrl: raw.frameUrl ?? null,
     confirmedBy: raw.confirmedBy ?? null,
+    model: raw.model ?? null,
   };
 }
 
