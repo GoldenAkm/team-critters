@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 export default function SessionComplete({ stats, onRestart }) {
   return (
     <section className="session-complete" aria-labelledby="session-title">
@@ -11,9 +9,9 @@ export default function SessionComplete({ stats, onRestart }) {
         <div><dt>Points</dt><dd className="mono">{stats.points}</dd></div>
       </dl>
       <div className="session-complete__actions">
-        <Link className="btn btn--primary" to="/collection">Open my Marine collection</Link>
+        <a className="btn btn--primary" href="#collection">See my collection</a>
         <button type="button" className="btn" onClick={onRestart}>Review more clips</button>
-        <Link className="btn" to="/map">See confirmed sightings on the map</Link>
+        <a className="btn" href="/map">See confirmed sightings on the map</a>
       </div>
     </section>
   );

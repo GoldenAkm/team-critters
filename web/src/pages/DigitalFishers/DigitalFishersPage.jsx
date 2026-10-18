@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { loadReviewData } from '../../lib/data.js';
-import { addVote, outcomeFor, resolveConsensus } from '../../lib/consensus.js';
+import { addVote, outcomeFor, resolveConsensus } from './consensus.js';
 import { toConfirmedDetection } from '../../lib/detections.js';
 import { useCollection } from '../../lib/useCollection.js';
-import { MATCH_BONUS, POINTS_PER_ANSWER, SHOW_AI_GUESS } from '../../config.js';
+import { MATCH_BONUS, POINTS_PER_ANSWER, SHOW_AI_GUESS } from './config.js';
+import PortalHeader from '../../components/PortalHeader.jsx';
+import SiteFooter from '../../components/SiteFooter.jsx';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import ClipPlayer from './ClipPlayer.jsx';
 import AnswerPanel from './AnswerPanel.jsx';
@@ -14,7 +15,7 @@ import CollectedModal from './CollectedModal.jsx';
 import SessionComplete from './SessionComplete.jsx';
 import HowItWorks from './HowItWorks.jsx';
 import ProgressPanel from './ProgressPanel.jsx';
-import './review.css';
+import './DigitalFishersPage.css';
 
 const EMPTY_SESSION = { points: 0, reviewed: 0, newSpecies: 0 };
 
@@ -46,8 +47,8 @@ export default function ReviewPage() {
     return id ? data.missions[id] : null;
   }, [data, clip]);
 
-  if (error) return <p className="page-error">Couldn't load review clips: {error.message}</p>;
-  if (!data) return <p className="page-loading">Loading clips…</p>;
+  if (error) return <Shell><p className="page-error">Couldn't load review clips: {error.message}</p></Shell>;
+  if (!data) return <Shell><p className="page-loading">Loading clips…</p></Shell>;
 
   function submit(answer) {
     const votes = addVote(clip.priorVotes, answer.kind);
@@ -93,14 +94,14 @@ export default function ReviewPage() {
   const collectedCount = data.species.filter((s) => player.collected[s.id]).length;
 
   return (
-    <div className="review-page">
+    <Shell>
       <div className="page-head">
         <nav className="breadcrumb mono" aria-label="Breadcrumb">
-          <Link to="/">AI Species Detection</Link> › <span aria-current="page">Digital Fishers 2.0</span>
+          <a href="/">Machine Learning Species Identification</a> › <span aria-current="page">Digital Fishers 2.0</span>
         </nav>
-        <Link className="collection-shortcut" to="/collection">
+        <a className="collection-shortcut" href="#collection">
           Marine collection <span className="mono">{collectedCount}/{data.species.length}</span>
-        </Link>
+        </a>
       </div>
 
       <header className="review-intro">
@@ -112,7 +113,7 @@ export default function ReviewPage() {
       <HowItWorks />
 
       <div className="review-layout">
-        <main className="review-main">
+        <section className="review-main" aria-label="Review task">
           {done ? (
             <SessionComplete stats={session} onRestart={restart} />
           ) : (
@@ -162,7 +163,7 @@ export default function ReviewPage() {
               </div>
             </>
           )}
-        </main>
+        </section>
 
         <ProgressPanel
           player={player}
@@ -173,7 +174,30 @@ export default function ReviewPage() {
         />
       </div>
 
+      <p className="small muted demo-note">
+        Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
+        <button type="button" className="link-button" onClick={collection.reset}>
+          Reset demo progress
+        </button>
+      </p>
+
       {modal && <CollectedModal species={modal.species} camera={modal.camera} onClose={() => setModal(null)} />}
-    </div>
+    </Shell>
+  );
+}
+
+// Shared portal chrome (from the landing page) around the page content.
+function Shell({ children }) {
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Skip to main content
+      </a>
+      <PortalHeader />
+      <main id="main" className="review-page">
+        {children}
+      </main>
+      <SiteFooter />
+    </>
   );
 }

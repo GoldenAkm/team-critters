@@ -2,8 +2,9 @@
 
 1. Fixes inside-out meshes (triangle winding opposite to the vertex normals),
    which otherwise render hollow in the browser.
-2. Adds hinge (pivot) nodes at the base of the tail and pectoral fins, plus a
-   "Swim" parent node, and bakes a looping "Swim" animation the viewer can play.
+2. Older exports only (no _SWIM vertex attribute): adds hinge nodes at the base
+   of the tail and pectoral fins and bakes a fallback "Swim" animation. Exports
+   with _SWIM swim in the viewer's vertex shader instead, so they are left as is.
 
 Usage (originals stay untouched):
     python3 web/scripts/prepare_rockfish_glb.py ~/Downloads/copper-rockfish.glb web/public/3d/copper-rockfish.glb
@@ -108,8 +109,12 @@ def quat(axis, deg):
     return [axis[0] * s, axis[1] * s, axis[2] * s, math.cos(half)]
 
 
+def has_swim_attribute(gltf):
+    return all('_SWIM' in p['attributes'] for m in gltf['meshes'] for p in m['primitives'])
+
+
 def add_swim(gltf, binary):
-    if any(a.get('name') == 'Swim' for a in gltf.get('animations', [])):
+    if has_swim_attribute(gltf) or any(a.get('name') == 'Swim' for a in gltf.get('animations', [])):
         return False
     nodes = gltf['nodes']
     by_name = {n.get('name'): i for i, n in enumerate(nodes)}
@@ -158,7 +163,8 @@ def main(src, dst):
     fixed = fix_winding(gltf, binary)
     added = add_swim(gltf, binary)
     write_glb(dst, gltf, binary)
-    print(f'{dst}: flipped {len(fixed)} meshes {fixed}; swim animation {"added" if added else "already present"}')
+    swim = 'vertex shader (_SWIM)' if has_swim_attribute(gltf) else ('baked animation added' if added else 'baked animation already present')
+    print(f'{dst}: flipped {len(fixed)} meshes {fixed}; swim: {swim}')
 
 
 if __name__ == '__main__':

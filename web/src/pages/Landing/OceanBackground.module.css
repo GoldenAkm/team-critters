@@ -1,0 +1,52 @@
+.ocean {
+  --depth: 0;
+
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #03101a;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* The surface photo lives in public/depths/ and stays out of git until we
+   have a licensed version. Without it the gradient shows instead. */
+.surface {
+  background-image:
+    url('/depths/1-surface-kelp.webp'),
+    linear-gradient(180deg, #2e8a92 0%, #11505f 55%, #07283a 100%);
+  background-position:
+    40% 35%,
+    center;
+}
+
+/* Fades in between 15% and 40% of the way down the page */
+.midwater {
+  background-image: url('../../assets/depths/2-midwater-jelly.webp');
+  background-position: 78% 50%;
+  opacity: clamp(0, (var(--depth) - 0.15) * 4, 1);
+}
+
+/* Fades in between 55% and 80% of the way down the page */
+.deep {
+  background-image: url('../../assets/depths/3-deep-seafloor.webp');
+  background-position: 38% 50%;
+  opacity: clamp(0, (var(--depth) - 0.55) * 4, 1);
+}
+
+/* Darkens the photos so white text stays readable */
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(2 10 18 / 0.6) 0%,
+    rgb(2 10 18 / 0.35) 45%,
+    rgb(2 10 18 / 0.55) 100%
+  );
+}

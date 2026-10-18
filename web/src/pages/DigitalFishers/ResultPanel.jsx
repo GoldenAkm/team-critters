@@ -1,5 +1,5 @@
 import ReviewDots from '../../components/ReviewDots.jsx';
-import { REVIEWS_NEEDED } from '../../config.js';
+import { REVIEWS_NEEDED } from './config.js';
 
 const ANSWER_TEXT = {
   yes: (name) => `Yes, it's a ${name.toLowerCase()}`,

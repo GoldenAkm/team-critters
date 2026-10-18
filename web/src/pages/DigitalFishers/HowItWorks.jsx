@@ -1,4 +1,4 @@
-import { REVIEWS_NEEDED } from '../../config.js';
+import { REVIEWS_NEEDED } from './config.js';
 
 const STEPS = [
   ['AI scans ONC footage', 'It detects and classifies animals in fixed-camera video.'],

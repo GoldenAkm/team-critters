@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Shared 3D species viewer. Loads /3d/<model>.glb with <model-viewer> when the file exists,
+// Shared 3D species viewer. Loads /3d/<model>.glb when the file exists,
 // otherwise shows a placeholder with the same controls layout.
 // species.views overrides the presets ([theta, phi] in degrees) for models in other orientations;
 // species.modelVariants adds a colour switch (same fish under different water and light).
+// Rendered in an underwater three.js scene (underwater/UnderwaterViewer.js).
 // A GLB with a "Swim" animation (see web/scripts/prepare_rockfish_glb.py) gets a Swim button.
 // Expand opens the same viewer large in a modal dialog.
 function ExpandIcon() {
@@ -23,27 +24,25 @@ function RotateIcon({ flip }) {
   );
 }
 
+// Models that can swim start swimming as soon as they load (never under reduced motion).
+const SWIM_ON_LOAD = true;
+
 const DEFAULT_VIEWS = { Front: [0, 90], Side: [90, 90], Top: [0, 0] };
 
-function startSwim(el) {
-  el.animationName = 'Swim';
-  el.play({ repetitions: Infinity });
-}
-
+// Resolves to the viewer class once the model file exists (three.js is loaded only then).
 function useModelAvailable(url) {
-  const [state, setState] = useState('checking');
+  const [state, setState] = useState({ status: 'checking', Viewer: null });
   useEffect(() => {
     let alive = true;
-    setState('checking');
+    setState({ status: 'checking', Viewer: null });
     fetch(url, { method: 'HEAD' })
       .then((r) => {
         // Vite's dev server answers missing files with index.html, so check the type too.
         const ok = r.ok && !(r.headers.get('content-type') ?? '').includes('text/html');
-        if (!ok) return false;
-        return import('@google/model-viewer').then(() => true);
+        return ok ? import('./underwater/UnderwaterViewer.js').then((m) => m.default) : null;
       })
-      .catch(() => false)
-      .then((ok) => alive && setState(ok ? 'ready' : 'missing'));
+      .catch(() => null)
+      .then((Viewer) => alive && setState({ status: Viewer ? 'ready' : 'missing', Viewer }));
     return () => {
       alive = false;
     };
@@ -89,100 +88,71 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
   const views = species.views ?? DEFAULT_VIEWS;
   const model = variants.find((v) => v.id === variantId)?.model ?? species.model;
   const url = `${import.meta.env.BASE_URL}3d/${model}.glb`;
-  // Check the default model once; colour variants just swap src on the mounted viewer.
-  const available = useModelAvailable(`${import.meta.env.BASE_URL}3d/${variants[0]?.model ?? species.model}.glb`);
-  const [startTheta, startPhi] = views.Side ?? DEFAULT_VIEWS.Side;
+  // Check the default model once; colour variants just load into the running viewer.
+  const { status: available, Viewer } = useModelAvailable(`${import.meta.env.BASE_URL}3d/${variants[0]?.model ?? species.model}.glb`);
+  const host = useRef(null);
   const viewer = useRef(null);
-  const [angle, setAngle] = useState(0);
+  const angleEl = useRef(null);
+  const hotspotEls = useRef([]);
   const [showFeatures, setShowFeatures] = useState(false);
   const [canSwim, setCanSwim] = useState(false);
-  const [swimming, setSwimming] = useState(false);
-  const swimmingRef = useRef(false);
-  swimmingRef.current = swimming;
+  const [swimming, setSwimming] = useState(SWIM_ON_LOAD);
 
-  // A colour swap reloads the model; pick the swim back up if it was on.
   useEffect(() => {
-    const el = viewer.current;
-    if (!el) return;
-    const onLoad = () => {
-      const has = el.availableAnimations?.includes('Swim');
-      setCanSwim(Boolean(has));
-      if (has && swimmingRef.current) startSwim(el);
+    if (!Viewer || !host.current) return;
+    const v = new Viewer(host.current, {
+      startView: views.Side ?? DEFAULT_VIEWS.Side,
+      onAngle: (deg) => {
+        if (angleEl.current) angleEl.current.textContent = `${deg}°`;
+      },
+      onLoad: ({ hasSwim }) => setCanSwim(hasSwim),
+    });
+    v.setSwimming(SWIM_ON_LOAD);
+    viewer.current = v;
+    return () => {
+      v.dispose();
+      viewer.current = null;
     };
-    el.addEventListener('load', onLoad);
-    return () => el.removeEventListener('load', onLoad);
-  }, [available]);
+  }, [Viewer]);
+
+  useEffect(() => {
+    viewer.current?.load(url);
+  }, [Viewer, url]);
+
+  useEffect(() => {
+    const hotspots = showFeatures ? species.hotspots.map((h, i) => ({ ...h, el: hotspotEls.current[i] })) : [];
+    viewer.current?.setHotspots(hotspots);
+  }, [Viewer, showFeatures, species]);
 
   const toggleSwim = () => {
-    const el = viewer.current;
-    if (!el) return;
-    if (swimming) {
-      el.pause();
-      el.currentTime = 0; // back to the rest pose
-    } else {
-      startSwim(el);
-    }
+    viewer.current?.setSwimming(!swimming);
     setSwimming(!swimming);
   };
-
-  useEffect(() => {
-    const el = viewer.current;
-    if (!el) return;
-    const onChange = (e) => {
-      if (e.detail?.source === 'user-interaction') target.current = null;
-      const deg = Math.round((el.getCameraOrbit().theta * 180) / Math.PI);
-      setAngle(((deg % 360) + 360) % 360);
-    };
-    el.addEventListener('camera-change', onChange);
-    return () => el.removeEventListener('camera-change', onChange);
-  }, [available]);
-
-  // Where the camera is heading; cleared when the user drags so buttons start from the real view.
-  const target = useRef(null);
-  const setOrbit = (theta, phi) => {
-    const el = viewer.current;
-    if (!el) return;
-    target.current = [theta, phi];
-    el.cameraOrbit = `${theta}deg ${phi}deg auto`;
-  };
-  const rotate = (delta) => {
-    const el = viewer.current;
-    if (!el) return;
-    const o = el.getCameraOrbit();
-    const [theta, phi] = target.current ?? [(o.theta * 180) / Math.PI, (o.phi * 180) / Math.PI];
-    setOrbit(theta + delta, phi);
-  };
+  const setOrbit = (theta, phi) => viewer.current?.setView(theta, phi);
+  const rotate = (delta) => viewer.current?.rotate(delta);
 
   const ready = available === 'ready';
   return (
     <div className="model-viewer">
       <div className="model-viewer__stage" style={{ height }}>
         {ready ? (
-          <model-viewer
-            ref={viewer}
-            src={url}
-            alt={`3D model of a ${species.name.toLowerCase()}`}
-            camera-controls
-            camera-orbit={`${startTheta}deg ${startPhi}deg auto`}
-            interaction-prompt="none"
-            shadow-intensity="0.6"
-            style={{ width: '100%', height: '100%' }}
-          >
+          <>
+            <div ref={host} className="model-viewer__canvas" role="img" aria-label={`3D model of a ${species.name.toLowerCase()}, underwater`} />
             {showFeatures &&
               species.hotspots.map((h, i) => (
                 <span
-                  key={i}
+                  key={h.label}
+                  ref={(el) => {
+                    hotspotEls.current[i] = el;
+                  }}
                   className="model-hotspot mono"
-                  slot={`hotspot-${i}`}
-                  data-position={h.position}
-                  data-normal={h.normal}
                   title={h.label}
                   aria-hidden="true"
                 >
                   {i + 1}
                 </span>
               ))}
-          </model-viewer>
+          </>
         ) : (
           <div className="model-viewer__placeholder">
             <svg viewBox="0 0 120 60" width="60%" aria-hidden="true">
@@ -193,7 +163,7 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
             <p>{available === 'checking' ? 'Loading 3D model…' : '3D model coming soon'}</p>
           </div>
         )}
-        <span className="model-viewer__angle mono">{ready ? `${angle}°` : '—'}</span>
+        <span ref={angleEl} className="model-viewer__angle mono">{ready ? null : '—'}</span>
         {onExpand && ready && (
           <button type="button" className="model-viewer__expand" onClick={onExpand} aria-label="Expand 3D model">
             <ExpandIcon />

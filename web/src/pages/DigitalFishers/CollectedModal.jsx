@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import SpeciesSymbol from '../../components/SpeciesSymbol.jsx';
 import ConservationTag from '../../components/ConservationTag.jsx';
 
@@ -28,7 +27,9 @@ export default function CollectedModal({ species, camera, onClose }) {
       </p>
       <div className="modal__actions">
         <button type="button" className="btn" onClick={() => ref.current.close()}>Keep reviewing</button>
-        <Link className="btn btn--primary" to={`/collection/${species.id}`}>Open Marine collection</Link>
+        <a className="btn btn--primary" href="#collection" onClick={() => ref.current.close()}>
+          See my collection
+        </a>
       </div>
     </dialog>
   );

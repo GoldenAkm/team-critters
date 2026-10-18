@@ -1,4 +1,4 @@
-import { REVIEWS_NEEDED } from '../config.js';
+import { REVIEWS_NEEDED } from './config.js';
 
 // An answer is one of: { kind: 'yes' } | { kind: 'no', alt } | { kind: 'unsure' }.
 // Votes are tallied by kind; a "no" counts against the AI's guess whatever the alternative.

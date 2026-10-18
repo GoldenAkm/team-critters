@@ -100,7 +100,8 @@
 .model-viewer__stage { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .model-viewer__placeholder { height: 100%; display: grid; place-items: center; align-content: center; gap: 4px; color: var(--ink-3); text-align: center; }
 .model-viewer__placeholder p { margin: 0; font-size: 0.82rem; }
-.model-viewer__angle { position: absolute; bottom: 6px; right: 8px; font-size: 0.72rem; color: var(--ink-3); }
+.model-viewer__angle { position: absolute; bottom: 6px; right: 8px; font-size: 0.72rem; color: var(--ink-3); pointer-events: none; }
+.model-viewer__canvas ~ .model-viewer__angle { color: rgba(255, 255, 255, 0.7); }
 .model-viewer__expand {
   position: absolute; top: 6px; right: 6px; width: 36px; height: 36px; display: grid; place-items: center;
   border: 1.5px solid var(--ink); border-radius: 6px; background: var(--surface); cursor: pointer;
@@ -127,12 +128,14 @@
 }
 .model-viewer__variants button[aria-pressed='true'] { background: var(--ink); color: var(--accent-ink); }
 .model-viewer__features { margin: 0; padding-left: 18px; font-size: 0.82rem; }
+.model-viewer__canvas { position: absolute; inset: 0; background: #06262b; cursor: grab; }
+.model-viewer__canvas:active { cursor: grabbing; }
+/* Positioned and faded (when facing away) by the viewer each frame. */
 .model-hotspot {
+  position: absolute; left: 0; top: 0; pointer-events: none; transition: opacity 0.2s;
   width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 0.7rem; font-weight: 600; background: var(--ink); color: var(--accent-ink); border: 2px solid #fff;
+  font-size: 0.7rem; font-weight: 600; background: #fff; color: #000; border: 2px solid #000;
 }
-/* <model-viewer> fades hotspots that face away from the camera down to this opacity. */
-.model-viewer model-viewer { --min-hotspot-opacity: 0.15; }
 
 .progress { display: grid; gap: 14px; }
 .panel { display: grid; gap: 10px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }

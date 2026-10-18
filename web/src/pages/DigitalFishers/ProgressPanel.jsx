@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import SpeciesSymbol from '../../components/SpeciesSymbol.jsx';
 
 // Placeholder leaderboard until there is shared state across players.
@@ -23,7 +22,7 @@ export default function ProgressPanel({ player, session, species, comingSoonSlot
         </dl>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="collection">
         <div className="panel__head">
           <h3>Your collection</h3>
           <span className="mono">{collectedCount} of {species.length}</span>
@@ -46,7 +45,6 @@ export default function ProgressPanel({ player, session, species, comingSoonSlot
             </li>
           ))}
         </ul>
-        <Link to="/collection">Open Marine collection →</Link>
       </section>
 
       {mission && (
