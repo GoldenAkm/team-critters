@@ -7,11 +7,6 @@ const ANSWER_TEXT = {
   unsure: () => "Can't tell from this frame",
 };
 
-// Placeholder until the team decides whether reviewers get any reward (points were removed).
-function RewardPlaceholder() {
-  return <span className="reward-placeholder mono">Reward: TBD</span>;
-}
-
 export default function ResultPanel({ clip, result, isLast, onNext }) {
   const { answer, consensus, outcome } = result;
   const name = clip.species.name;
@@ -19,7 +14,6 @@ export default function ResultPanel({ clip, result, isLast, onNext }) {
   return (
     <section className="result" aria-live="polite">
       <div className="result__head">
-        <RewardPlaceholder />
         <span>Your answer: {ANSWER_TEXT[answer.kind](name, answer.alt)}</span>
       </div>
 

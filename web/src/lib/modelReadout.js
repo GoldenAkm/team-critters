@@ -117,7 +117,7 @@ export function aiAnnouncement(detection, species) {
   return { name, confidence: value != null ? pct(value) : null };
 }
 
-// "a rockfish", "an eelpout"
-export function withArticle(name) {
-  return `${/^[aeiou]/i.test(name) ? 'an' : 'a'} ${name}`;
+// "a" or "an" before a name: a rockfish, an eelpout
+export function article(name) {
+  return /^[aeiou]/i.test(name) ? 'an' : 'a';
 }

@@ -1,24 +1,22 @@
-/* Digital Fishers 2.0 layout. Light ONC cards like the Interactive Map, under a deep-ocean hero
-   that echoes the landing page and the underwater 3D viewer. */
-.df-page { flex: 1; display: flex; flex-direction: column; }
+/* Digital Fishers 2.0 layout. Light ONC cards like the Interactive Map, floating in deep-ocean water
+   that echoes the landing page and the underwater 3D viewer and runs down the whole page. */
 
-/* ---------- hero ---------- */
+/* ---------- water ---------- */
 /* Same water as the 3D viewer's background shader (BG_FS in underwater/UnderwaterViewer.js):
    its pow(y, 1.5) top-to-bottom gradient sampled at quarter steps, its edge vignette, and god rays
    that fade out with depth. */
-.df-hero {
-  position: relative;
-  color: #fff;
+.df-page {
+  flex: 1; display: flex; flex-direction: column;
+  position: relative; isolation: isolate; overflow: clip;
   background:
     radial-gradient(ellipse 75% 120% at 50% 45%, transparent 55%, rgb(0 0 0 / 0.3) 100%),
     linear-gradient(180deg, rgb(18 69 77) 0%, rgb(12 49 56) 25%, rgb(8 33 38) 50%, rgb(4 20 24) 75%, rgb(3 13 17) 100%);
-  overflow: hidden;
-  isolation: isolate;
 }
-.df-hero::before {
+/* God rays stay near the surface: the top of the page only. */
+.df-page::before {
   content: '';
   position: absolute;
-  inset: 0;
+  top: 0; left: 0; right: 0; height: min(900px, 100%);
   z-index: -1;
   pointer-events: none;
   /* 65deg stripes run from upper left to lower right, ~25deg off vertical, like the shader's rays
@@ -30,33 +28,54 @@
   -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
   mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
 }
-.df-hero__inner { max-width: 1240px; margin: 0 auto; padding: 22px 20px 16px; display: grid; gap: 4px; }
-.df-hero h1 { font-family: var(--font-display); font-size: 36px; font-weight: 700; line-height: 1.05; color: #fff; }
-.df-hero p { max-width: 720px; font-size: 15px; line-height: 1.45; color: rgb(255 255 255 / 0.82); }
-
-/* ---------- body ---------- */
-.df-body { width: 100%; max-width: 1240px; margin: 0 auto; padding: 16px 20px 48px; display: grid; gap: 16px; }
-.review-main {
-  min-width: 0; background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow-1); overflow: hidden;
+/* The moving water (WaterBackground.jsx): one window-sized canvas that stays put while the page scrolls over it.
+   It takes no space (negative margin) and sits behind everything; the gradient above shows without WebGL. */
+.df-water {
+  position: sticky; top: 0; z-index: -1; display: block; flex: none;
+  width: 100%; height: 100vh; margin-bottom: -100vh;
+  pointer-events: none;
 }
+.df-water[hidden] { display: none; }
 
-.clip-bar {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
-  padding: 12px 16px; border-bottom: 1px solid var(--line);
+/* ---------- layout ---------- */
+/* Two columns in one row, the same height. Left: banner text, then the frame card. Right: the 3D panel
+   hanging from the top of the page, then the decision card, which grows to end level with the frame card.
+   The note runs below. */
+.df-layout {
+  width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 20px 48px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 340px; column-gap: 20px; row-gap: 16px;
 }
-.clip-bar__info { display: grid; gap: 2px; min-width: 0; }
-.clip-bar__ai {
-  margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 500; line-height: 1.2;
-  color: var(--ink);
-}
-.clip-bar__ai strong { font-weight: 700; color: var(--onc-teal-dark); }
-.clip-bar__ai-conf { font-variant-numeric: tabular-nums; }
-.clip-bar__meta { margin: 0; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.clip-bar__when { color: var(--muted); font-variant-numeric: tabular-nums; }
+.df-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.df-main.is-done { grid-column: 1 / -1; }
+.df-hero__text { display: grid; gap: 4px; padding: 22px 0 20px; color: #fff; }
+.df-hero__text h1 { font-family: var(--font-display); font-size: 36px; font-weight: 700; line-height: 1.05; color: #fff; }
+.df-hero__text p { max-width: 720px; font-size: 15px; line-height: 1.45; color: rgb(255 255 255 / 0.9); }
+/* Keeps the banner text readable over the moving light */
+.df-hero__text h1, .df-hero__text p { text-shadow: 0 1px 2px rgb(0 0 0 / 0.35), 0 0 18px rgb(3 13 17 / 0.6); }
 
-.review-task { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; padding: 16px; }
-.review-task__main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-content: start; min-width: 0; }
+.review-main { position: relative; min-width: 0; border-radius: var(--radius-lg); overflow: hidden; }
+
+/* Right column: the 3D panel, then the decision card, clearly apart */
+.df-side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.id-guide { flex: none; }
+.decision { position: relative; flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: var(--radius-lg); }
+.demo-note { grid-column: 1; }
+
+.review-task { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-content: start; min-width: 0; padding: 16px; }
+
+/* The model's answer and confidence: the key line, as a band along the frame's bottom edge,
+   in the AI's colours (white on the frame's dark water, the score in the box's lime). */
+.ai-frame.has-verdict .ai-frame__stage { border-radius: var(--radius) var(--radius) 0 0; }
+.ai-frame__verdict {
+  margin-top: -6px; padding: 14px 18px; border-radius: 0 0 var(--radius) var(--radius);
+  background: linear-gradient(180deg, #10323a, #0b262d); box-shadow: var(--shadow-1);
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+}
+.ai-confidence { margin: 0; font-family: var(--font-display); font-size: 26px; font-weight: 500; line-height: 1.2; color: rgb(255 255 255 / 0.85); }
+.ai-confidence strong { font-weight: 700; color: #fff; }
+.ai-confidence strong.ai-confidence__name,
+.ai-confidence strong.ai-confidence__value { color: var(--onc-lime); }
+.ai-confidence__value { font-variant-numeric: tabular-nums; }
 
 /* AI frame: the page's centrepiece (dark frame like the Map's species card) */
 .ai-frame { display: grid; gap: 6px; margin: 0; min-width: 0; }
@@ -74,56 +93,41 @@
   background: var(--onc-lime); color: #16232b; font-size: 11px; font-weight: 700; white-space: nowrap; border-radius: 4px;
 }
 .detection-box__label.is-inside { bottom: auto; top: 2px; left: 2px; margin: 0; }
-.hint { font-size: 12px; color: var(--muted); }
 
-/* What the AI returned */
-.ai-readout { display: grid; gap: 12px; padding: 14px 16px; border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); }
-.ai-readout__guess { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
-.ai-readout__label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-.ai-readout__guess strong { font-family: var(--font-display); font-size: 22px; line-height: 1.15; color: var(--onc-teal-dark); }
-.ai-readout__guess .status-badge { align-self: center; }
-.ai-readout__headline { font-size: 14px; font-weight: 600; margin-top: -6px; }
-.ai-readout__body { display: flex; gap: 14px; align-items: flex-start; }
-.ai-readout__text { display: grid; gap: 14px; flex: 1; min-width: 0; }
-.ai-readout__text p { font-size: 14px; line-height: 1.5; }
-.ai-readout__error { font-size: 13px; color: #9b2c2c; }
-.ai-readout .btn { justify-self: start; }
-.ai-readout__facts summary { cursor: pointer; font-size: 13px; font-weight: 500; color: var(--onc-teal-dark); min-height: 32px; display: flex; align-items: center; }
-.ai-readout__facts dl { display: grid; gap: 4px; margin: 6px 0 8px; }
-.ai-readout__facts dl div { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 10px; font-size: 13px; }
-.ai-readout__facts dt { color: var(--muted); }
-.ai-readout__facts dd { margin: 0; overflow-wrap: anywhere; }
-.box-crop { flex: none; display: grid; gap: 4px; width: 160px; margin: 0; }
-.box-crop canvas { width: 100%; height: auto; max-height: 160px; object-fit: contain; border-radius: 8px; background: #1b2e36; border: 2px solid var(--onc-lime); }
-.box-crop figcaption { font-size: 11px; color: var(--muted); }
-
-/* Score on 0-1 with the review and Identified cutoffs */
-.score-bar { display: grid; gap: 4px; padding-bottom: 14px; }
-.score-bar__track { position: relative; height: 8px; border-radius: 4px; background: var(--line); }
-.score-bar__zone { position: absolute; top: 0; bottom: 0; background: rgb(18 156 192 / 0.2); }
-.score-bar__line { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--ink-3); }
-.score-bar__dot {
-  position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%;
-  background: var(--onc-navy); border: 2px solid #fff; box-shadow: var(--shadow-1);
-}
-.score-bar__labels { position: relative; height: 12px; font-size: 10px; color: var(--muted); }
-.score-bar__labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-.score-bar__labels span:last-child { transform: translateX(-85%); }
-
-.question { font-size: 24px; }
+.question { font-size: 22px; }
 
 /* Answers: large selectable cards */
-.answers { display: grid; gap: 10px; }
+.answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 420px; }
 .answer {
-  display: grid; gap: 2px; text-align: left; min-height: 52px; padding: 13px 16px;
-  border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface);
-  cursor: pointer; font-size: 15px; box-shadow: var(--shadow-1); transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  display: grid; justify-items: center; align-content: center; gap: 8px; aspect-ratio: 1; padding: 12px 8px;
+  border: 0; border-radius: var(--radius-lg); background: var(--accent); color: #fff; cursor: pointer;
+  font-family: var(--font-display); font-size: 24px; font-weight: 700; line-height: 1;
+  box-shadow: 0 6px 16px rgb(18 100 130 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.2);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
 }
-.answer strong { font-weight: 500; }
-.answer:hover { border-color: var(--onc-teal); background: var(--tint); transform: translateY(-1px); }
-.answer[aria-expanded='true'] { border-color: var(--onc-teal); background: var(--tint); }
-.answer span { font-size: 13px; color: var(--muted); }
-.lookalikes { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 12px; border: 1px dashed var(--line); border-radius: var(--radius); }
+.answer:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 10px 22px rgb(18 100 130 / 0.32), inset 0 1px 0 rgb(255 255 255 / 0.2); }
+.answer:active { transform: none; }
+.answer:focus-visible { outline: 3px solid var(--onc-lime); outline-offset: 3px; }
+.answer[aria-expanded='true'] { background: var(--onc-navy); }
+/* Confirm runs across the top, deny and uncertain side by side below it. Beside the frame the tiles share
+   the card's height so it ends level with the frame card; in one column they keep 2:1 and 1:1. */
+.answer--confirm { grid-column: 1 / -1; aspect-ratio: 2 / 1; }
+/* Confirm in the AI's lime, the green of the score on the frame, with dark text for contrast */
+.answer.answer--confirm { background: var(--onc-lime); color: #16232b; box-shadow: 0 6px 16px rgb(70 110 0 / 0.28), inset 0 1px 0 rgb(255 255 255 / 0.4); }
+.answer.answer--confirm:hover { background: #8bc600; box-shadow: 0 10px 22px rgb(70 110 0 / 0.34), inset 0 1px 0 rgb(255 255 255 / 0.4); }
+.answer.answer--confirm:focus-visible { outline-color: #16232b; }
+.answer--confirm .answer__icon { background: rgb(22 35 43 / 0.14); }
+/* Uncertain inverts the other tiles: the tile takes the icon circle's lighter teal, the circle the tile's teal */
+.answer.answer--unsure { background: color-mix(in srgb, #fff 18%, var(--accent)); }
+.answer.answer--unsure:hover { background: color-mix(in srgb, #fff 10%, var(--accent)); }
+.answer--unsure .answer__icon { background: var(--accent); }
+@media (min-width: 1001px) {
+  .decision .answers { flex: 1; grid-template-rows: 1fr 1fr; }
+  .decision .answer { aspect-ratio: auto; min-height: 76px; gap: 6px; padding: 8px; font-size: 22px; }
+  .decision .answer__icon { width: 34px; height: 34px; }
+}
+.answer__icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: rgb(255 255 255 / 0.18); }
+.lookalikes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 12px; border: 1px dashed var(--line); border-radius: var(--radius); }
 .lookalikes legend { padding: 0 4px; font-size: 12px; color: var(--muted); }
 
 /* Result */
@@ -134,38 +138,78 @@
 .result p { line-height: 1.5; }
 .result strong { color: var(--ink); }
 .result__head { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; font-size: 14px; }
-.reward-placeholder {
-  padding: 2px 10px; border-radius: 999px; font-size: 12px; color: var(--muted);
-  border: 1px dashed var(--line);
-}
 
 .review-dots { display: flex; gap: 14px; }
 .review-dot { display: grid; justify-items: center; gap: 4px; }
-.review-dot__circle {
-  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 11px; font-weight: 700; border: 2px solid var(--onc-teal);
-}
-.review-dot.is-filled .review-dot__circle { background: var(--onc-teal); color: #fff; }
-.review-dot.is-you .review-dot__circle { background: var(--onc-navy); border-color: var(--onc-navy); }
+.review-dot__circle { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; border: 2px solid transparent; }
+/* In but still hidden */
+.review-dot.is-filled .review-dot__circle { background: rgb(255 255 255 / 0.22); }
+/* Shown answers take their tile's colour and icon: confirm lime, deny teal, uncertain the lighter teal */
+.review-dot.review-dot--yes .review-dot__circle { background: var(--onc-lime); color: #16232b; }
+.review-dot.review-dot--no .review-dot__circle { background: var(--accent); color: #fff; }
+.review-dot.review-dot--unsure .review-dot__circle { background: color-mix(in srgb, #fff 18%, var(--accent)); color: #fff; }
+.review-dot.is-you .review-dot__circle { outline: 2px solid #fff; outline-offset: 2px; }
 .review-dot.is-empty .review-dot__circle { border-style: dashed; border-color: var(--ink-3); }
 .review-dot__label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--onc-navy); min-height: 1em; }
 
-/* Identification guide */
-.id-guide {
-  display: grid; gap: 14px; align-content: start; padding: 14px;
-  border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--line);
-  transition: box-shadow 0.2s, border-color 0.2s;
+/* Liquid glass, for every card on the page: the water behind shows through, blurred and brightened,
+   light catches the top-left, and a rim of light runs round the edge (--rim: its widths, top/sides/bottom). */
+.glass {
+  --glass-fill: rgb(255 255 255 / 0.07);
+  --glass-fill-strong: rgb(255 255 255 / 0.14);
+  --glass-edge: rgb(255 255 255 / 0.18);
+  --glass-text-2: rgb(255 255 255 / 0.72);
+  --glass-accent: #8fe3f0;
+  --rim: 1px;
+  isolation: isolate;
+  color: #fff;
+  background: linear-gradient(165deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.05) 40%, rgb(255 255 255 / 0.03) 70%, rgb(255 255 255 / 0.08));
+  -webkit-backdrop-filter: blur(18px) saturate(170%) brightness(1.1);
+  backdrop-filter: blur(18px) saturate(170%) brightness(1.1);
+  box-shadow: inset 0 0 32px rgb(143 227 240 / 0.08), 0 24px 48px rgb(0 0 0 / 0.35), 0 2px 8px rgb(0 0 0 / 0.2);
 }
-.id-guide.is-highlighted { border-color: var(--onc-teal); box-shadow: 0 0 0 3px rgb(18 156 192 / 0.15); }
-.id-guide h3 { font-size: 18px; }
-.checklist { display: grid; gap: 4px; margin: 0; padding: 0; border: 0; }
-.checklist legend { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin-bottom: 4px; padding: 0; }
-.checklist legend .muted { font-family: var(--font-body); font-weight: 400; font-size: 12px; }
-.checklist label { display: flex; gap: 10px; align-items: flex-start; padding: 6px 8px; margin: 0 -8px; border-radius: 8px; font-size: 13px; line-height: 1.35; cursor: pointer; }
-.checklist label:hover { background: var(--surface); }
-.checklist input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--accent); flex: none; }
-.checklist:disabled { opacity: 0.6; }
-.tip { padding: 10px 12px; border-radius: var(--radius); background: var(--tint); color: #134d5b; font-size: 13px; line-height: 1.45; }
+.glass::before,
+.glass::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; }
+.glass::before {
+  background:
+    radial-gradient(120% 40% at 0% 0%, rgb(255 255 255 / 0.18), transparent 65%),
+    radial-gradient(90% 30% at 100% 100%, rgb(143 227 240 / 0.12), transparent 70%);
+}
+.glass::after {
+  padding: var(--rim);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.12) 30%, rgb(255 255 255 / 0.06) 65%, rgb(255 255 255 / 0.45));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.df-page .glass h2, .df-page .glass h3 { color: #fff; }
+
+/* Text and controls on the glass */
+.glass .ai-frame__caption { color: var(--glass-text-2); }
+.glass .ai-frame__caption a { color: var(--glass-accent); }
+.glass .result { background: var(--glass-fill); border-color: var(--glass-edge); color: rgb(255 255 255 / 0.9); }
+.glass .result strong { color: #fff; }
+.glass .review-dot.is-empty .review-dot__circle { border-color: rgb(255 255 255 / 0.45); }
+.glass .review-dot__label { color: var(--glass-accent); }
+.glass .lookalikes { border-color: var(--glass-edge); }
+.glass .lookalikes legend { color: var(--glass-text-2); }
+.df-page .glass .chip { background: var(--glass-fill); border-color: var(--glass-edge); color: #fff; }
+.df-page .glass .chip:hover { background: var(--glass-fill-strong); border-color: var(--glass-accent); color: #fff; }
+.df-page .glass .btn:not(.btn--primary) { background: var(--glass-fill); border-color: var(--glass-edge); color: #fff; }
+.df-page .glass .btn:not(.btn--primary):hover { background: var(--glass-fill-strong); border-color: var(--glass-accent); }
+
+/* The 3D panel hangs from the site header, so its rim leaves out the top edge */
+.id-guide {
+  --rim: 0 1px 1px;
+  position: relative; z-index: 1;
+  display: grid; gap: 14px; align-content: start; padding: 16px 14px 14px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  transition: box-shadow 0.2s;
+}
+.id-guide.is-highlighted {
+  box-shadow: inset 0 0 32px rgb(143 227 240 / 0.2), 0 0 0 3px rgb(143 227 240 / 0.35), 0 24px 48px rgb(0 0 0 / 0.35);
+}
+.df-page .id-guide > h3 { font-size: 18px; }
 
 /* 3D viewer */
 .model-viewer { display: grid; gap: 8px; }
@@ -198,7 +242,29 @@
 }
 .model-viewer__variants button:hover { border-color: var(--onc-teal); }
 .model-viewer__variants button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: #fff; }
-.model-viewer__features { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6; }
+/* Key features: the toggle drops down a menu, numbered like the labels on the model */
+.model-viewer__toolbar { display: grid; }
+.model-viewer__controls .model-viewer__menu-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.model-viewer__controls button[aria-expanded='true'] { background: var(--tint); color: var(--onc-teal-dark); box-shadow: inset 0 0 0 1px rgb(18 156 192 / 0.35); }
+.model-viewer__chevron { transition: transform 0.25s ease; }
+[aria-expanded='true'] > .model-viewer__chevron { transform: rotate(180deg); }
+.model-viewer__menu {
+  display: grid; grid-template-rows: 0fr; opacity: 0; transform: translateY(-4px);
+  transition: grid-template-rows 0.28s ease, opacity 0.2s ease, transform 0.28s ease;
+}
+.model-viewer__menu.is-open { grid-template-rows: 1fr; opacity: 1; transform: none; }
+.model-viewer__menu-inner { min-height: 0; overflow: hidden; }
+.model-viewer__features {
+  list-style: none; display: grid; gap: 2px; margin: 6px 0 0; padding: 6px;
+  border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line);
+  font-size: 13px; line-height: 1.35; counter-reset: feature;
+}
+.model-viewer__features li { display: flex; align-items: center; gap: 10px; min-height: 32px; padding: 4px 8px; border-radius: 8px; counter-increment: feature; }
+.model-viewer__features li::before { content: ''; flex: none; width: 6px; height: 6px; margin: 0 7px; border-radius: 50%; background: var(--onc-teal); }
+ol.model-viewer__features li::before {
+  content: counter(feature); width: 20px; height: 20px; margin: 0; display: grid; place-items: center;
+  font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--onc-lime); color: #16232b;
+}
 .model-hotspot {
   position: absolute; left: 0; top: 0; pointer-events: none; transition: opacity 0.2s;
   width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center;
@@ -206,17 +272,50 @@
 }
 .model-dialog {
   width: min(980px, calc(100% - 32px)); max-height: calc(100vh - 32px); padding: 20px;
-  border: 0; border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-2);
-  font-family: var(--font-body); color: var(--ink);
+  border: 0; border-radius: var(--radius-lg); font-family: var(--font-body);
 }
 .model-dialog::backdrop { background: rgb(6 38 43 / 0.6); backdrop-filter: blur(3px); }
 .model-dialog__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
 .model-dialog__head h2 { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--onc-teal-dark); margin: 0; }
-.model-dialog__head .sci { margin: 2px 0 0; font-style: italic; color: var(--muted); }
+.model-dialog__head .sci { margin: 2px 0 0; font-style: italic; color: var(--glass-text-2); }
 .model-dialog .btn { display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-weight: 500; }
 .model-dialog .btn:hover { border-color: var(--onc-teal); background: var(--tint); }
 .model-dialog .model-viewer__controls button { min-height: 40px; font-size: 13px; }
 .model-dialog .model-viewer__variants button { min-height: 36px; font-size: 13px; }
+
+/* The viewer on glass: in the 3D panel and in the focused view */
+.glass > .model-viewer .model-viewer__stage { box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14), 0 10px 24px rgb(0 0 0 / 0.35); }
+.glass > .model-viewer .model-viewer__controls { background: var(--glass-fill); border-color: var(--glass-edge); }
+.glass > .model-viewer .model-viewer__controls button { color: rgb(255 255 255 / 0.85); }
+.glass > .model-viewer .model-viewer__controls button:hover:not(:disabled) { background: var(--glass-fill-strong); color: #fff; }
+.glass > .model-viewer .model-viewer__controls button[aria-pressed='true'],
+.glass > .model-viewer .model-viewer__controls button[aria-expanded='true'] {
+  background: rgb(143 227 240 / 0.2); color: #fff; box-shadow: inset 0 0 0 1px rgb(143 227 240 / 0.5);
+}
+.glass > .model-viewer .model-viewer__features { background: rgb(255 255 255 / 0.06); border-color: var(--glass-edge); color: rgb(255 255 255 / 0.92); }
+.glass > .model-viewer .model-viewer__features li::before { background: var(--glass-accent); }
+.glass > .model-viewer ol.model-viewer__features li::before { background: var(--onc-lime); }
+.glass > .model-viewer .model-viewer__variants > span { color: var(--glass-text-2); }
+.glass > .model-viewer .model-viewer__variants button { background: var(--glass-fill); border-color: var(--glass-edge); color: #fff; }
+.glass > .model-viewer .model-viewer__variants button:hover { border-color: var(--glass-accent); }
+.glass > .model-viewer .model-viewer__variants button[aria-pressed='true'] { background: rgb(255 255 255 / 0.92); border-color: transparent; color: var(--onc-teal-dark); }
+
+/* In the 3D panel the Key features menu drops down over the page instead of pushing the decision card down */
+.id-guide .model-viewer__toolbar { position: relative; }
+.id-guide .model-viewer__menu { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; }
+.id-guide > .model-viewer .model-viewer__features {
+  background: rgb(14 44 50 / 0.94); border-color: var(--glass-edge);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+
+/* Solid glass where blur isn't available or people ask for less transparency */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: rgb(18 63 71 / 0.94); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: #123f47; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .glass::before { display: none; }
+}
 
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }
 .stats div { display: grid; gap: 0; }
@@ -232,25 +331,40 @@
   background: linear-gradient(135deg, var(--onc-teal), var(--onc-green)); box-shadow: 0 6px 16px rgb(18 100 130 / 0.3);
 }
 .session-complete .stats { grid-template-columns: repeat(2, 1fr); min-width: min(320px, 100%); padding: 16px; border-radius: var(--radius-lg); background: var(--surface-2); }
+.glass .session-complete .stats { background: var(--glass-fill); }
+.glass .stats dt { color: var(--glass-text-2); }
+.glass .stats dd { color: #fff; }
+.glass .stats__placeholder dd { color: var(--glass-text-2); }
 .session-complete__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
-.demo-note { font-size: 12px; color: var(--muted); }
+.demo-note { margin: 0; font-size: 12px; color: rgb(255 255 255 / 0.7); }
+.demo-note .link-button { color: #8fe3f0; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1100px) {
-  .review-task { grid-template-columns: minmax(0, 1fr); }
+/* Narrow: one column with the task first: banner, frame, decision, then the 3D reference. */
+@media (max-width: 1000px) {
+  .df-layout { grid-template-columns: minmax(0, 1fr); }
+  .df-main, .df-side { display: contents; }
+  .df-hero__text { grid-row: 1; }
+  .review-main { grid-row: 2; }
+  .decision { grid-row: 3; }
+  .id-guide { grid-row: 4; border-radius: var(--radius-lg); --rim: 1px; }
+  .demo-note { grid-row: 5; }
 }
 @media (max-width: 760px) {
-  .df-hero__inner { padding: 16px 16px 12px; }
-  .df-hero h1 { font-size: 28px; }
-  .df-hero p { font-size: 14px; }
-  .df-body { padding: 16px 16px 40px; }
+  .df-layout { padding: 0 16px 40px; }
+  .df-hero__text { padding: 16px 0 12px; }
+  .df-hero__text h1 { font-size: 28px; }
+  .df-hero__text p { font-size: 14px; }
   .review-task { padding: 12px; }
-  .ai-readout__body { flex-direction: column; }
-  .box-crop { width: min(200px, 100%); }
-  .ai-readout__facts dl div { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .question { font-size: 21px; }
+  .question { font-size: 20px; }
+  .ai-confidence { font-size: 21px; }
+  .ai-frame__verdict { padding: 12px 14px; }
+  .answers { gap: 8px; }
+  .answer { font-size: 20px; }
+  .answer__icon { width: 36px; height: 36px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .answer:hover { transform: none; }
+  .model-viewer__menu, .model-viewer__chevron { transition: none; }
 }

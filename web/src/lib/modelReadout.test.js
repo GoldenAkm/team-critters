@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { aiAnnouncement, appStatus, withArticle, boxPlacement, describeModelResult, reviewQuestion } from './modelReadout.js';
+import { aiAnnouncement, appStatus, article, boxPlacement, describeModelResult, reviewQuestion } from './modelReadout.js';
 
 // Shapes copied from real /predict results on ONC frames.
 const thresholds = { needs_review: 0.1122, identified: 0.8838 };
@@ -86,7 +86,7 @@ describe('aiAnnouncement', () => {
     assert.deepEqual(aiAnnouncement({ model: noDetection, box: null }, species), { name: null, confidence: null });
   });
   it('picks a or an', () => {
-    assert.equal(withArticle('rockfish'), 'a rockfish');
-    assert.equal(withArticle('eelpout'), 'an eelpout');
+    assert.equal(article('rockfish'), 'a');
+    assert.equal(article('eelpout'), 'an');
   });
 });

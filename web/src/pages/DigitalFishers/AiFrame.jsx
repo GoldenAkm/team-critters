@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { STATUS } from '../../lib/status.js';
 
 // The page's centrepiece: the ONC frame the AI looked at, with its box. Box is in fractions of the frame.
-export default function AiFrame({ detection, speciesName }) {
+// children: the model's answer, shown as a band along the frame's bottom edge. meta: camera site and time.
+export default function AiFrame({ detection, speciesName, meta, children }) {
   const [ratio, setRatio] = useState(16 / 9);
   const { box, frameUrl, clipUrl } = detection;
 
   return (
-    <figure className="ai-frame">
+    <figure className={`ai-frame ${children ? 'has-verdict' : ''}`}>
       <div className="ai-frame__stage" style={{ aspectRatio: ratio }}>
         {frameUrl ? (
           <img
@@ -31,8 +32,12 @@ export default function AiFrame({ detection, speciesName }) {
           </div>
         )}
       </div>
+      {children && <div className="ai-frame__verdict">{children}</div>}
       <figcaption className="ai-frame__caption">
-        <span>{box ? 'Box drawn by the AI.' : 'The AI found no fish to box in this frame.'} Data: Ocean Networks Canada.</span>
+        <span>
+          {meta && <>{meta} · </>}
+          {box ? 'Box drawn by the AI.' : 'The AI found no fish to box in this frame.'} Data: Ocean Networks Canada.
+        </span>
         {clipUrl && (
           <a href={clipUrl} target="_blank" rel="noreferrer">
             Open in SeaTube ↗

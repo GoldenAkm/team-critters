@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 // Shared 3D species viewer. Loads /3d/<model>.glb when the file exists,
 // otherwise shows a placeholder with the same controls layout.
@@ -6,11 +6,24 @@ import { useEffect, useRef, useState } from 'react';
 // species.modelVariants adds a colour switch (same fish under different water and light).
 // Rendered in an underwater three.js scene (underwater/UnderwaterViewer.js).
 // A GLB with a "Swim" animation (see web/scripts/prepare_rockfish_glb.py) gets a Swim button.
-// Expand opens the same viewer large in a modal dialog.
+// Expand (top right of the stage) brings the model into focus: the panel it sits in (focusFrom) slides left to the
+// middle of the window and the viewer grows out of it into a modal dialog; closing plays that backwards.
+// The dialog opens (invisibly) as the slide starts, so its model loads during the motion and the growth can
+// overlap the end of the slide. Key features labels the parts on the model and drops down a numbered menu of
+// them. The inline viewer keeps only Key features and the colour switch; rotate, Front/Side/Top and Swim live
+// in the focused view (drag still spins it inline).
 function ExpandIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
       <path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+
+function ChevronIcon() {
+  return (
+    <svg className="model-viewer__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+      <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -26,6 +39,31 @@ function RotateIcon({ flip }) {
 
 // Models that can swim start swimming as soon as they load (never under reduced motion).
 const SWIM_ON_LOAD = true;
+
+// Bringing the model into focus: the panel slides across to the middle, and the dialog grows out of it,
+// starting before the slide has quite finished so the two read as one movement. Closing overlaps the same way.
+const SLIDE_MS = 340;
+const SLIDE_EASE = 'cubic-bezier(.4, 0, .2, 1)';
+const GROW_MS = 460;
+const GROW_AT = 0.8; // of the slide
+const GROW_EASE = 'cubic-bezier(.2, .8, .2, 1)';
+const SHRINK_MS = 320;
+const SHRINK_EASE = 'cubic-bezier(.4, 0, .6, 1)';
+const SLIDE_BACK_AT = 0.75; // of the shrink
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait = (ms) => new Promise((done) => setTimeout(done, ms));
+
+// The transform that lays the dialog's 3D stage over `from` (a rect), scaling about the dialog's centre.
+function zoomFrom(dialog, from) {
+  const box = dialog.getBoundingClientRect();
+  const to = dialog.querySelector('.model-viewer__stage').getBoundingClientRect();
+  const s = from.width / to.width;
+  const cx = box.left + box.width / 2;
+  const cy = box.top + box.height / 2;
+  const tx = from.left + from.width / 2 - (cx + s * (to.left + to.width / 2 - cx));
+  const ty = from.top + from.height / 2 - (cy + s * (to.top + to.height / 2 - cy));
+  return `translate(${tx}px, ${ty}px) scale(${s})`;
+}
 
 const DEFAULT_VIEWS = { Front: [0, 90], Side: [90, 90], Top: [0, 0] };
 
@@ -50,40 +88,107 @@ function useModelAvailable(url) {
   return state;
 }
 
-export default function ModelViewer({ species, height = 260 }) {
+// focusFrom: optional ref to the panel around the viewer, which slides to the middle when the model comes into focus.
+export default function ModelViewer({ species, height = 260, focusFrom }) {
   const [variantId, setVariantId] = useState(species.modelVariants?.[0]?.id);
-  const [expanded, setExpanded] = useState(false);
+  // null, or the focused view: { stage, features } (stage: the inline stage it grows out of).
+  const [focused, setFocused] = useState(null);
   const shared = { species, variantId, setVariantId };
   return (
     <>
-      <ViewerBody {...shared} height={height} onExpand={() => setExpanded(true)} />
-      {expanded && <ExpandedViewer {...shared} onClose={() => setExpanded(false)} />}
+      <ViewerBody {...shared} height={height} onExpand={(stage, features) => setFocused((f) => f ?? { stage, features })} />
+      {focused && <ExpandedViewer {...shared} {...focused} panel={focusFrom?.current} onDone={() => setFocused(null)} />}
     </>
   );
 }
 
-function ExpandedViewer({ species, onClose, ...shared }) {
+function ExpandedViewer({ species, stage, features, panel, onDone, ...shared }) {
   const dialog = useRef(null);
+  const motion = useRef(null); // { zoom, slide, hide } for playing the opening backwards
+  const closing = useRef(false);
+
   useEffect(() => {
-    dialog.current?.showModal();
+    const d = dialog.current;
+    if (reducedMotion() || !stage) {
+      d.showModal();
+      return undefined;
+    }
+    // Where the inline stage will be once the panel has slid to the middle; the dialog grows out of there.
+    const from = stage.getBoundingClientRect();
+    const box = panel?.getBoundingClientRect();
+    const dx = box ? innerWidth / 2 - (box.left + box.width / 2) : 0;
+    const sliding = Math.abs(dx) > 4;
+    d.showModal();
+    const zoom = zoomFrom(d, { left: from.left + (sliding ? dx : 0), top: from.top, width: from.width, height: from.height });
+    const delay = sliding ? SLIDE_MS * GROW_AT : 0;
+    const slide = sliding
+      ? panel.animate([{ transform: 'none' }, { transform: `translateX(${dx}px)` }], { duration: SLIDE_MS, easing: SLIDE_EASE, fill: 'forwards' })
+      : null;
+    // Until it grows, the dialog and its backdrop stay invisible, so the slide plays on the page as it is.
+    const grow = d.animate([{ transform: zoom, opacity: 0 }, { opacity: 1, offset: 0.3 }, { transform: 'none', opacity: 1 }], {
+      duration: GROW_MS, delay, easing: GROW_EASE, fill: 'backwards',
+    });
+    const dim = d.animate([{ opacity: 0 }, { opacity: 1 }], { duration: GROW_MS * 0.8, delay, fill: 'backwards', pseudoElement: '::backdrop' });
+    const hide = panel?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: GROW_MS * 0.5, delay, fill: 'both' });
+    motion.current = { zoom, slide, hide };
+    return () => {
+      [grow, dim, slide, hide].forEach((a) => a?.cancel());
+      motion.current = null;
+    };
   }, []);
+
+  async function close() {
+    if (closing.current) return;
+    closing.current = true;
+    const d = dialog.current;
+    const m = motion.current;
+    if (m) {
+      // Shrink back into the panel as it fades back in, then slide it home, starting a little before the end.
+      m.hide?.reverse();
+      d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: SHRINK_MS, fill: 'forwards', pseudoElement: '::backdrop' });
+      const shrink = d.animate([{ transform: 'none', opacity: 1 }, { opacity: 1, offset: 0.6 }, { transform: m.zoom, opacity: 0 }], {
+        duration: SHRINK_MS, easing: SHRINK_EASE, fill: 'forwards',
+      });
+      await wait(SHRINK_MS * SLIDE_BACK_AT);
+      m.slide?.reverse();
+      await shrink.finished;
+      d.close();
+      await m.slide?.finished;
+    } else {
+      d.close();
+    }
+    onDone();
+  }
+
   return (
-    <dialog ref={dialog} className="model-dialog" onClose={onClose} aria-label={`3D model of a ${species.name.toLowerCase()}`}>
+    <dialog
+      ref={dialog}
+      className="model-dialog glass"
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+      // Closed some other way (the browser can insist on Escape): just tidy up.
+      onClose={() => !closing.current && onDone()}
+      aria-label={`3D model of a ${species.name.toLowerCase()}`}
+    >
       <div className="model-dialog__head">
         <div>
           <h2>{species.name}</h2>
           <p className="sci">{species.sci}</p>
         </div>
-        <button type="button" className="btn btn--small" onClick={() => dialog.current.close()}>
+        <button type="button" className="btn btn--small" onClick={close}>
           Close
         </button>
       </div>
-      <ViewerBody species={species} {...shared} height="min(58vh, 600px, 70vw)" />
+      <ViewerBody species={species} {...shared} height="min(58vh, 600px, 70vw)" viewControls featuresAtStart={features} />
     </dialog>
   );
 }
 
-function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
+// onExpand (inline only) gets the stage element, to bring the model into focus from where it is, and whether the
+// key features are showing, so the focused view opens the same way.
+function ViewerBody({ species, variantId, setVariantId, height, onExpand, viewControls = false, featuresAtStart = false }) {
   const variants = species.modelVariants ?? [];
   const views = species.views ?? DEFAULT_VIEWS;
   const model = variants.find((v) => v.id === variantId)?.model ?? species.model;
@@ -94,7 +199,17 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
   const viewer = useRef(null);
   const angleEl = useRef(null);
   const hotspotEls = useRef([]);
-  const [showFeatures, setShowFeatures] = useState(false);
+  const box = useRef(null);
+  const stage = useRef(null);
+  const [showFeatures, setShowFeatures] = useState(featuresAtStart);
+  const menuId = useId();
+  // Inline, the menu drops down over the page: a click anywhere outside the viewer, or Escape, puts it away.
+  useEffect(() => {
+    if (!onExpand || !showFeatures) return undefined;
+    const away = (e) => !box.current?.contains(e.target) && setShowFeatures(false);
+    document.addEventListener('pointerdown', away);
+    return () => document.removeEventListener('pointerdown', away);
+  }, [onExpand, showFeatures]);
   const [canSwim, setCanSwim] = useState(false);
   const [swimming, setSwimming] = useState(SWIM_ON_LOAD);
 
@@ -133,8 +248,14 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
 
   const ready = available === 'ready';
   return (
-    <div className="model-viewer">
-      <div className="model-viewer__stage" style={{ height }}>
+    <div
+      ref={box}
+      className="model-viewer"
+      onKeyDown={(e) => {
+        if (onExpand && showFeatures && e.key === 'Escape') setShowFeatures(false);
+      }}
+    >
+      <div ref={stage} className="model-viewer__stage" style={{ height }}>
         {ready ? (
           <>
             <div ref={host} className="model-viewer__canvas" role="img" aria-label={`3D model of a ${species.name.toLowerCase()}, underwater`} />
@@ -165,26 +286,53 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
         )}
         <span ref={angleEl} className="model-viewer__angle mono">{ready ? null : '—'}</span>
         {onExpand && ready && (
-          <button type="button" className="model-viewer__expand" onClick={onExpand} aria-label="Expand 3D model">
+          <button type="button" className="model-viewer__expand" onClick={() => onExpand(stage.current, showFeatures)} aria-haspopup="dialog" aria-label="Expand 3D model">
             <ExpandIcon />
           </button>
         )}
       </div>
 
-      <div className="model-viewer__controls">
-        <button type="button" onClick={() => rotate(-45)} disabled={!ready} aria-label="Rotate left"><RotateIcon /></button>
-        <button type="button" onClick={() => rotate(45)} disabled={!ready} aria-label="Rotate right"><RotateIcon flip /></button>
-        {Object.entries(views).map(([name, [t, p]]) => (
-          <button key={name} type="button" onClick={() => setOrbit(t, p)} disabled={!ready}>{name}</button>
-        ))}
-        {canSwim && (
-          <button type="button" aria-pressed={swimming} onClick={toggleSwim}>
-            {swimming ? 'Stop' : 'Swim'}
+      <div className="model-viewer__toolbar">
+        <div className="model-viewer__controls">
+          {viewControls && (
+            <>
+              <button type="button" onClick={() => rotate(-45)} disabled={!ready} aria-label="Rotate left"><RotateIcon /></button>
+              <button type="button" onClick={() => rotate(45)} disabled={!ready} aria-label="Rotate right"><RotateIcon flip /></button>
+              {Object.entries(views).map(([name, [t, p]]) => (
+                <button key={name} type="button" onClick={() => setOrbit(t, p)} disabled={!ready}>{name}</button>
+              ))}
+              {canSwim && (
+                <button type="button" aria-pressed={swimming} onClick={toggleSwim}>
+                  {swimming ? 'Stop' : 'Swim'}
+                </button>
+              )}
+            </>
+          )}
+          <button
+            type="button"
+            className="model-viewer__menu-toggle"
+            aria-expanded={showFeatures}
+            aria-controls={menuId}
+            onClick={() => setShowFeatures((v) => !v)}
+          >
+            Key features <ChevronIcon />
           </button>
-        )}
-        <button type="button" aria-pressed={showFeatures} onClick={() => setShowFeatures((v) => !v)}>
-          Key features
-        </button>
+        </div>
+
+        {/* Drops down under the toolbar. Numbers match the labels on the model. */}
+        <div id={menuId} className={`model-viewer__menu ${showFeatures ? 'is-open' : ''}`} inert={!showFeatures}>
+          <div className="model-viewer__menu-inner">
+            {ready && species.hotspots?.length > 0 ? (
+              <ol className="model-viewer__features">
+                {species.hotspots.map((h) => <li key={h.label}>{h.label}</li>)}
+              </ol>
+            ) : (
+              <ul className="model-viewer__features">
+                {species.features.map((f) => <li key={f}>{f}</li>)}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
 
       {variants.length > 1 && (
@@ -197,17 +345,6 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand }) {
           ))}
         </div>
       )}
-
-      {showFeatures &&
-        (ready && species.hotspots.length > 0 ? (
-          <ol className="model-viewer__features">
-            {species.hotspots.map((h) => <li key={h.label}>{h.label}</li>)}
-          </ol>
-        ) : (
-          <ul className="model-viewer__features">
-            {species.features.map((f) => <li key={f}>{f}</li>)}
-          </ul>
-        ))}
     </div>
   );
 }
