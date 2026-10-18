@@ -1,25 +1,49 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine } from 'recharts'
+import { useMemo, useState } from 'react'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine } from 'recharts'
 import { detections, yearData, footageQualityAssessed, weekOf, weekDate, WEEKS } from '../../components/data.js'
 import { footageLabel } from '../../components/status.js'
 import { MONTH_TICKS, cameraById, fmtDate, pearson } from './derive.js'
 import { ONC } from '../../components/oncTheme.js'
 
-const SYNC = 'site-trends'
 const X_DOMAIN = [-0.5, WEEKS - 0.5]
+
+// The chart's three lines, in legend order. Temperature and oxygen share the left axis (their values overlap);
+// sightings have the right one. A week with no footage is a gap in the sightings line, not a drop to zero, so a
+// gap never reads as the fish leaving. Sightings also get a dot every week (marker), which tells their line from
+// oxygen's without relying on colour and sets zero-sighting weeks apart from those gaps.
+const LINES = [
+  { key: 'temp', label: 'Water temperature (°C)', color: ONC.orange, axis: 'env', missing: 'no data here', value: (r) => r.temp },
+  { key: 'oxygen', label: 'Dissolved oxygen (mg/L)', color: ONC.blue, axis: 'env', missing: 'no data here', value: (r) => r.oxygen },
+  {
+    key: 'sightings', label: 'Sightings per week (current filters)', color: ONC.tealDark, axis: 'sightings', marker: true,
+    missing: 'no footage here', value: (r) => (r.footage === 'none' ? null : r.sightings),
+  },
+]
+const NICE_STEPS = [1, 2, 3, 4, 5, 8, 10, 15, 20, 25, 50, 100]
+
+const swatch = ({ color, marker }) => <i className={marker ? 'lg-line lg-line--dot' : 'lg-line'} style={{ '--c': color }} />
 
 function WeekTooltip({ active, payload, year }) {
   if (!active || !payload?.length) return null
   const r = payload[0].payload
+  const [temp, oxygen, sightings] = LINES
   return (
     <div className="chart-tip">
       <strong>Week of {fmtDate(weekDate(r.w, year))}</strong>
-      <span>Temp: {r.temp == null ? 'no data' : `${r.temp} °C`}</span>
-      <span>Oxygen: {r.oxygen == null ? 'no data' : `${r.oxygen} mg/L`}</span>
-      <span>Sightings: {r.footage === 'none' ? 'no footage' : r.sightings}</span>
+      <span>{swatch(temp)}Temp: {r.temp == null ? 'no data' : `${r.temp} °C`}</span>
+      <span>{swatch(oxygen)}Oxygen: {r.oxygen == null ? 'no data' : `${r.oxygen} mg/L`}</span>
+      <span>{swatch(sightings)}Sightings: {r.footage === 'none' ? 'no footage' : r.sightings}</span>
       <span>{footageLabel(r.footage, footageQualityAssessed)}</span>
     </div>
   )
+}
+
+// A week with gaps on both sides has no line to draw, so it gets a dot instead of vanishing
+function lonePoints(rows, { value, color }) {
+  return ({ cx, cy, index }) => {
+    const alone = value(rows[index]) != null && value(rows[index - 1] ?? {}) == null && value(rows[index + 1] ?? {}) == null
+    return alone ? <circle key={index} cx={cx} cy={cy} r={2.5} fill={color} /> : null
+  }
 }
 
 function summarize(rows) {
@@ -41,17 +65,9 @@ function summarize(rows) {
   return `${parts.join(' ')} ${basis}`
 }
 
-export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, year, onClose }) {
-  const [showTemp, setShowTemp] = useState(true)
-  const [showOxygen, setShowOxygen] = useState(true)
+export default function TrendsPanel({ ref, cameraId, speciesOn, statusOn, range, year }) {
+  const [shown, setShown] = useState({ temp: true, oxygen: true, sightings: true })
   const cam = cameraById[cameraId]
-  const ref = useRef(null)
-
-  // The panel sits below the map card: bring it into view whenever a camera is opened
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ref.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
-  }, [cameraId])
 
   const rows = useMemo(() => {
     const sightings = Array(WEEKS).fill(0)
@@ -82,69 +98,77 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, year
     URL.revokeObjectURL(a.href)
   }
 
-  // Shared background for all three charts: murky shaded, no footage hatched, selected period outlined.
-  const background = [
-    <defs key="defs">
-      <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <rect width="6" height="6" fill="#fff" />
-        <line x1="0" y1="0" x2="0" y2="6" stroke="#999999" strokeWidth="2" />
-      </pattern>
-    </defs>,
-    ...rows.filter((r) => r.footage !== 'clear').map((r) => (
-      <ReferenceArea key={`f${r.w}`} x1={r.w - 0.5} x2={r.w + 0.5} ifOverflow="hidden" strokeOpacity={0}
-        fill={r.footage === 'none' ? 'url(#hatch)' : '#dfe6ea'} fillOpacity={r.footage === 'none' ? 1 : 0.8} />
-    )),
-    <ReferenceArea key="sel" x1={range[0] - 0.5} x2={range[1] + 0.5} fill="none" stroke={ONC.teal} strokeWidth={1.5} />,
-  ]
-
-  const xAxis = (show) => (
-    <XAxis dataKey="w" type="number" domain={X_DOMAIN} ticks={MONTH_TICKS.map((m) => m.w)} hide={!show}
-      tickFormatter={(w) => MONTH_TICKS.find((m) => m.w === w)?.label ?? ''} tick={{ fontSize: 11 }} />
-  )
-  const margin = { top: 6, right: 12, bottom: 0, left: 0 }
-  const charts = [
-    showTemp && { key: 'temp', title: 'Water temperature (°C)', h: 70 },
-    showOxygen && { key: 'oxygen', title: 'Dissolved oxygen (mg/L)', h: 70 },
-    { key: 'sightings', title: 'Sightings per week (current filters)', h: 80 },
-  ].filter(Boolean)
+  // A line is drawn when it's switched on and has data at this camera; each axis shows only with a line on it
+  const hasData = Object.fromEntries(LINES.map((l) => [l.key, rows.some((r) => l.value(r) != null)]))
+  const drawn = Object.fromEntries(LINES.map((l) => [l.key, shown[l.key] && hasData[l.key]]))
+  const envShown = drawn.temp || drawn.oxygen
+  // With oxygen drawn, the left axis reaches 0 so the hypoxic line (2 mg/L) is always on it
+  const envDomain = drawn.oxygen ? [(min) => Math.min(0, Math.floor(min)), 'auto'] : ['auto', 'auto']
+  // Sightings axis: four even steps, with headroom above the busiest week so its line doesn't run along the top
+  const peak = Math.max(0, ...rows.filter((r) => r.footage !== 'none').map((r) => r.sightings))
+  const step = NICE_STEPS.find((s) => 4 * s >= peak * 1.15) ?? Math.ceil((peak * 1.15) / 4)
 
   return (
     <section ref={ref} className="mp-card trends" aria-label={`Site trends for ${cam.name}`}>
       <header className="trends-head">
         <h2>{cam.name} <small>{cam.area} · weekly, {year}</small></h2>
         <div className="trends-controls">
-          <label><input type="checkbox" checked={showTemp} onChange={() => setShowTemp(!showTemp)} /> Temperature</label>
-          <label><input type="checkbox" checked={showOxygen} onChange={() => setShowOxygen(!showOxygen)} /> Oxygen</label>
           <label>Range <select disabled defaultValue="year"><option value="year">12 months</option></select></label>
           <button type="button" className="link-btn" onClick={download}>Download this data</button>
-          <button type="button" className="close-btn" onClick={onClose} aria-label="Close site trends">×</button>
         </div>
       </header>
+      <p className="trends-hint">Click another camera on the map, or under Camera locations, to see its trends.</p>
 
-      <div className="trends-charts">
-        {charts.map((c, i) => (
-          <div key={c.key} className="trend-chart">
-            <h3>{c.title}</h3>
-            <ResponsiveContainer width="100%" height={c.h + (i === charts.length - 1 ? 20 : 0)}>
-              <ComposedChart data={rows} syncId={SYNC} margin={margin}>
-                {background}
-                {xAxis(i === charts.length - 1)}
-                <YAxis width={34} tick={{ fontSize: 11 }} allowDecimals={c.key !== 'sightings'}
-                  domain={c.key === 'oxygen' ? [0, 'auto'] : ['auto', 'auto']} />
-                <Tooltip content={<WeekTooltip year={year} />} />
-                {c.key === 'temp' && <Line dataKey="temp" stroke={ONC.orange} dot={false} strokeWidth={2} connectNulls={false} isAnimationActive={false} />}
-                {/* Separate conditionals, not a fragment: recharts 2 does not look inside fragments under React 19 */}
-                {c.key === 'oxygen' && (
-                  <ReferenceLine y={2} stroke={ONC.red} strokeDasharray="4 3"
-                    label={{ value: 'hypoxic below 2 mg/L', position: 'insideTopRight', fontSize: 10, fill: ONC.red }} />
-                )}
-                {c.key === 'oxygen' && <Line dataKey="oxygen" stroke={ONC.blue} dot={false} strokeWidth={2} connectNulls={false} isAnimationActive={false} />}
-                {c.key === 'sightings' && <Bar dataKey="sightings" fill={ONC.tealDark} isAnimationActive={false} />}
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Colour legend; each entry also shows or hides its line */}
+      <fieldset className="trend-legend">
+        <legend className="visually-hidden">Lines on the chart</legend>
+        {LINES.map((l) => (
+          <label key={l.key}>
+            <input type="checkbox" checked={shown[l.key]} onChange={() => setShown({ ...shown, [l.key]: !shown[l.key] })} />
+            {swatch(l)}
+            {l.label}
+            {!hasData[l.key] && <span className="muted">· {l.missing}</span>}
+          </label>
         ))}
+      </fieldset>
+
+      <div className="trend-axes" aria-hidden="true">
+        <span>{envShown && '°C · mg/L'}</span>
+        <span>{drawn.sightings && 'Sightings'}</span>
       </div>
+      <ResponsiveContainer width="100%" height={260}>
+        <LineChart data={rows} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
+          {/* Background: murky weeks shaded, no-footage weeks hatched, selected period outlined */}
+          <defs>
+            <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="6" height="6" fill="#fff" />
+              <line x1="0" y1="0" x2="0" y2="6" stroke="#999999" strokeWidth="2" />
+            </pattern>
+          </defs>
+          {rows.filter((r) => r.footage !== 'clear').map((r) => (
+            <ReferenceArea key={`f${r.w}`} yAxisId="env" x1={r.w - 0.5} x2={r.w + 0.5} ifOverflow="hidden" strokeOpacity={0}
+              fill={r.footage === 'none' ? 'url(#hatch)' : '#dfe6ea'} fillOpacity={r.footage === 'none' ? 1 : 0.8} />
+          ))}
+          <ReferenceArea yAxisId="env" x1={range[0] - 0.5} x2={range[1] + 0.5} fill="none" stroke={ONC.teal} strokeWidth={1.5} />
+
+          <XAxis dataKey="w" type="number" domain={X_DOMAIN} ticks={MONTH_TICKS.map((m) => m.w)}
+            tickFormatter={(w) => MONTH_TICKS.find((m) => m.w === w)?.label ?? ''} tick={{ fontSize: 11 }} />
+          <YAxis yAxisId="env" width={34} tick={{ fontSize: 11 }} domain={envDomain} hide={!envShown} />
+          <YAxis yAxisId="sightings" orientation="right" width={30} domain={[0, 4 * step]} ticks={[0, 1, 2, 3, 4].map((i) => i * step)}
+            tick={{ fontSize: 11, fill: ONC.tealDark }} hide={!drawn.sightings} />
+          <Tooltip content={<WeekTooltip year={year} />} />
+          {/* Separate conditionals, not a fragment: recharts 2 does not look inside fragments under React 19 */}
+          {drawn.oxygen && (
+            <ReferenceLine yAxisId="env" y={2} stroke={ONC.red} strokeDasharray="4 3"
+              label={{ value: 'hypoxic below 2 mg/L', position: 'insideTopRight', fontSize: 10, fill: ONC.red }} />
+          )}
+          {LINES.filter((l) => drawn[l.key]).map((l) => (
+            <Line key={l.key} yAxisId={l.axis} dataKey={l.value} name={l.label} stroke={l.color} strokeWidth={2}
+              dot={l.marker ? { r: 2.5, fill: l.color, strokeWidth: 0 } : lonePoints(rows, l)}
+              connectNulls={false} isAnimationActive={false} />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
 
       <div className="trends-foot">
         <div className="trends-legend" aria-label="Chart legend">
