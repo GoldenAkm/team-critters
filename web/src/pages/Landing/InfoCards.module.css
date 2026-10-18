@@ -52,6 +52,29 @@
   color: var(--color-ink-faint);
 }
 
+.figure {
+  margin: 0;
+  border-bottom: 1px solid var(--color-line-soft);
+}
+
+/* Every photo is cropped to the same shape so the cards line up; the credit
+   is a text line underneath instead of being printed on the picture. */
+.photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-bottom: none;
+}
+
+.credit {
+  padding: 6px 20px;
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
 .body {
   padding: 18px 20px 22px;
 }
