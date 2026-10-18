@@ -7,7 +7,15 @@
   --ocean-light: #12505a;
   --glass: rgb(255 255 255 / 0.92);
 }
-.mp-page { flex: 1; display: flex; flex-direction: column; }
+/* The page is a deep ocean: teal under the banner, darker with depth. Its own stacking context keeps the wave
+   canvas (z-index -1) above this background and below everything else. */
+.mp-page {
+  --sea-top: #0e4a5e;
+  position: relative; isolation: isolate;
+  flex: 1; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, var(--sea-top) 0, #08303f 900px, #051d2a 100%);
+}
+.mp-waves { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
 .mp-page h1, .mp-page h2, .mp-page h3 { margin: 0; line-height: 1.15; }
 .mp-page p { margin: 0; }
 
@@ -45,38 +53,41 @@
   inset: -120px 0 0;
   z-index: -1;
   background:
-    /* Darker behind the breadcrumb (top, most over the hazy sky on the left) and the text over the water
-       (bottom), so light text stays readable; the bluffs on the right stay bright */
-    radial-gradient(760px 220px at 360px 100px, rgb(3 20 30 / 0.6) 30%, rgb(3 20 30 / 0)),
-    linear-gradient(180deg, rgb(3 20 30 / 0.6) 0, rgb(3 20 30 / 0) 260px),
-    linear-gradient(0deg, rgb(3 20 30 / 0.72) 0, rgb(3 20 30 / 0.6) var(--scrim-mid), rgb(3 20 30 / 0) var(--scrim-top)),
-    url('../../assets/coast-bluffs.webp') 72% 30% / cover no-repeat var(--ocean-deep);
-  /* Up to the top of the text block (taller on phones, where the text wraps) */
-  --scrim-mid: 160px;
-  --scrim-top: 290px;
+    /* A haze on the left, behind the breadcrumb and the title block, fading out to the right so the bluffs
+       stay bright and crisp */
+    var(--text-scrim),
+    url('../../assets/coast-bluffs.webp') 72% 40% / cover no-repeat var(--ocean-deep);
+  /* The photo's water fades out at the bottom into the page's sea, where the wave lines carry on. The fade
+     stays below the foot of the bluffs (the photo sits at 40% so they're above it at every width). */
+  -webkit-mask: linear-gradient(180deg, #000 calc(100% - 90px), transparent);
+  mask: linear-gradient(180deg, #000 calc(100% - 90px), transparent);
+  /* Even to about two-thirds of the way across the text, then gone a little past its end (the text column
+     starts 20px inside the 1240px page width and is up to 640px wide) */
+  --text-scrim: linear-gradient(90deg, rgb(3 20 30 / 0.6) 0, rgb(3 20 30 / 0.5) max(420px, calc(50% - 160px)),
+    rgb(3 20 30 / 0) max(820px, calc(50% + 200px)));
 }
 /* Same height as the banner had with its four steps. The text sits low, over the water. */
 .mp-hero__inner {
-  max-width: 1240px; min-height: 310px; margin: 0 auto; padding: 36px 20px 28px;
+  max-width: 1240px; min-height: 310px; margin: 0 auto; padding: 36px 20px 72px;
   display: grid; align-content: end; gap: 24px;
 }
-.mp-hero__top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
 .mp-hero__text {
   display: grid; gap: 10px; max-width: 640px;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 0.45), 0 1px 14px rgb(0 0 0 / 0.35);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6), 0 0 18px rgb(0 0 0 / 0.45), 0 0 4px rgb(0 0 0 / 0.35);
 }
 .mp-hero h1 { font-family: var(--font-display); font-size: 44px; font-weight: 700; line-height: 1.02; color: #fff; }
 .mp-hero p { font-size: 16px; line-height: 1.5; color: rgb(255 255 255 / 0.9); }
-.mp-hero__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.mp-hero :focus-visible { outline-color: #9fe3f2; }
+
+
+/* Summary pills, above the map */
+.mp-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .mp-pill {
   display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px;
-  border-radius: 999px; background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.22);
-  color: #fff; font-size: 13px; font-weight: 500; text-decoration: none; backdrop-filter: blur(6px);
+  border-radius: 999px; background: var(--surface); border: 1px solid var(--line);
+  color: var(--ink); font-size: 13px; font-weight: 500; text-decoration: none;
 }
 .mp-pill b { font-family: var(--font-display); font-size: 17px; }
-.mp-pill--link { background: #fff; color: var(--onc-teal-dark); border-color: #fff; }
-.mp-pill--link:hover { background: var(--tint); }
-.mp-hero :focus-visible { outline-color: #9fe3f2; }
 
 /* ---------- body ---------- */
 .mp-body { width: 100%; max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; }
@@ -90,7 +101,10 @@
 /* Map card: the map with its timeline docked underneath */
 .map-main { position: relative; height: min(640px, 70vh); min-height: 420px; }
 .map-wrap, .leaflet-map { position: absolute; inset: 0; }
-.leaflet-map { background: #c9dde6; font-family: var(--font-body); }
+.leaflet-map { background: #3e87b0; font-family: var(--font-body); }
+/* Deep-teal look: the Esri Ocean tiles darker and more saturated. Only the tiles; markers and labels keep their
+   colours. The background above is the tiles' sea colour after this filter, shown while they load. */
+.leaflet-tile-pane { filter: saturate(1.7) brightness(0.72) contrast(1.15) hue-rotate(-12deg); }
 .leaflet-top.leaflet-right { margin-top: 4px; }
 .leaflet-bar { border: 0 !important; border-radius: var(--radius) !important; box-shadow: var(--shadow-2) !important; overflow: hidden; }
 .leaflet-bar a { color: var(--ink); width: 34px !important; height: 34px !important; line-height: 34px !important; }
@@ -289,8 +303,9 @@
   .mp-side { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 }
 @media (max-width: 760px) {
-  .mp-hero__inner { padding: 24px 16px 20px; gap: 18px; }
-  .mp-hero::before { --scrim-mid: 270px; --scrim-top: 400px; }
+  .mp-hero__inner { padding: 24px 16px 64px; gap: 18px; }
+  /* On phones the text spans the width, so the shading does too, up to the top of the text block */
+  .mp-hero::before { --text-scrim: linear-gradient(0deg, rgb(3 20 30 / 0.45) 0, rgb(3 20 30 / 0.35) 270px, rgb(3 20 30 / 0) 400px); }
   .mp-hero h1 { font-size: 34px; }
   .mp-hero p { font-size: 15px; }
   .mp-body { padding: 16px 16px 40px; }
@@ -313,7 +328,9 @@
 
 /* Data note under the map */
 .mp-note { display: grid; gap: 6px; padding: 0 4px; }
-.mp-note .sample-note, .mp-note .sources { font-size: 12px; }
+/* Light text: the note sits on the dark ocean, not on a card */
+.mp-note .sample-note, .mp-note .sources { font-size: 12px; color: rgb(255 255 255 / 0.75); }
+.mp-note .sources summary { color: #8fdcef; }
 
 /* ---------- AI model check (species card) ---------- */
 .species-card > .model-check { margin: 0 16px 12px; }

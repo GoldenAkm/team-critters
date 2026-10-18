@@ -8,7 +8,8 @@ import EnvTiles from './EnvTiles.jsx'
 import SpeciesCard from './SpeciesCard.jsx'
 import TrendsPanel from './TrendsPanel.jsx'
 import AppHeader from '../../components/AppHeader.jsx'
-import MapHero from './MapHero.jsx'
+import MapHero, { MapStats } from './MapHero.jsx'
+import OceanWaves, { OCEAN_LOOK } from './OceanWaves.jsx'
 import DataNote from './DataNote.jsx'
 import './map.css'
 
@@ -91,20 +92,17 @@ export default function MapPage() {
     setSearch('')
   }
 
-  const reviewCount = detections.filter((d) => d.status === 'needs_review' && +d.timestamp.slice(0, 4) === year).length
-
   return (
     <>
       <a className="skip-link" href="#main">Skip to main content</a>
       {/* The hero's photo runs up behind the header's strip */}
       <AppHeader active="map" band="transparent" />
-      <main id="main" className="mp-page">
-        <MapHero
-          shown={filtered.length} year={year} reviewCount={reviewCount}
-          camerasWithSightings={Object.keys(cameraCounts).length} cameraCount={cameras.length}
-        />
+      <main id="main" className="mp-page" data-ocean={OCEAN_LOOK}>
+        <OceanWaves />
+        <MapHero />
 
         <div className="mp-body">
+          <MapStats shown={filtered.length} year={year} cameraCount={cameras.length} />
           <div className="mp-layout">
             <div className="mp-main">
               <section className="mp-card mp-map-card" aria-label="Map of ONC camera sites">
