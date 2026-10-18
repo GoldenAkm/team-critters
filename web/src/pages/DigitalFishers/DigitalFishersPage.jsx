@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loadReviewData } from '../../lib/data.js';
 import { addVote, outcomeFor, resolveConsensus } from './consensus.js';
 import { toConfirmedDetection } from '../../lib/detections.js';
@@ -16,6 +16,7 @@ import './base.css';
 import './DigitalFishersPage.css';
 
 const EMPTY_SESSION = { reviewed: 0 };
+const MENU_MS = 320; // the Key features menu's open/close transition (DigitalFishersPage.css), plus a little
 
 function formatTime(iso) {
   return new Date(iso).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
@@ -28,6 +29,17 @@ export default function ReviewPage() {
   const [result, setResult] = useState(null);
   const [session, setSession] = useState(EMPTY_SESSION);
   const [done, setDone] = useState(false);
+  // While the Key features menu is open it pushes the decision card down. The card normally stretches to end level
+  // with the frame, so it would give up the space instead: hold its height until the menu has folded away again.
+  const decision = useRef(null);
+  const release = useRef(0);
+  const [heldHeight, setHeldHeight] = useState(null);
+  function holdDecision(open) {
+    clearTimeout(release.current);
+    if (open) setHeldHeight(decision.current?.getBoundingClientRect().height ?? null);
+    else release.current = setTimeout(() => setHeldHeight(null), MENU_MS);
+  }
+  useEffect(() => () => clearTimeout(release.current), []);
   const collection = useCollection();
 
   useEffect(() => {
@@ -101,9 +113,14 @@ export default function ReviewPage() {
 
         {!done && (
           <div className="df-side">
-            <IdGuide clip={clip} highlight={result?.outcome.type === 'confirmed_other'} />
+            <IdGuide clip={clip} highlight={result?.outcome.type === 'confirmed_other'} onMenuChange={holdDecision} />
 
-            <section className="decision glass" aria-labelledby="df-question">
+            <section
+              ref={decision}
+              className="decision glass"
+              style={heldHeight ? { minHeight: heldHeight } : undefined}
+              aria-labelledby="df-question"
+            >
               <h2 id="df-question" className="question">{clip.question}</h2>
               {result ? (
                 <ResultPanel clip={clip} result={result} isLast={isLast} onNext={next} />

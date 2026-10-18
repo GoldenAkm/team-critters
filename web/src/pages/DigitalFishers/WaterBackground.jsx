@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 // The water behind Digital Fishers: the same water as the 3D viewer (components/underwater/UnderwaterViewer.js),
 // filling the window while the page scrolls over it. Light shafts and a rippling caustic net under the surface,
 // marine snow at three depths that shifts with scroll (parallax), streams of bubbles rising to the surface, and
-// now and then a fish (or a small school) crossing in the distance as a soft silhouette.
+// now and then a fish (or a small school) crossing in the distance as a soft silhouette, each one built differently.
 // One full-window fragment shader, drawn at CSS-pixel size and about 30 fps; a still frame for reduced motion.
 // Without WebGL the page's CSS gradient shows instead. Decorative only.
 
@@ -88,43 +88,113 @@ vec2 bubbles(vec2 p, float aspect, float t) {
   return vec2(shell, glint);
 }
 
-// A fish silhouette in its own frame (nose at x = 1, tail fin out to about x = -1.2): under 1 inside.
-// The body bends in a wave that runs to the tail, and the tail fin flaps.
-float fish(vec2 q, float t, float seed) {
-  q.y += .05 * sin(q.x * 3. - t * 7. + seed) * (.6 - q.x * .4);
-  float body = length(vec2((q.x - .1) / .95, q.y / (.28 + .06 * q.x)));
-  float tx = -.78 - q.x;
-  float ty = abs(q.y - .07 * sin(t * 7. + seed - 2.) * clamp(tx * 3., 0., 1.));
-  float tail = tx > 0. && tx < .45 ? ty / (.05 + tx * .85) : 9.;
-  return min(body, tail);
+vec4 hash4(vec2 p) { return vec4(hash2(p), hash2(p + 19.19)); }
+
+// A fish seen side-on, as a soft silhouette (0-1 coverage). q: the fish's own frame in half-lengths, nose at
+// x = 1, the tail stalk ending at x = -.75 and the tail fin running on from there. b and f: its build, random
+// 0-1 values that make every fish different (depth and head shape, fins, tail shape, swimming beat).
+// aa: how soft its edges are.
+float fish(vec2 q, float t, vec4 b, vec4 f, float aa) {
+  float beat = 4. + 4. * f.x;
+  float phase = b.x * 6.2831;
+  // The body bends in a wave that runs back to the tail and grows toward it.
+  float u = clamp((1. - q.x) / 1.75, 0., 1.); // 0 at the nose, 1 where the tail fin starts
+  q.y -= (.035 + .04 * f.y) * u * u * sin(u * 5. - t * beat + phase);
+
+  // Body: a streamlined profile (the NACA airfoil thickness curve) with a rounded nose, tapering to a slim tail
+  // stalk, and a little camber so the back arches more than the belly. Deep or slim, more or less arched, and a
+  // snout from round (rockfish) to long and pointed (lingcod, greenling).
+  float th = (.16 + .28 * b.y) * 1.75;
+  float s = pow(u, 1. + .9 * fract(b.y * 7.3 + f.x * 3.1));
+  float yt = 5. * th * (.2969 * sqrt(s) - .126 * s - .3516 * s * s + .2843 * s * s * s - .1015 * s * s * s * s);
+  float cam = .02 + .05 * b.z;
+  float yc = 1.75 * (u < .4 ? cam / .16 * (.8 * u - u * u) : cam / .36 * (.2 + .8 * u - u * u));
+  float stalk = .06 + .05 * b.w;
+  float back = mix(yc + yt, stalk, smoothstep(.72, 1., u));
+  float belly = mix(yt - yc, stalk, smoothstep(.7, 1., u));
+  float body = q.x > -.76 ? (1. - smoothstep(-aa, aa, max(q.y - back, -belly - q.y))) * (1. - smoothstep(1. - aa, 1. + aa, q.x)) : 0.;
+
+  // Dorsal fin along the back: smooth, or (like a rockfish's) spiny and notched at the front with a soft,
+  // rounded part behind; long or short.
+  float fin = 0.;
+  float d0 = .18 + .14 * f.z;
+  float d1 = d0 + .28 + .2 * f.w;
+  float v = (u - d0) / (d1 - d0);
+  if (v > 0. && v < 1.) {
+    float h = (.08 + .1 * b.w) * pow(sin(3.1416 * pow(v, .55)), 1.1);
+    h *= 1. - step(.5, f.z) * (1. - smoothstep(.5, .66, v)) * .45 * pow(abs(sin(v * 3.1416 * (6. + 4. * f.w))), 2.);
+    fin = 1. - smoothstep(-aa, aa, max(q.y - back - h, back - .02 - q.y));
+  }
+  // Anal fin near the tail and a small pelvic fin under the chest.
+  float va = (u - .62) / .16;
+  if (va > 0. && va < 1.) {
+    float h = (.05 + .04 * f.y) * sin(3.1416 * pow(va, .6));
+    fin = max(fin, 1. - smoothstep(-aa, aa, max(-q.y - belly - h, q.y + belly - .02)));
+  }
+  float vp = (u - .3) / .1;
+  if (vp > 0. && vp < 1.) {
+    float h = .07 * (1. - vp) * b.z;
+    fin = max(fin, 1. - smoothstep(-aa, aa, max(-q.y - belly - h, q.y + belly - .02)));
+  }
+
+  // Tail fin: fans out quickly from the stalk into broad lobes and flaps with the wave; rounded, square or forked.
+  // A fork stays shallow, with a curved notch and rounded tips, so it reads as a fin rather than an arrow.
+  float tail = 0.;
+  float len = .38 + .2 * b.x;
+  float tx = (-.75 - q.x) / len; // 0 at the stalk, 1 at the tips
+  if (tx > -.05 && tx < 1.3) {
+    float ty = q.y - (.25 + .2 * f.y) * cos(5. - t * beat + phase) * tx * len;
+    float spread = stalk + (.24 + .14 * b.y - stalk) * smoothstep(0., .4, tx);
+    float k = clamp(abs(ty) / spread, 0., 1.);
+    float fork = f.w * 1.05 - .45; // under 0 rounded, 0 square, over 0 forked (at most 60% deep)
+    float edge = 1. - max(fork, 0.) * pow(1. - k, 1.4) - max(-fork, 0.) * k * k - .12 * pow(k, 5.);
+    tail = 1. - smoothstep(-aa, aa, max(abs(ty) - spread, (tx - edge) * len));
+  }
+
+  // Fins are thin, so a little paler than the body; the belly is a shade lighter than the back.
+  float shade = 1. - .18 * smoothstep(0., max(belly, .05), -q.y);
+  return max(body * shade, max(fin, tail) * .82);
 }
 
-// Now and then a fish swims across in the distance: four slots, each crossing for 14-22 s once every 45-80 s,
-// at a random height, direction and distance (further = smaller, fainter, softer). The last slot is a school.
+// Now and then a fish swims across in the distance: four slots, each crossing for 14-24 s once every 45-80 s,
+// at a random height, direction, speed and distance (further = smaller, fainter, softer), rising and falling a
+// little with the body tilted to follow. Every crossing is a new fish. The last slot is a small school of one kind,
+// each member a little different.
 float fishes(vec2 p, float aspect, float t) {
   float cover = 0.;
+  float px = 1. / uRes.y;
   for (int i = 0; i < 4; i++) {
     float fi = float(i);
     float period = 45. + 35. * hash(vec2(fi, 4.1));
     float u = t + period * hash(vec2(fi, 7.3));
     float cycle = floor(u / period);
     vec2 h = hash2(vec2(fi * 13.7, cycle));
-    float k = mod(u, period) / (14. + 8. * h.x);
+    float k = mod(u, period) / (14. + 10. * h.x);
     if (k > 1.) continue;
     float far = h.y;
-    float size = mix(.065, .022, far) * (i == 3 ? .6 : 1.);
+    vec4 b = hash4(vec2(fi + 1.3, cycle));
+    vec4 f = hash4(vec2(fi + 5.7, cycle + .5));
+    bool school = i == 3;
+    float size = mix(.065, .022, far) * (school ? .55 : 1.);
     float dir = hash(vec2(cycle, fi + .5)) > .5 ? 1. : -1.;
-    float x = mix(-.25, aspect + .25, dir > 0. ? k : 1. - k);
-    float y = .22 + .6 * hash(vec2(cycle * 1.7, fi)) + .01 * sin(t * .9 + fi) + uScroll * mix(.3, .1, far);
-    for (int m = 0; m < 5; m++) {
-      if (m > 0 && i != 3) break;
+    float x0 = mix(-.3, aspect + .3, dir > 0. ? k : 1. - k);
+    float ang = k * 6.2831 * (1. + f.z) + b.x * 6.2831;
+    float y0 = .22 + .6 * hash(vec2(cycle * 1.7, fi)) + .025 * sin(ang) + uScroll * mix(.3, .1, far);
+    float pitch = atan(.025 * 6.2831 * (1. + f.z) * cos(ang), aspect + .6);
+    float pc = cos(pitch);
+    float ps = sin(pitch);
+    for (int m = 0; m < 6; m++) {
+      if (m > 0 && !school) break;
       float fm = float(m);
-      vec2 c = vec2(x, y) + (m == 0 ? vec2(0.) : (hash2(vec2(fm, fi + cycle)) - .5) * vec2(7., 3.5) * size);
-      vec2 d = p - c;
-      if (abs(d.x) > 1.4 * size || abs(d.y) > .6 * size) continue;
-      float f = fish(vec2(d.x * dir, d.y) / size, t, fi * 3.1 + fm * 1.7);
-      float soft = mix(.08, .25, far);
-      cover = max(cover, smoothstep(1. + soft, 1. - soft, f) * mix(.6, .22, far));
+      vec2 j = hash2(vec2(fm, fi + cycle));
+      vec2 off = m == 0 ? vec2(0.) : (j - .5) * vec2(7., 3.5) * size + .3 * size * vec2(sin(t * .7 + fm), cos(t * .5 + fm * 2.));
+      float sz = size * (m == 0 ? 1. : .85 + .3 * j.x);
+      vec2 d = p - vec2(x0, y0) - off;
+      if (abs(d.x) > 1.6 * sz || abs(d.y) > .9 * sz) continue;
+      vec2 q = vec2(d.x * dir, d.y) / sz;
+      q = vec2(pc * q.x + ps * q.y, -ps * q.x + pc * q.y);
+      float a = fish(q, t + fm * 1.3, b, f + vec4(j.y * .2, 0., 0., 0.), px / sz * 1.3 + far * .05);
+      cover = max(cover, a * mix(.62, .22, far));
     }
   }
   return cover;

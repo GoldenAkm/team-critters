@@ -300,13 +300,6 @@ ol.model-viewer__features li::before {
 .glass > .model-viewer .model-viewer__variants button:hover { border-color: var(--glass-accent); }
 .glass > .model-viewer .model-viewer__variants button[aria-pressed='true'] { background: rgb(255 255 255 / 0.92); border-color: transparent; color: var(--onc-teal-dark); }
 
-/* In the 3D panel the Key features menu drops down over the page instead of pushing the decision card down */
-.id-guide .model-viewer__toolbar { position: relative; }
-.id-guide .model-viewer__menu { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; }
-.id-guide > .model-viewer .model-viewer__features {
-  background: rgb(14 44 50 / 0.94); border-color: var(--glass-edge);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-}
 
 /* Solid glass where blur isn't available or people ask for less transparency */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

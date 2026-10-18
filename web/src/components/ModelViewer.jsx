@@ -89,14 +89,20 @@ function useModelAvailable(url) {
 }
 
 // focusFrom: optional ref to the panel around the viewer, which slides to the middle when the model comes into focus.
-export default function ModelViewer({ species, height = 260, focusFrom }) {
+// onMenuChange(open): told just before the inline Key features menu opens or closes, so the page can make room.
+export default function ModelViewer({ species, height = 260, focusFrom, onMenuChange }) {
   const [variantId, setVariantId] = useState(species.modelVariants?.[0]?.id);
   // null, or the focused view: { stage, features } (stage: the inline stage it grows out of).
   const [focused, setFocused] = useState(null);
   const shared = { species, variantId, setVariantId };
   return (
     <>
-      <ViewerBody {...shared} height={height} onExpand={(stage, features) => setFocused((f) => f ?? { stage, features })} />
+      <ViewerBody
+        {...shared}
+        height={height}
+        onExpand={(stage, features) => setFocused((f) => f ?? { stage, features })}
+        onMenuChange={onMenuChange}
+      />
       {focused && <ExpandedViewer {...shared} {...focused} panel={focusFrom?.current} onDone={() => setFocused(null)} />}
     </>
   );
@@ -188,7 +194,7 @@ function ExpandedViewer({ species, stage, features, panel, onDone, ...shared }) 
 
 // onExpand (inline only) gets the stage element, to bring the model into focus from where it is, and whether the
 // key features are showing, so the focused view opens the same way.
-function ViewerBody({ species, variantId, setVariantId, height, onExpand, viewControls = false, featuresAtStart = false }) {
+function ViewerBody({ species, variantId, setVariantId, height, onExpand, onMenuChange, viewControls = false, featuresAtStart = false }) {
   const variants = species.modelVariants ?? [];
   const views = species.views ?? DEFAULT_VIEWS;
   const model = variants.find((v) => v.id === variantId)?.model ?? species.model;
@@ -199,17 +205,13 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand, viewCo
   const viewer = useRef(null);
   const angleEl = useRef(null);
   const hotspotEls = useRef([]);
-  const box = useRef(null);
   const stage = useRef(null);
   const [showFeatures, setShowFeatures] = useState(featuresAtStart);
   const menuId = useId();
-  // Inline, the menu drops down over the page: a click anywhere outside the viewer, or Escape, puts it away.
-  useEffect(() => {
-    if (!onExpand || !showFeatures) return undefined;
-    const away = (e) => !box.current?.contains(e.target) && setShowFeatures(false);
-    document.addEventListener('pointerdown', away);
-    return () => document.removeEventListener('pointerdown', away);
-  }, [onExpand, showFeatures]);
+  const toggleFeatures = () => {
+    onMenuChange?.(!showFeatures);
+    setShowFeatures(!showFeatures);
+  };
   const [canSwim, setCanSwim] = useState(false);
   const [swimming, setSwimming] = useState(SWIM_ON_LOAD);
 
@@ -248,13 +250,7 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand, viewCo
 
   const ready = available === 'ready';
   return (
-    <div
-      ref={box}
-      className="model-viewer"
-      onKeyDown={(e) => {
-        if (onExpand && showFeatures && e.key === 'Escape') setShowFeatures(false);
-      }}
-    >
+    <div className="model-viewer">
       <div ref={stage} className="model-viewer__stage" style={{ height }}>
         {ready ? (
           <>
@@ -313,7 +309,7 @@ function ViewerBody({ species, variantId, setVariantId, height, onExpand, viewCo
             className="model-viewer__menu-toggle"
             aria-expanded={showFeatures}
             aria-controls={menuId}
-            onClick={() => setShowFeatures((v) => !v)}
+            onClick={toggleFeatures}
           >
             Key features <ChevronIcon />
           </button>
