@@ -5,7 +5,7 @@ export default function IdGuide({ clip, checked, onToggle, locked, highlight }) 
   return (
     <aside className={`id-guide ${highlight ? 'is-highlighted' : ''}`} aria-label="Identification guide">
       <h3>Compare with the 3D model</h3>
-      <ModelViewer species={clip.species} height={200} />
+      <ModelViewer key={clip.species.id} species={clip.species} height={200} />
 
       <fieldset className="checklist" disabled={locked}>
         <legend>What can you see in the clip? <span className="muted">(optional)</span></legend>
