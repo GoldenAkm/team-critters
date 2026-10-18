@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 // Multi-page site: every tab is its own directory with its own index.html.
 const PAGES = { main: 'index.html', map: 'map/index.html', digitalFishers: 'digital-fishers/index.html' }
 
@@ -24,8 +25,8 @@ function redirect(req, res, next) {
 export default defineConfig({
   plugins: [react(), trailingSlash],
   build: {
-    rollupOptions: {
-      input: Object.fromEntries(Object.entries(PAGES).map(([k, p]) => [k, resolve(__dirname, p)])),
+    rolldownOptions: {
+      input: Object.fromEntries(Object.entries(PAGES).map(([k, p]) => [k, resolve(import.meta.dirname, p)])),
     },
   },
 })

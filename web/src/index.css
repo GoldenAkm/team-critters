@@ -1,38 +1,123 @@
-/* Palette follows the Ocean Networks Canada Oceans 3.0 tool pages (data.oceannetworks.ca); layout is our own. */
-:root {
-  --onc-teal: #129cc0;       /* ONC title, logo block, links */
-  --onc-teal-dark: #237e91;  /* ONC active tabs, primary buttons */
-  --onc-green: #7ac142;      /* ONC tool-name green */
-  --onc-lime: #97d700;       /* ONC portal highlights */
-  --onc-navy: #1d428a;       /* ONC portal banner */
-  --onc-orange: #ce712f;     /* SeaTube accent: temperature */
-  --onc-blue: #2e6ba1;       /* SeaTube accent: oxygen */
-  --onc-red: #b83726;        /* SeaTube accent: warnings / hypoxia */
-  --onc-amber: #fdb917;      /* SeaTube accent: needs review */
+/* Shared design tokens and base styles for every page.
+   Grayscale with IBM Plex until the team picks a visual style
+   (critters_context.md, Shared conventions). */
 
-  --ink: #16232b;
-  --muted: #5d6b74;
-  --line: #e2e8ec;
-  --surface: #ffffff;
-  --surface-2: #f4f7f9;
-  --tint: #e8f5f9;           /* teal at low strength for hovers/selected */
-  --radius: 10px;
-  --radius-lg: 16px;
-  --shadow-1: 0 1px 2px rgb(16 32 40 / 0.06), 0 1px 3px rgb(16 32 40 / 0.08);
-  --shadow-2: 0 10px 30px rgb(16 32 40 / 0.14), 0 2px 6px rgb(16 32 40 / 0.06);
-  --font-body: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'Rajdhani', 'Roboto', Arial, sans-serif;
+:root {
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --color-bg: #f3f3f1;
+  --color-surface: #fafaf8;
+  --color-chrome: #e4e4e0; /* portal header and footer */
+  --color-placeholder: #e8e8e4; /* image and video placeholders */
+  --color-ink: #222;
+  --color-ink-muted: #4d4d4d;
+  --color-ink-faint: #666;
+  --color-line: #8c8c8c;
+  --color-line-soft: #cfcfca;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --content-width: 960px;
+  --gutter: 24px;
+
+  --shadow-hover: 0 6px 20px rgb(0 0 0 / 0.08);
+
+  /* Ocean Networks Canada portal colours (from data.oceannetworks.ca) */
+  --onc-blue: #1d428a;
+  --onc-teal: #129dc0;
+  --onc-teal-text: #0d7c98; /* darker teal for text, readable on white */
+  --font-portal: 'Rajdhani', var(--font-sans);
 }
 
-*, *::before, *::after { box-sizing: border-box; }
-html, body, #root { height: 100%; margin: 0; }
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--ink);
-  background: var(--surface-2);
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-button, input, select { font: inherit; color: inherit; }
-a { color: var(--onc-teal-dark); }
-:focus-visible { outline: 2px solid var(--onc-teal); outline-offset: 2px; }
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+/* Wireframe-style placeholder (box with a diagonal cross) for images and
+   video we don't have yet. */
+.media-placeholder {
+  background:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 1px),
+      var(--color-line-soft) 50%,
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      var(--color-line-soft) 50%,
+      transparent calc(50% + 1px)
+    ),
+    var(--color-placeholder);
+}
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 12px;
+  z-index: 10;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-ink);
+  color: #fff;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}

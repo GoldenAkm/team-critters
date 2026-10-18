@@ -17,9 +17,9 @@ Shared files (`critters_context.md`, `CLAUDE.md`): say so in the group chat befo
 
 ## Daniel
 
-- Files:
-- Doing:
-- Since:
+- Files: `web/src/pages/Landing/` (except `InfoCards.*`), `web/src/assets/`, `web/public/depths/`, shared `web/src/index.css`, `web/src/components/PortalHeader.*`, `web/src/components/SiteFooter.*`
+- Doing: Landing page design and layout. The green crab and rockfish boxes (`web/src/pages/Landing/InfoCards.*`) are free for someone to claim.
+- Since: 2026-10-17
 
 ## Frank
 
@@ -35,9 +35,9 @@ Shared files (`critters_context.md`, `CLAUDE.md`): say so in the group chat befo
 
 ## Rafail
 
-- Files:
-- Doing:
-- Since:
+- Files: `web/src/pages/Map/`, `web/src/pages/DigitalFishers/`, `web/map/`, `web/digital-fishers/`, `web/src/data/`, `web/scripts/`, `web/public/frames/`, `web/src/components/` (AppHeader, critters-theme, data, mount, oncTheme, page, SpeciesSymbol, speciesSymbolSvg, status), shared `web/vite.config.js`
+- Doing: Interactive Map with real ONC data; Digital Fishers 2.0 page shell
+- Since: 2026-10-17
 
 ## Rena
 

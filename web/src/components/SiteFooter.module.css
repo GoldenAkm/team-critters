@@ -1,0 +1,33 @@
+/* Colours sampled from the ONC deep-seafloor image the landing page ends on:
+   murky teal seafloor, near-black water, warm brown glow, coral sea pen. */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 20px var(--gutter);
+  border-top: 1px solid rgb(240 138 93 / 0.35);
+  background: linear-gradient(100deg, #18211f 0%, #0b0a10 40%, #0b0a10 65%, #2a190e 100%);
+  color: rgb(239 227 218 / 0.8);
+  font-size: 14px;
+}
+
+.footer :focus-visible {
+  outline-color: #f08a5d;
+}
+
+.credit {
+  color: #f08a5d;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.credit a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.credit a:hover {
+  color: #ffb08a;
+}
