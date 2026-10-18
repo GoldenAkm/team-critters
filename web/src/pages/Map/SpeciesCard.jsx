@@ -1,6 +1,6 @@
 import { species, sightingsMeta } from '../../components/data.js'
 import { STATUSES } from '../../components/status.js'
-import SpeciesSymbol from '../../components/SpeciesSymbol.jsx'
+import SpeciesSymbol from './SpeciesSymbol.jsx'
 import { cameraById, fmtDate } from './derive.js'
 
 // Where a sighting's label came from, in plain words (build_sightings.py sets `source`)

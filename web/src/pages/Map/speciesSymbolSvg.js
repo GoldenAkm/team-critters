@@ -1,5 +1,5 @@
 // Species shape + status styling as an SVG string (also used for Leaflet markers).
-import { ONC } from './oncTheme.js'
+import { ONC } from '../../components/oncTheme.js'
 
 export const SPECIES_COLOR = ONC.navy
 

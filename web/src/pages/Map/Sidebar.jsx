@@ -1,6 +1,6 @@
 import { species, sources, sightingsMeta, footageQualityAssessed } from '../../components/data.js'
 import { STATUSES } from '../../components/status.js'
-import SpeciesSymbol from '../../components/SpeciesSymbol.jsx'
+import SpeciesSymbol from './SpeciesSymbol.jsx'
 import { cameraTree } from './derive.js'
 
 const TREE = cameraTree()

@@ -3,7 +3,7 @@ import L from 'leaflet'
 import { MapContainer, TileLayer, Marker, ZoomControl, useMapEvents } from 'react-leaflet'
 import { species, cameras } from '../../components/data.js'
 import { STATUS_LABEL } from '../../components/status.js'
-import { symbolSvg } from '../../components/speciesSymbolSvg.js'
+import { symbolSvg } from './speciesSymbolSvg.js'
 import { BUBBLE_GROUPS, BUBBLE_ZOOM, envAverage, envColor, envHaloPx, fmtEnv, footageSummary } from './derive.js'
 
 const ALL_BOUNDS = L.latLngBounds(cameras.map((c) => [c.lat, c.lon]))
