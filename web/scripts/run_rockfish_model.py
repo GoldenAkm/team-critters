@@ -6,15 +6,17 @@ full resolution from the hackathon zips on S3.
 
 Writes:
   web/public/data/modelRuns.json     every frame's raw model result + the corrected label (for evaluation)
-  web/public/data/detections.json    model detections (Identified / Needs review) first, ids "onc-m…";
+  web/public/data/detections.json    model detections first, ids "onc-m…", each with the raw result as "model";
                                      Marko's sample detections are kept after them
-  web/public/data/reviewClips.json   one clip per "Needs review" detection, ids "onc-c…", before the samples
+  web/public/data/reviewClips.json   one clip per Needs review / Uncertain detection, ids "onc-c…", before the samples
   web/public/frames/model/           960 px copies of the frames those detections point to
 
-"Not rockfish" and "No detection" frames are kept in modelRuns.json only; they are not rockfish detections.
+"Not rockfish" and "No detection" frames become Uncertain detections (not counted). People review them in case
+the AI missed a rockfish; at most --max-uncertain of them (default 20), spread evenly over time, so empty
+seafloor doesn't flood the queue. The rest stay in modelRuns.json only.
 Real clips start with no prior votes: nobody else has reviewed them yet.
 
-Run from the repo root:  .venv/bin/python web/scripts/run_rockfish_model.py [--force]
+Run from the repo root:  .venv/bin/python web/scripts/run_rockfish_model.py [--force] [--max-uncertain N]
 Needs the AWS profile `hack-team`. Results are cached in modelRuns.json, so a run that stops (e.g. the Space's
 free GPU quota) continues where it left off. Put HF_TOKEN=... in web/.env.local (gitignored) to use your
 own Hugging Face quota.
@@ -39,7 +41,8 @@ FRAMES = ROOT / 'web/public/frames/model'
 DATA_DIR = 'ocean-hackathon-2026/data/critter'
 FRAME_WIDTH = 960
 ID_PREFIX = 'onc-'
-MODEL_STATUSES = {'Identified': 'Identified', 'Needs review': 'Needs review'}  # the rest are not detections
+MODEL_STATUSES = {'Identified': 'Identified', 'Needs review': 'Needs review',
+                  'Not rockfish': 'Uncertain', 'No detection': 'Uncertain'}  # model status -> product status
 
 TIP = ('Rockfish have a spiny dorsal fin along most of the back and a large head with big eyes. '
        'Lingcod and greenlings are longer and slimmer. If the fish is too small or blurry to tell, choose "Can\'t tell".')
@@ -62,7 +65,7 @@ def load_json(path, default):
     return json.loads(path.read_text()) if path.exists() else default
 
 
-def main(force=False):
+def main(force=False, max_uncertain=20):
     rows = [r for r in csv.DictReader(open(ROOT / 'manifest.csv')) if r['split'] == 'test']
     runs_path = DATA / 'modelRuns.json'
     runs = {} if force else {r['image_file']: r for r in load_json(runs_path, {}).get('frames', [])}
@@ -100,11 +103,18 @@ def main(force=False):
             'space': SPACE, 'frames': frames,
         }, indent=2) + '\n')
 
-    write_digital_fishers(frames, zips, fs)
+    write_digital_fishers(frames, zips, fs, max_uncertain)
     summarize(frames)
 
 
-def write_digital_fishers(frames, zips, fs):
+def evenly(items, n):
+    """At most n items, spread evenly over the list."""
+    if len(items) <= n:
+        return items
+    return [items[round(i * (len(items) - 1) / max(n - 1, 1))] for i in range(n)]
+
+
+def write_digital_fishers(frames, zips, fs, max_uncertain):
     det_path, clip_path = DATA / 'detections.json', DATA / 'reviewClips.json'
     samples = [d for d in load_json(det_path, {})['detections'] if not str(d['id']).startswith(ID_PREFIX)]
     sample_clips = [c for c in load_json(clip_path, {})['clips'] if not str(c['id']).startswith(ID_PREFIX)]
@@ -113,13 +123,15 @@ def write_digital_fishers(frames, zips, fs):
     for old in FRAMES.glob('*.jpg'):
         old.unlink()
 
+    uncertain = evenly([f for f in frames if MODEL_STATUSES.get(f['result']['status']) == 'Uncertain'], max_uncertain)
+    keep = {f['image_file'] for f in uncertain}
     detections, clips = [], []
     for f in frames:
         res = f['result']
-        if res['status'] not in MODEL_STATUSES:
+        status = MODEL_STATUSES.get(res['status'])
+        if not status or (status == 'Uncertain' and f['image_file'] not in keep):
             continue
         n = len(detections) + 1
-        x1, y1, x2, y2 = res['box']
         site = f['site']
         if site not in zips:
             zips[site] = zipfile.ZipFile(fs.open(f'{DATA_DIR}/{site}_images.zip'))
@@ -129,19 +141,16 @@ def write_digital_fishers(frames, zips, fs):
         det = {
             'id': f'{ID_PREFIX}m{n}', 'species': 'rockfish', 'camera': site,
             'timestamp': f['frame_utc'].replace('.000Z', 'Z'),
-            'status': MODEL_STATUSES[res['status']], 'confidence': res['score'],
-            'box': {'x': round(x1 / f['width'], 4), 'y': round(y1 / f['height'], 4),
-                    'w': round((x2 - x1) / f['width'], 4), 'h': round((y2 - y1) / f['height'], 4)},
+            'status': status, 'confidence': res['score'], 'box': fraction_box(res['box'], f),
             'clipUrl': None, 'frameUrl': f'/frames/model/{f["image_file"]}',
-            'source': 'model', 'modelVersion': res['model_version'],
+            'source': 'model', 'modelVersion': res['model_version'], 'model': res,
         }
         detections.append(det)
-        if res['status'] == 'Needs review':
+        if status != 'Identified':
             clips.append({
                 'id': f'{ID_PREFIX}c{len(clips) + 1}', 'detectionId': det['id'],
                 'lookAlikes': LOOK_ALIKES, 'tip': TIP,
                 'priorVotes': {'yes': 0, 'no': 0, 'unsure': 0},
-                'mission': 'rockfish_watch',
             })
 
     note = (f'Ids starting "{ID_PREFIX}" are real output of {SPACE} on ONC frames '
@@ -150,6 +159,15 @@ def write_digital_fishers(frames, zips, fs):
     splice(clip_path, 'clips', clips, note + ' Real clips have no prior votes yet.')
     print(f'Digital Fishers: {len(detections)} model detections, {len(clips)} clips to review '
           f'(+ {len(samples)} sample detections, {len(sample_clips)} sample clips)')
+
+
+def fraction_box(box, f):
+    """[x1, y1, x2, y2] in pixels -> { x, y, w, h } as fractions of the frame; None when nothing was detected."""
+    if not box:
+        return None
+    x1, y1, x2, y2 = box
+    return {'x': round(x1 / f['width'], 4), 'y': round(y1 / f['height'], 4),
+            'w': round((x2 - x1) / f['width'], 4), 'h': round((y2 - y1) / f['height'], 4)}
 
 
 def compact(value):
@@ -187,4 +205,6 @@ def summarize(frames):
 
 
 if __name__ == '__main__':
-    main(force='--force' in sys.argv)
+    args = sys.argv[1:]
+    cap = int(args[args.index('--max-uncertain') + 1]) if '--max-uncertain' in args else 20
+    main(force='--force' in args, max_uncertain=cap)

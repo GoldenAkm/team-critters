@@ -1,6 +1,7 @@
 import { normalizeDetection } from './detections.js';
 import { REVIEWABLE } from './status.js';
 import { readReviewQueue } from './reviewQueue.js';
+import { reviewQuestion } from './modelReadout.js';
 
 const BASE = `${import.meta.env.BASE_URL}data/`;
 
@@ -20,7 +21,7 @@ export async function loadReviewData() {
     getJson('reviewClips.json'),
   ]);
 
-  // Frames the Interactive Map sent here after the rockfish model said "Needs review" come first.
+  // Frames the Interactive Map sent here (rockfish model said Needs review or Uncertain) come first.
   const queued = readReviewQueue();
   const rawDetections = [...queued.map((q) => q.detection), ...detectionsFile.detections];
   const rawClips = [...queued.map((q) => q.clip), ...clipsFile.clips];
@@ -45,7 +46,7 @@ export async function loadReviewData() {
         detection,
         species: sp,
         camera: camerasById[detection.cameraId],
-        question: clip.question ?? `Is the highlighted animal a ${sp.name.toLowerCase()}?`,
+        question: clip.question ?? reviewQuestion(sp.name, Boolean(detection.box)),
         lookAlikes: clip.lookAlikes.map((l) =>
           speciesById[l] ? { id: l, name: speciesById[l].name } : { id: null, name: l },
         ),
@@ -58,7 +59,5 @@ export async function loadReviewData() {
     speciesById,
     camerasById,
     clips,
-    missions: Object.fromEntries((clipsFile.missions ?? []).map((m) => [m.id, m])),
-    comingSoonSlots: speciesFile.comingSoonSlots ?? 0,
   };
 }

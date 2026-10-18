@@ -16,7 +16,7 @@ describe('resolveConsensus', () => {
 });
 
 describe('outcomeFor', () => {
-  it('only a matching yes on a confirmed clip collects', () => {
+  it('a yes matches only when the majority said yes', () => {
     const c = { winner: 'yes', count: 3, of: 3 };
     assert.deepEqual(outcomeFor('yes', c), { type: 'confirmed_match', matched: true });
     assert.deepEqual(outcomeFor('unsure', c), { type: 'confirmed_other', matched: false });

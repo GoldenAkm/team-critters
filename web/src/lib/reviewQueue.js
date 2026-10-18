@@ -1,4 +1,4 @@
-// Frames the Interactive Map sent to Digital Fishers after the rockfish model said "Needs review".
+// Frames the Interactive Map sent to Digital Fishers after the rockfish model said Needs review or Uncertain.
 // Stored in this browser only (localStorage) until there is a shared backend; Digital Fishers shows them first.
 // Each entry holds a raw detection (same fields as public/data/detections.json) and its review clip.
 

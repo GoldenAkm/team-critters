@@ -1,23 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loadReviewData } from '../../lib/data.js';
 import { addVote, outcomeFor, resolveConsensus } from './consensus.js';
 import { toConfirmedDetection } from '../../lib/detections.js';
 import { useCollection } from '../../lib/useCollection.js';
-import { MATCH_BONUS, POINTS_PER_ANSWER, SHOW_AI_GUESS } from './config.js';
+import { aiAnnouncement, appStatus, reviewQuestion, withArticle } from '../../lib/modelReadout.js';
+import { statusKey } from '../../lib/status.js';
+import { SHOW_AI_GUESS } from './config.js';
 import AppHeader from '../../components/AppHeader.jsx';
-import StatusBadge from '../../components/StatusBadge.jsx';
-import ClipPlayer from './ClipPlayer.jsx';
+import AiFrame from './AiFrame.jsx';
+import AiReadout from './AiReadout.jsx';
 import AnswerPanel from './AnswerPanel.jsx';
 import IdGuide from './IdGuide.jsx';
 import ResultPanel from './ResultPanel.jsx';
-import CollectedModal from './CollectedModal.jsx';
 import SessionComplete from './SessionComplete.jsx';
-import HowItWorks from './HowItWorks.jsx';
-import ProgressPanel from './ProgressPanel.jsx';
 import './base.css';
 import './DigitalFishersPage.css';
 
-const EMPTY_SESSION = { points: 0, reviewed: 0, newSpecies: 0 };
+const EMPTY_SESSION = { reviewed: 0 };
 
 function formatTime(iso) {
   return new Date(iso).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
@@ -29,23 +28,18 @@ export default function ReviewPage() {
   const [index, setIndex] = useState(0);
   const [result, setResult] = useState(null);
   const [checked, setChecked] = useState([]);
-  const [modal, setModal] = useState(null);
+  // Results of live model runs on this page, by clip id: { model, box }.
+  const [live, setLive] = useState({});
   const [session, setSession] = useState(EMPTY_SESSION);
   const [done, setDone] = useState(false);
   const collection = useCollection();
-  const { player } = collection;
 
   useEffect(() => {
     loadReviewData().then(setData, setError);
   }, []);
 
-  const clip = data?.clips[index];
+  const clip = data?.clips[index] && withLiveResult(data.clips[index], live[data.clips[index].id]);
   const isLast = data && index === data.clips.length - 1;
-  const mission = useMemo(() => {
-    if (!data) return null;
-    const id = clip?.mission ?? data.clips.find((c) => c.mission)?.mission;
-    return id ? data.missions[id] : null;
-  }, [data, clip]);
 
   if (error) return <Shell><p className="page-error">Couldn't load review clips: {error.message}</p></Shell>;
   if (!data) return <Shell><p className="page-loading">Loading clips…</p></Shell>;
@@ -54,26 +48,12 @@ export default function ReviewPage() {
     const votes = addVote(clip.priorVotes, answer.kind);
     const consensus = resolveConsensus(votes);
     const outcome = outcomeFor(answer.kind, consensus);
-    const bonus = outcome.matched ? MATCH_BONUS : 0;
-    const points = POINTS_PER_ANSWER;
-    const speciesId = clip.species.id;
-    const wasNew = !player.collected[speciesId];
 
-    collection.addPoints(points + bonus);
-    collection.markReviewed(clip.mission, outcome.matched);
-    if (outcome.type === 'waiting' && answer.kind === 'yes') collection.markPending(speciesId, clip.id);
+    collection.markReviewed(null, outcome.matched);
     if (consensus?.winner === 'yes') collection.addConfirmation(toConfirmedDetection(clip.detection));
-    if (outcome.type === 'confirmed_match') {
-      collection.collect(speciesId, clip.camera.id, clip.detection.timestamp.slice(0, 10));
-      if (wasNew) setModal({ species: clip.species, camera: clip.camera });
-    }
 
-    setSession((s) => ({
-      points: s.points + points + bonus,
-      reviewed: s.reviewed + 1,
-      newSpecies: s.newSpecies + (outcome.type === 'confirmed_match' && wasNew ? 1 : 0),
-    }));
-    setResult({ answer, consensus, outcome, points, bonus, wasNew });
+    setSession((s) => ({ reviewed: s.reviewed + 1 }));
+    setResult({ answer, consensus, outcome });
   }
 
   function next() {
@@ -91,110 +71,106 @@ export default function ReviewPage() {
     setDone(false);
   }
 
-  const collectedCount = data.species.filter((s) => player.collected[s.id]).length;
-
   return (
     <Shell>
       <section className="df-hero" aria-labelledby="df-title">
         <div className="df-hero__inner">
-          <div className="df-hero__top">
-            <div className="df-hero__text">
-              <span className="df-eyebrow">Ocean Networks Canada · citizen science</span>
-              <h1 id="df-title">Digital Fishers 2.0</h1>
-              <p>Help the AI with the clips it wasn't sure about. Your answers decide what counts as a confirmed sighting.</p>
-            </div>
-            <div className="df-hero__actions">
-              <span className="df-pill">
-                <b>{data.clips.length}</b> clips waiting
-              </span>
-              <a className="df-pill df-pill--link" href="#collection">
-                Marine collection <b>{collectedCount}/{data.species.length}</b>
-              </a>
-            </div>
-          </div>
-          <HowItWorks />
+          <h1 id="df-title">Digital Fishers 2.0</h1>
+          <p>The AI checks ONC footage for rockfish. Where it isn't sure, your answer decides what counts as a sighting.</p>
         </div>
       </section>
 
       <div className="df-body">
-        <div className="review-layout">
-          <section className="review-main" aria-label="Review task">
-            {done ? (
-              <SessionComplete stats={session} onRestart={restart} />
-            ) : (
-              <>
-                <div className="clip-bar">
-                  <div className="clip-bar__info">
-                    <span className="clip-bar__count">
-                      Clip {index + 1} of {data.clips.length}
-                    </span>
-                    <span className="clip-bar__where">
-                      {clip.camera.name} · {clip.camera.area}
-                    </span>
+        <section className="review-main" aria-label="Review task">
+          {done ? (
+            <SessionComplete stats={session} onRestart={restart} />
+          ) : (
+            <>
+              <div className="clip-bar">
+                <div className="clip-bar__info">
+                  {(SHOW_AI_GUESS || result) && <AiSubheader detection={clip.detection} species={clip.species} />}
+                  <p className="clip-bar__meta">
+                    Frame {index + 1} of {data.clips.length} · {clip.camera.name} · {clip.camera.area} ·{' '}
                     <span className="clip-bar__when">{formatTime(clip.detection.timestamp)}</span>
-                  </div>
-                  {!result && (
-                    <button type="button" className="btn" onClick={next}>
-                      Skip clip
-                    </button>
+                  </p>
+                </div>
+                {!result && (
+                  <button type="button" className="btn" onClick={next}>
+                    Skip frame
+                  </button>
+                )}
+              </div>
+
+              <div className="review-task">
+                <div className="review-task__main">
+                  <AiFrame key={`frame-${clip.id}`} detection={clip.detection} speciesName={clip.species.name} />
+
+                  {(SHOW_AI_GUESS || result) && (
+                    <AiReadout
+                      key={`readout-${clip.id}`}
+                      detection={clip.detection}
+                      species={clip.species}
+                      onModel={(model, box) => setLive((l) => ({ ...l, [clip.id]: { model, box } }))}
+                    />
+                  )}
+
+                  <h2 className="question">{clip.question}</h2>
+
+                  {result ? (
+                    <ResultPanel clip={clip} result={result} isLast={isLast} onNext={next} />
+                  ) : (
+                    <AnswerPanel key={`answers-${clip.id}`} clip={clip} onAnswer={submit} />
                   )}
                 </div>
 
-                <div className="review-task">
-                  <div className="review-task__main">
-                    <ClipPlayer key={`player-${clip.id}`} detection={clip.detection} speciesName={clip.species.name} />
-
-                    {SHOW_AI_GUESS && (
-                      <div className="ai-guess">
-                        <span className="muted">AI's guess</span>
-                        <strong>{clip.species.name}</strong>
-                        <em className="sci">{clip.species.sci}</em>
-                        <StatusBadge status={clip.detection.status} shape={clip.species.shape} />
-                        <span className="ai-guess__conf">Confidence {Math.round(clip.detection.confidence * 100)}%</span>
-                      </div>
-                    )}
-
-                    <h2 className="question">{clip.question}</h2>
-
-                    {result ? (
-                      <ResultPanel clip={clip} result={result} isLast={isLast} onNext={next} />
-                    ) : (
-                      <AnswerPanel key={`answers-${clip.id}`} clip={clip} onAnswer={submit} />
-                    )}
-                  </div>
-
-                  <IdGuide
-                    clip={clip}
-                    checked={checked}
-                    locked={Boolean(result)}
-                    highlight={result?.outcome.type === 'confirmed_other'}
-                    onToggle={(f) => setChecked((c) => (c.includes(f) ? c.filter((x) => x !== f) : [...c, f]))}
-                  />
-                </div>
-              </>
-            )}
-          </section>
-
-          <ProgressPanel
-            player={player}
-            session={session}
-            species={data.species}
-            comingSoonSlots={data.comingSoonSlots}
-            mission={mission}
-          />
-        </div>
+                <IdGuide
+                  clip={clip}
+                  checked={checked}
+                  locked={Boolean(result)}
+                  highlight={result?.outcome.type === 'confirmed_other'}
+                  onToggle={(f) => setChecked((c) => (c.includes(f) ? c.filter((x) => x !== f) : [...c, f]))}
+                />
+              </div>
+            </>
+          )}
+        </section>
 
         <p className="demo-note">
-          Data: Ocean Networks Canada. Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
+          Data: Ocean Networks Canada. Prototype: frames marked as samples, and every vote and score, are illustrative.{' '}
           <button type="button" className="link-button" onClick={collection.reset}>
             Reset demo progress
           </button>
         </p>
       </div>
-
-      {modal && <CollectedModal species={modal.species} camera={modal.camera} onClose={() => setModal(null)} />}
     </Shell>
   );
+}
+
+// The AI announces its answer and how confident it is, above the frame.
+function AiSubheader({ detection, species }) {
+  const { name, confidence } = aiAnnouncement(detection, species);
+  return (
+    <h2 className="clip-bar__ai" aria-live="polite">
+      {name ? (
+        <>
+          The model detected <strong>{withArticle(name)}</strong>
+          {confidence && <> with <strong className="clip-bar__ai-conf">{confidence}</strong> confidence</>}
+        </>
+      ) : (
+        'The model detected no fish in this frame'
+      )}
+    </h2>
+  );
+}
+
+// A live model run replaces the stored result: new box, status and question.
+function withLiveResult(clip, run) {
+  if (!run) return clip;
+  return {
+    ...clip,
+    detection: { ...clip.detection, model: run.model, box: run.box, status: statusKey(appStatus(run.model.status)) },
+    question: reviewQuestion(clip.species.name, Boolean(run.box)),
+  };
 }
 
 // Site header shared with the Interactive Map (mount() adds the .critters-app theme wrapper).

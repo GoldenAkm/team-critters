@@ -8,7 +8,7 @@ export default function IdGuide({ clip, checked, onToggle, locked, highlight }) 
       <ModelViewer key={clip.species.id} species={clip.species} height={200} />
 
       <fieldset className="checklist" disabled={locked}>
-        <legend>What can you see in the clip? <span className="muted">(optional)</span></legend>
+        <legend>What can you see in the frame? <span className="muted">(optional)</span></legend>
         {clip.species.features.map((f) => (
           <label key={f}>
             <input type="checkbox" checked={checked.includes(f)} onChange={() => onToggle(f)} />

@@ -4,18 +4,22 @@ import { REVIEWS_NEEDED } from './config.js';
 const ANSWER_TEXT = {
   yes: (name) => `Yes, it's a ${name.toLowerCase()}`,
   no: (_, alt) => (alt ? `No, it's something else (${alt})` : 'No, not sure what it is'),
-  unsure: () => "Can't tell from this clip",
+  unsure: () => "Can't tell from this frame",
 };
 
+// Placeholder until the team decides whether reviewers get any reward (points were removed).
+function RewardPlaceholder() {
+  return <span className="reward-placeholder mono">Reward: TBD</span>;
+}
+
 export default function ResultPanel({ clip, result, isLast, onNext }) {
-  const { answer, consensus, outcome, points, bonus, wasNew } = result;
+  const { answer, consensus, outcome } = result;
   const name = clip.species.name;
 
   return (
     <section className="result" aria-live="polite">
       <div className="result__head">
-        <span className="points mono">+{points} pts</span>
-        {bonus > 0 && <span className="points points--bonus mono">+{bonus} bonus</span>}
+        <RewardPlaceholder />
         <span>Your answer: {ANSWER_TEXT[answer.kind](name, answer.alt)}</span>
       </div>
 
@@ -25,7 +29,6 @@ export default function ResultPanel({ clip, result, isLast, onNext }) {
         <p>
           <strong>Waiting for agreement.</strong> Other reviewers' answers stay hidden until {REVIEWS_NEEDED} people
           have looked.
-          {answer.kind === 'yes' && ' This species is marked as pending in your collection.'}
         </p>
       )}
 
@@ -34,12 +37,12 @@ export default function ResultPanel({ clip, result, isLast, onNext }) {
           <strong>
             Agreement reached · {consensus.count} of {consensus.of} said {name.toLowerCase()}.
           </strong>{' '}
-          {outcome.type === 'confirmed_match' &&
-            (wasNew ? 'New species added to your collection.' : 'Logged as another confirmed sighting on your card.')}
+          It now counts as a confirmed sighting on the map.
+          {outcome.type === 'confirmed_match' && ' You matched the majority.'}
           {outcome.type === 'confirmed_other' &&
             (answer.kind === 'unsure'
-              ? `Most reviewers could make out a ${name.toLowerCase()}. No harm in an honest "can't tell".`
-              : `Most reviewers identified a ${name.toLowerCase()}, so it wasn't added this time. Spin the 3D model to compare the key features.`)}
+              ? ` Most reviewers could make out a ${name.toLowerCase()}. No harm in an honest "can't tell".`
+              : ` Spin the 3D model to compare the key features.`)}
         </p>
       )}
       {consensus && consensus.winner === 'no' && (
@@ -53,12 +56,12 @@ export default function ResultPanel({ clip, result, isLast, onNext }) {
       )}
       {consensus && (consensus.winner === 'unsure' || consensus.winner === null) && (
         <p>
-          <strong>No clear agreement.</strong> This clip stays uncounted so a bad guess never reaches the data.
+          <strong>No clear agreement.</strong> This frame stays uncounted so a bad guess never reaches the data.
         </p>
       )}
 
       <button type="button" className="btn btn--primary" onClick={onNext}>
-        {isLast ? 'Finish session' : 'Next clip'}
+        {isLast ? 'Finish session' : 'Next frame'}
       </button>
     </section>
   );

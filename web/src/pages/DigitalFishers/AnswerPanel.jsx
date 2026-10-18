@@ -29,8 +29,8 @@ export default function AnswerPanel({ clip, onAnswer }) {
       )}
 
       <button type="button" className="answer" onClick={() => onAnswer({ kind: 'unsure' })}>
-        <strong>Can't tell from this clip</strong>
-        <span>Too blurry, too dark, or the key features are hidden. An honest "can't tell" earns full points.</span>
+        <strong>Can't tell from this frame</strong>
+        <span>Too blurry, too dark, or the key features are hidden. An honest "can't tell" is a useful answer.</span>
       </button>
     </div>
   );
