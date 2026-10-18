@@ -123,6 +123,7 @@ export default function MapPage() {
                   )}
                   {card && (
                     <SpeciesCard
+                      key={card.detection.id}
                       {...card}
                       onClose={() => setCard(null)}
                       onTrends={(id) => { openCamera(id); setCard(null) }}

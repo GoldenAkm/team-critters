@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import rockfishProxy from './server/rockfishProxy.js'
 
 // https://vite.dev/config/
 // Multi-page site: every tab is its own directory with its own index.html.
@@ -22,11 +23,13 @@ function redirect(req, res, next) {
   next()
 }
 
-export default defineConfig({
-  plugins: [react(), trailingSlash],
+export default defineConfig(({ mode }) => ({
+  // HF_TOKEN (web/.env.local) is read here, on the server only; it is not VITE_-prefixed, so it never
+  // reaches browser code. The proxy uses it for /api/rockfish.
+  plugins: [react(), trailingSlash, rockfishProxy(loadEnv(mode, import.meta.dirname, '').HF_TOKEN)],
   build: {
     rolldownOptions: {
       input: Object.fromEntries(Object.entries(PAGES).map(([k, p]) => [k, resolve(import.meta.dirname, p)])),
     },
   },
-})
+}))
