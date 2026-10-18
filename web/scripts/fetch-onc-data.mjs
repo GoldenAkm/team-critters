@@ -67,13 +67,15 @@ async function get(path, params) {
   }
 }
 
-// Which site each ONC location belongs to, from the full location tree
+// Which site each ONC location belongs to, and its name, from the full location tree
 const siteOf = {}
+const nameOf = {}
 const siteCodes = new Set(SITES.map((s) => s.onc))
 ;(function walk(nodes, site) {
   for (const n of nodes) {
     const s = siteCodes.has(n.locationCode) ? n.locationCode : site
     siteOf[n.locationCode] = s
+    nameOf[n.locationCode] = n.locationName
     walk(n.children || [], s)
   }
 })(await get('locations/tree', {}), null)
@@ -205,6 +207,8 @@ write('sources.json', {
     'Sightings: team-reviewed and corrected rockfish labels, plus ONC SeaTube annotations that pass an accuracy rule (see sightings_meta.json).',
   ],
   sitesByYear: perYear,
+  // Names of the underwater camera locations listed in sitesByYear (shown in each camera site's tag)
+  cameraLocationNames: Object.fromEntries(Object.values(perYear).flat().flatMap((r) => r.cameraLocations).map((c) => [c, nameOf[c]])),
   citations: [...citations].map(([doi, citation]) => ({ doi, citation })),
 })
 console.log(`Wrote ${YEARS.join(', ')} with ${citations.size} dataset citations`)

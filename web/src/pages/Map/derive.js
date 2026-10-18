@@ -1,5 +1,5 @@
 // Pure helpers that turn the static data + current filters into what the map shows.
-import { cameras, yearData, weekOf, weekDate, WEEKS } from '../../components/data.js'
+import { cameras, sources, yearData, weekOf, weekDate, WEEKS } from '../../components/data.js'
 import { ONC } from '../../components/oncTheme.js'
 
 export const cameraById = Object.fromEntries(cameras.map((c) => [c.id, c]))
@@ -18,6 +18,14 @@ export const BUBBLE_GROUPS = [
 })
 
 export const BUBBLE_ZOOM = 5
+
+// Each map dot is an ONC camera site; a site can have several underwater cameras (fetch-onc-data.mjs lists them
+// per year). Names drop ONC's " Underwater Network" suffix, e.g. "Hartley Bay".
+export function camerasAt(siteId, year) {
+  const row = sources.sitesByYear[year]?.find((r) => r.cameraId === siteId)
+  return (row?.cameraLocations || []).map((c) => (sources.cameraLocationNames?.[c] || c).replace(/ Underwater Network$/, ''))
+}
+export const cameraTotal = (year) => (sources.sitesByYear[year] || []).reduce((n, r) => n + r.cameraLocations.length, 0)
 
 // Region › area › camera tree; an area named like its region is collapsed into the region.
 export function cameraTree() {
@@ -44,18 +52,6 @@ export function countBy(list, key) {
   const out = {}
   for (const x of list) out[x[key]] = (out[x[key]] || 0) + 1
   return out
-}
-
-// Footage quality at a camera over the period: majority rule (map-build.md §5.5)
-export function footageSummary(cameraId, range, year) {
-  const weeks = yearData(year).footage.cameras[cameraId] || []
-  const n = { clear: 0, murky: 0, none: 0 }
-  for (let w = range[0]; w <= range[1]; w++) n[weeks[w] || 'none']++
-  const total = range[1] - range[0] + 1
-  let state = 'clear'
-  if (n.none > n.clear && n.none >= n.murky) state = 'none'
-  else if (n.murky > n.clear) state = 'murky'
-  return { state, murkyPct: Math.round((n.murky / total) * 100), ...n, total }
 }
 
 export function envAverage(cameraId, measure, range, year) {

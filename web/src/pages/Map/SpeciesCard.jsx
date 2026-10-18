@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { species, sightingsMeta } from '../../components/data.js'
 import { STATUSES } from '../../components/status.js'
 import SpeciesSymbol from './SpeciesSymbol.jsx'
-import { cameraById, fmtDate } from './derive.js'
+import { cameraById, camerasAt, fmtDate } from './derive.js'
 import ModelCheck from './ModelCheck.jsx'
 
 // Where a sighting's label came from, in plain words (build_sightings.py sets `source`)
@@ -38,23 +38,34 @@ export default function SpeciesCard({ detection: d, count, onClose, onTrends }) 
           </i>
         )}
       </div>
+      {/* Who it is, how sure we are (status, then where the label came from), what it is, then the record */}
       <header>
         <h2><SpeciesSymbol species={sp.id} status={d.status} size={36} /> {sp.name}</h2>
-        <p className="sci">{d.taxon && d.taxon !== sp.sci ? `${sp.sci} · labelled ${d.taxon}` : sp.sci}</p>
-        <span className="tag">{sp.tag}</span>
+        <div className="sci-row">
+          <p className="sci">{sp.sci}</p>
+          <span className="tag">{sp.tag}</span>
+        </div>
       </header>
-      <p className={`status-badge status-${d.status}`}>
-        <strong>{st.label}</strong>{d.confirmedBy === 'consensus' && ' · confirmed in Digital Fishers'} — {st.hint}
-      </p>
-      {source && <p className="source-note">{source}</p>}
-      <p className="blurb">{sp.blurb}</p>
+      <div className={`status-badge status-${d.status}`}>
+        <strong>{st.label}{d.confirmedBy === 'consensus' && ' · confirmed in Digital Fishers'}</strong>
+        <span>{st.hint}</span>
+        {source && <span className="status-source">{source}</span>}
+      </div>
+      <section className="card-about">
+        <h3>About {sp.name.toLowerCase()}</h3>
+        <p>{sp.blurb}</p>
+      </section>
       <dl>
+        {d.taxon && d.taxon !== sp.sci && <><dt>Labelled as</dt><dd><i>{d.taxon}</i></dd></>}
         <dt>Camera site</dt><dd>{cam.name}</dd>
         <dt>Area</dt><dd>{cam.area}, {cam.region}</dd>
+        {camerasAt(cam.id, d.timestamp.slice(0, 4)).length > 1 && (
+          <><dt>Cameras</dt><dd>{camerasAt(cam.id, d.timestamp.slice(0, 4)).join(', ')}</dd></>
+        )}
         <dt>Latest</dt><dd>{when} UTC</dd>
         {d.count != null && <><dt>Fish counted</dt><dd>{d.count}</dd></>}
         {d.confidence != null && <><dt>Model confidence</dt><dd>{Math.round(d.confidence * 100)}%</dd></>}
-        {count > 1 && <><dt>In this period</dt><dd>{count} sightings</dd></>}
+        {count > 1 && <><dt>In this period</dt><dd>{count} {d.status === 'identified' ? 'sightings' : 'detections'}</dd></>}
       </dl>
       <ModelCheck detection={d} onBox={setModelBox} />
       <div className="card-actions">
