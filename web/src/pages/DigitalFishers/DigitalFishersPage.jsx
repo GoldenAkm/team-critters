@@ -95,88 +95,102 @@ export default function ReviewPage() {
 
   return (
     <Shell>
-      <div className="page-head">
-        <a className="collection-shortcut" href="#collection">
-          Marine collection <span className="mono">{collectedCount}/{data.species.length}</span>
-        </a>
-      </div>
+      <section className="df-hero" aria-labelledby="df-title">
+        <div className="df-hero__inner">
+          <div className="df-hero__top">
+            <div className="df-hero__text">
+              <span className="df-eyebrow">Ocean Networks Canada · citizen science</span>
+              <h1 id="df-title">Digital Fishers 2.0</h1>
+              <p>Help the AI with the clips it wasn't sure about. Your answers decide what counts as a confirmed sighting.</p>
+            </div>
+            <div className="df-hero__actions">
+              <span className="df-pill">
+                <b>{data.clips.length}</b> clips waiting
+              </span>
+              <a className="df-pill df-pill--link" href="#collection">
+                Marine collection <b>{collectedCount}/{data.species.length}</b>
+              </a>
+            </div>
+          </div>
+          <HowItWorks />
+        </div>
+      </section>
 
-      <header className="review-intro">
-        <h1>Digital Fishers 2.0</h1>
-        <p>Help the AI with the clips it wasn't sure about. Your answers decide what counts as a confirmed sighting.</p>
-        <span className="chip chip--static mono">{data.clips.length} clips waiting</span>
-      </header>
-
-      <HowItWorks />
-
-      <div className="review-layout">
-        <section className="review-main" aria-label="Review task">
-          {done ? (
-            <SessionComplete stats={session} onRestart={restart} />
-          ) : (
-            <>
-              <div className="clip-bar mono">
-                <span>
-                  CLIP {index + 1} OF {data.clips.length} · {clip.camera.name} · {clip.camera.area} ·{' '}
-                  {formatTime(clip.detection.timestamp)}
-                </span>
-                {!result && (
-                  <button type="button" className="btn btn--small" onClick={next}>
-                    Skip clip
-                  </button>
-                )}
-              </div>
-
-              <div className="review-task">
-                <div className="review-task__main">
-                  <ClipPlayer key={`player-${clip.id}`} detection={clip.detection} speciesName={clip.species.name} />
-
-                  {SHOW_AI_GUESS && (
-                    <div className="ai-guess">
-                      <span className="muted">AI's guess</span>
-                      <strong>{clip.species.name}</strong>
-                      <em className="sci">{clip.species.sci}</em>
-                      <StatusBadge status={clip.detection.status} shape={clip.species.shape} />
-                      <span className="mono small">confidence {Math.round(clip.detection.confidence * 100)}%</span>
-                    </div>
-                  )}
-
-                  <h2 className="question">{clip.question}</h2>
-
-                  {result ? (
-                    <ResultPanel clip={clip} result={result} isLast={isLast} onNext={next} />
-                  ) : (
-                    <AnswerPanel key={`answers-${clip.id}`} clip={clip} onAnswer={submit} />
+      <div className="df-body">
+        <div className="review-layout">
+          <section className="review-main" aria-label="Review task">
+            {done ? (
+              <SessionComplete stats={session} onRestart={restart} />
+            ) : (
+              <>
+                <div className="clip-bar">
+                  <div className="clip-bar__info">
+                    <span className="clip-bar__count">
+                      Clip {index + 1} of {data.clips.length}
+                    </span>
+                    <span className="clip-bar__where">
+                      {clip.camera.name} · {clip.camera.area}
+                    </span>
+                    <span className="clip-bar__when">{formatTime(clip.detection.timestamp)}</span>
+                  </div>
+                  {!result && (
+                    <button type="button" className="btn" onClick={next}>
+                      Skip clip
+                    </button>
                   )}
                 </div>
 
-                <IdGuide
-                  clip={clip}
-                  checked={checked}
-                  locked={Boolean(result)}
-                  highlight={result?.outcome.type === 'confirmed_other'}
-                  onToggle={(f) => setChecked((c) => (c.includes(f) ? c.filter((x) => x !== f) : [...c, f]))}
-                />
-              </div>
-            </>
-          )}
-        </section>
+                <div className="review-task">
+                  <div className="review-task__main">
+                    <ClipPlayer key={`player-${clip.id}`} detection={clip.detection} speciesName={clip.species.name} />
 
-        <ProgressPanel
-          player={player}
-          session={session}
-          species={data.species}
-          comingSoonSlots={data.comingSoonSlots}
-          mission={mission}
-        />
+                    {SHOW_AI_GUESS && (
+                      <div className="ai-guess">
+                        <span className="muted">AI's guess</span>
+                        <strong>{clip.species.name}</strong>
+                        <em className="sci">{clip.species.sci}</em>
+                        <StatusBadge status={clip.detection.status} shape={clip.species.shape} />
+                        <span className="ai-guess__conf">Confidence {Math.round(clip.detection.confidence * 100)}%</span>
+                      </div>
+                    )}
+
+                    <h2 className="question">{clip.question}</h2>
+
+                    {result ? (
+                      <ResultPanel clip={clip} result={result} isLast={isLast} onNext={next} />
+                    ) : (
+                      <AnswerPanel key={`answers-${clip.id}`} clip={clip} onAnswer={submit} />
+                    )}
+                  </div>
+
+                  <IdGuide
+                    clip={clip}
+                    checked={checked}
+                    locked={Boolean(result)}
+                    highlight={result?.outcome.type === 'confirmed_other'}
+                    onToggle={(f) => setChecked((c) => (c.includes(f) ? c.filter((x) => x !== f) : [...c, f]))}
+                  />
+                </div>
+              </>
+            )}
+          </section>
+
+          <ProgressPanel
+            player={player}
+            session={session}
+            species={data.species}
+            comingSoonSlots={data.comingSoonSlots}
+            mission={mission}
+          />
+        </div>
+
+        <p className="demo-note">
+          Data: Ocean Networks Canada. Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
+          <button type="button" className="link-button" onClick={collection.reset}>
+            Reset demo progress
+          </button>
+        </p>
       </div>
-
-      <p className="small muted demo-note">
-        Data: Ocean Networks Canada. Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
-        <button type="button" className="link-button" onClick={collection.reset}>
-          Reset demo progress
-        </button>
-      </p>
 
       {modal && <CollectedModal species={modal.species} camera={modal.camera} onClose={() => setModal(null)} />}
     </Shell>
@@ -191,7 +205,7 @@ function Shell({ children }) {
         Skip to main content
       </a>
       <AppHeader active="digital-fishers" />
-      <main id="main" className="review-page">
+      <main id="main" className="df-page">
         {children}
       </main>
     </>

@@ -1,45 +1,62 @@
-/* Digital Fishers page bits. Colours come from the Critters theme (components/critters-theme.css,
-   scoped to .critters-app, shared with the Interactive Map); these extra names map onto it. */
+/* Digital Fishers atoms. Colours, fonts, radii and shadows come from the Critters theme
+   (components/critters-theme.css, scoped to .critters-app) so this page matches the Interactive Map. */
 .critters-app {
-  --bg: var(--surface-2);
+  --accent: var(--onc-teal-dark);
+  --accent-hover: #1c6879;
   --ink-2: var(--muted);
   --ink-3: #8a979f;
-  --accent: var(--onc-teal-dark);
-  --accent-ink: #ffffff;
-  --mono: var(--font-mono);
+  --ocean-deep: #06262b;
+  --ocean-mid: #0b3a42;
+  --ocean-light: #12505a;
 }
 
-h1, h2, h3 { line-height: 1.2; }
-.mono { font-family: var(--mono); }
-.small { font-size: 0.85rem; }
-.muted { color: var(--ink-2); }
-.sci { font-style: italic; color: var(--ink-2); }
+.df-page h1, .df-page h2, .df-page h3 { margin: 0; line-height: 1.15; }
+.df-page h2, .df-page h3 { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
+.df-page p { margin: 0; }
+.df-page .sci { font-style: italic; color: var(--muted); }
+.df-page .muted { color: var(--muted); }
+.df-page .small { font-size: 12px; }
+.df-page .mono { font-variant-numeric: tabular-nums; }
 
-.link-button { background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; min-height: 44px; color: inherit; }
+/* Small uppercase section label, as in the Map sidebar */
+.df-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
 
-.btn {
+/* Buttons (same shape as the Map's .btn) */
+.df-page .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  min-height: 44px; padding: 0 18px; border-radius: 8px; border: 1.5px solid var(--accent);
-  background: var(--surface); color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer;
+  min-height: 40px; padding: 9px 16px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer;
+  font-size: 13px; font-weight: 500; transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
-.btn--primary { background: var(--accent); color: var(--accent-ink); }
-.btn--small { min-height: 36px; padding: 0 12px; font-size: 0.85rem; }
+.df-page .btn:hover { border-color: var(--onc-teal); background: var(--tint); }
+.df-page .btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.df-page .btn--primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.df-page .btn--small { min-height: 32px; padding: 6px 12px; }
 
-.chip {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px;
-  border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer;
+.link-button { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 500; cursor: pointer; font-size: inherit; }
+.link-button:hover { text-decoration: underline; }
+
+/* Choice chips (look-alike picker) */
+.df-page .chip {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer;
+  font-size: 13px; font-weight: 500; transition: background 0.15s, border-color 0.15s;
 }
-.chip:hover { border-color: var(--accent); }
-.chip--static { min-height: 0; padding: 4px 12px; cursor: default; font-size: 0.85rem; }
+.df-page .chip:hover { border-color: var(--onc-teal); background: var(--tint); color: var(--onc-teal-dark); }
 
+/* Status badges: same colours as the Map's species card */
 .status-badge {
   display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
-  border: 1.5px solid var(--ink); border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+  border-radius: 999px; font-size: 12px; font-weight: 600;
 }
-.status-badge--uncertain { border-style: dashed; }
+.status-badge--identified { background: #eef7e6; color: #2f5a14; }
+.status-badge--needs_review { background: #fff6dd; color: #6b4e00; }
+.status-badge--uncertain { background: var(--surface-2); color: var(--muted); border: 1px dashed #9aa6ac; }
 
-.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; border: 1px solid var(--ink-3); }
-.tag--at_risk { background: var(--ink); color: var(--accent-ink); border-color: var(--ink); }
+/* Conservation tags: always a text label; colour is a second cue */
+.tag { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: var(--surface-2); color: var(--muted); }
+.tag--at_risk { background: #fbeae7; color: var(--onc-red); }
+.tag--interest { background: var(--tint); color: var(--onc-teal-dark); }
+.tag--not_at_risk { background: #eef7e6; color: #2f5a14; }
 
-.page-loading, .page-error { padding: 48px 24px; }
-.demo-note { margin: 0; }
+.page-loading, .page-error { max-width: 1240px; margin: 0 auto; padding: 48px 20px; color: var(--muted); }
