@@ -556,6 +556,28 @@
       }
     ]
   },
+  "cameraLocationNames": {
+    "BACAX": "Barkley Canyon Axis",
+    "BACME": "Barkley Canyon Mid-East",
+    "BACND": "Barkley Node",
+    "BACUS": "Upper Slope South",
+    "BACVP": "Upper Slope Vertical Profiler",
+    "CBC27": "ODP 1027C",
+    "CBYIP": "Cambridge Bay Underwater Network",
+    "CCIP": "China Creek Underwater Network",
+    "CRIP": "Campbell River Underwater Network",
+    "DIIP": "Digby Island Underwater Network",
+    "FGPPN": "Folger Pinnacle",
+    "HBIP": "Hartley Bay Underwater Network",
+    "HRBIP": "Holyrood Bay Underwater Network",
+    "KEMF": "Main Endeavour Field",
+    "KEMFT": "Tempo-Mini",
+    "KEMO": "Mothra",
+    "KVIP": "Kitamaat Village Underwater Network",
+    "NC89": "Bullseye",
+    "USDDL": "Delta Dynamics Laboratory",
+    "YPVPF": "Instrument Float"
+  },
   "citations": [
     {
       "doi": "10.34943/7ffebf83-0e44-4695-813a-ce3662f541f6",

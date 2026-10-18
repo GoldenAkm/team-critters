@@ -51,6 +51,32 @@
   color: #ffb08a;
 }
 
+/* Sea tone, for the Interactive Map: the page's deep teal water with the wave
+   lines' pale cyan for the edge, labels and links */
+.sea {
+  /* Positioned, so it draws over the map page's fixed wave canvas */
+  position: relative;
+  border-top-color: rgb(120 214 232 / 0.4);
+  background: linear-gradient(100deg, #0d4456 0%, #062534 40%, #041a26 65%, #0a3546 100%);
+  color: rgb(222 244 249 / 0.85);
+}
+
+.sea :focus-visible {
+  outline-color: #78d6e8;
+}
+
+.sea .credits dt {
+  color: rgb(190 240 250 / 0.6);
+}
+
+.sea .credits a {
+  color: #78d6e8;
+}
+
+.sea .credits a:hover {
+  color: #bef0fa;
+}
+
 /* Phones: label above each credit */
 @media (max-width: 560px) {
   .credits {

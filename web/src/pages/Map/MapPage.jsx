@@ -1,53 +1,61 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { species, cameras, detections, WEEKS, DEFAULT_YEAR } from '../../components/data.js'
 import { BUBBLE_GROUPS, BUBBLE_ZOOM, countBy, filterDetections } from './derive.js'
-import Sidebar from './Sidebar.jsx'
+import FilterBar from './FilterBar.jsx'
 import MapView from './MapView.jsx'
 import Timeline from './Timeline.jsx'
-import EnvTiles from './EnvTiles.jsx'
 import SpeciesCard from './SpeciesCard.jsx'
 import TrendsPanel from './TrendsPanel.jsx'
 import AppHeader from '../../components/AppHeader.jsx'
-import MapHero, { MapStats } from './MapHero.jsx'
+import SiteFooter from '../../components/SiteFooter.jsx'
+import MapHero from './MapHero.jsx'
 import OceanWaves, { OCEAN_LOOK } from './OceanWaves.jsx'
 import DataNote from './DataNote.jsx'
 import './map.css'
 
 const FULL_YEAR = [0, WEEKS - 1]
-const DEFAULT_STATUS = { identified: true, uncertain: false, needs_review: false }
+// Only Identified detections count as sightings and show on the map
+const COUNTED = { identified: true, uncertain: false, needs_review: false }
+const ENV_OFF = { temp: false, oxygen: false }
 const PLAY_WINDOW = 4
-
-// The site trends panel is always shown. It opens on the camera with the most sightings for the starting filters.
-function busiestCamera() {
-  const all = new Set(species.map((s) => s.id))
-  const counts = countBy(filterDetections(detections, { speciesOn: all, statusOn: DEFAULT_STATUS, range: FULL_YEAR, year: DEFAULT_YEAR }), 'cameraId')
-  return Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0] ?? cameras[0].id
-}
+const CREDITS = [
+  {
+    label: 'Top photo',
+    text: 'Sandstone bluffs northwest of Port Renfrew, British Columbia: Roy Luck, via Wikimedia Commons, CC BY 2.0 (cropped and sharpened)',
+    href: 'https://creativecommons.org/licenses/by/2.0/',
+  },
+  { label: 'Data', text: 'Ocean Networks Canada', href: 'https://www.oceannetworks.ca/' },
+  { label: 'Map tiles', text: 'Esri; sources: GEBCO, NOAA, CHS, National Geographic and others' },
+]
 
 export default function MapPage() {
   const [speciesOn, setSpeciesOn] = useState(() => new Set(species.map((s) => s.id)))
-  const [statusOn, setStatusOn] = useState(DEFAULT_STATUS)
-  const [envMode, setEnvMode] = useState('off')
+  const [envOn, setEnvOn] = useState(ENV_OFF)
   const [year, setYear] = useState(DEFAULT_YEAR)
   const [range, setRange] = useState(FULL_YEAR)
   const [playing, setPlaying] = useState(false)
-  const [search, setSearch] = useState('')
   const [card, setCard] = useState(null) // { detection, count }
-  const [trendsCameraId, setTrendsCameraId] = useState(busiestCamera)
+  // The chart beside the map shows this camera, or the cameras in view when null
+  const [trendsCameraId, setTrendsCameraId] = useState(null)
   const [view, setView] = useState({ zoom: 3, inView: cameras.map((c) => c.id) })
   const mapRef = useRef(null)
-  const trendsRef = useRef(null)
 
   const filtered = useMemo(
-    () => filterDetections(detections, { speciesOn, statusOn, range, year }),
-    [speciesOn, statusOn, range, year],
+    () => filterDetections(detections, { speciesOn, statusOn: COUNTED, range, year }),
+    [speciesOn, range, year],
   )
   // Species counts ignore the species filter itself so unchecked species still show what they'd add.
   const speciesCounts = useMemo(
-    () => countBy(filterDetections(detections, { speciesOn: new Set(species.map((s) => s.id)), statusOn, range, year }), 'speciesId'),
-    [statusOn, range, year],
+    () => countBy(filterDetections(detections, { speciesOn: new Set(species.map((s) => s.id)), statusOn: COUNTED, range, year }), 'speciesId'),
+    [range, year],
   )
   const cameraCounts = useMemo(() => countBy(filtered, 'cameraId'), [filtered])
+  // The latest sighting at each camera in the period, opened in the species card when its camera is clicked
+  const latestByCamera = useMemo(() => {
+    const out = {}
+    for (const d of filtered) if (!out[d.cameraId] || d.timestamp > out[d.cameraId].timestamp) out[d.cameraId] = d
+    return out
+  }, [filtered])
 
   const areaName = useMemo(() => {
     if (view.zoom < BUBBLE_ZOOM) return null
@@ -77,19 +85,6 @@ export default function MapPage() {
     const c = cameras.find((x) => x.id === cameraId)
     mapRef.current?.flyTo([c.lat, c.lon], 8, { duration: 0.8 })
     setTrendsCameraId(cameraId)
-    // The trends panel sits below the map card: bring it into view once it shows this camera (even if it already did)
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    requestAnimationFrame(() => trendsRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' }))
-  }
-
-  function resetFilters() {
-    setSpeciesOn(new Set(species.map((s) => s.id)))
-    setStatusOn(DEFAULT_STATUS)
-    setEnvMode('off')
-    setRange(FULL_YEAR)
-    setYear(DEFAULT_YEAR)
-    setPlaying(false)
-    setSearch('')
   }
 
   return (
@@ -102,57 +97,53 @@ export default function MapPage() {
         <MapHero />
 
         <div className="mp-body">
-          <MapStats shown={filtered.length} year={year} cameraCount={cameras.length} />
-          <div className="mp-layout">
-            <div className="mp-main">
-              <section className="mp-card mp-map-card" aria-label="Map of ONC camera sites">
-                <div className="map-main">
-                  <MapView
-                    mapRef={mapRef}
-                    filtered={filtered} cameraCounts={cameraCounts}
-                    envMode={envMode} range={range} year={year}
-                    areaName={areaName}
-                    onView={setView}
-                    onMarkerClick={(detection, count) => setCard({ detection, count })}
-                    onCameraClick={openCamera}
-                  />
-                  {envMode !== 'off' && (
-                    <EnvTiles envMode={envMode} setEnvMode={setEnvMode} range={range} year={year} cameraIds={view.inView} />
-                  )}
-                  {card && (
-                    <SpeciesCard
-                      key={card.detection.id}
-                      {...card}
-                      onClose={() => setCard(null)}
-                      onTrends={(id) => { openCamera(id); setCard(null) }}
-                    />
-                  )}
-                </div>
-                <Timeline
-                  range={range} year={year}
-                  setYear={(y) => { setPlaying(false); setCard(null); setYear(y) }}
-                  setRange={(r) => { setPlaying(false); setRange(r) }}
-                  playing={playing} onTogglePlay={togglePlay}
-                  areaName={areaName} cameraIds={view.inView}
+          <FilterBar
+            shown={filtered.length}
+            speciesOn={speciesOn} setSpeciesOn={setSpeciesOn} speciesCounts={speciesCounts}
+            envOn={envOn} setEnvOn={setEnvOn}
+            cameraCounts={cameraCounts} cameraId={trendsCameraId} onPickCamera={openCamera}
+            year={year}
+          />
+          {/* Map and chart side by side, sharing the timeline underneath */}
+          <section className="mp-card mp-frame" aria-label="Map of ONC camera sites with trends">
+            <div className="mp-frame__top">
+              <div className="map-main">
+                <MapView
+                  mapRef={mapRef}
+                  cameraCounts={cameraCounts}
+                  envOn={envOn} range={range} year={year}
+                  areaName={areaName}
+                  onView={setView}
+                  onCameraClick={(id) => { setCard({ detection: latestByCamera[id], count: cameraCounts[id] }); setTrendsCameraId(id) }}
                 />
-              </section>
-
-              <TrendsPanel ref={trendsRef} cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year} />
-
-              <DataNote />
+                {card && (
+                  <SpeciesCard
+                    key={card.detection.id}
+                    {...card}
+                    onClose={() => setCard(null)}
+                    onTrends={(id) => { openCamera(id); setCard(null) }}
+                  />
+                )}
+              </div>
+              <TrendsPanel
+                cameraId={trendsCameraId} cameraIds={view.inView} areaName={areaName}
+                onBackToArea={() => setTrendsCameraId(null)}
+                speciesOn={speciesOn} statusOn={COUNTED} range={range} year={year}
+              />
             </div>
-
-            <Sidebar
-              search={search} setSearch={setSearch}
-              speciesOn={speciesOn} setSpeciesOn={setSpeciesOn} speciesCounts={speciesCounts}
-              statusOn={statusOn} setStatusOn={setStatusOn}
-              envMode={envMode} setEnvMode={setEnvMode}
-              cameraCounts={cameraCounts} onCameraClick={openCamera}
-              onReset={resetFilters}
+            <Timeline
+              range={range} year={year}
+              setYear={(y) => { setPlaying(false); setCard(null); setYear(y) }}
+              setRange={(r) => { setPlaying(false); setRange(r) }}
+              playing={playing} onTogglePlay={togglePlay}
+              areaName={areaName} cameraIds={view.inView}
             />
-          </div>
+          </section>
         </div>
       </main>
+      <SiteFooter credits={CREDITS} tone="sea">
+        <DataNote />
+      </SiteFooter>
     </>
   )
 }

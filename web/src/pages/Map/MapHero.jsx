@@ -15,12 +15,3 @@ export default function MapHero() {
   )
 }
 
-// Summary pills, in a row above the map
-export function MapStats({ shown, year, cameraCount }) {
-  return (
-    <div className="mp-stats">
-      <span className="mp-pill"><b>{shown}</b> sightings shown · {year}</span>
-      <span className="mp-pill"><b>{cameraCount}</b> cameras</span>
-    </div>
-  )
-}
