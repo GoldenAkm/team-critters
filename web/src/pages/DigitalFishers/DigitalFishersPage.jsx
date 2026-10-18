@@ -125,7 +125,13 @@ export default function ReviewPage() {
               {result ? (
                 <ResultPanel clip={clip} result={result} isLast={isLast} onNext={next} />
               ) : (
-                <AnswerPanel key={`answers-${clip.id}`} clip={clip} onAnswer={submit} />
+                <>
+                  <AnswerPanel key={`answers-${clip.id}`} clip={clip} onAnswer={submit} />
+                  {/* Moves on without an answer; nothing is recorded for this frame */}
+                  <button type="button" className="btn df-skip" onClick={next}>
+                    {isLast ? 'Skip and finish' : 'Skip this frame'}
+                  </button>
+                </>
               )}
             </section>
           </div>

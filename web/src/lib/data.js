@@ -22,9 +22,11 @@ export async function loadReviewData() {
   ]);
 
   // Frames the Interactive Map sent here (rockfish model said Needs review or Uncertain) come first.
+  // The built-in clips use the same ids as frames sent from the map, so a frame sent from both shows once.
   const queued = readReviewQueue();
+  const queuedIds = new Set(queued.map((q) => q.detection.id));
   const rawDetections = [...queued.map((q) => q.detection), ...detectionsFile.detections];
-  const rawClips = [...queued.map((q) => q.clip), ...clipsFile.clips];
+  const rawClips = [...queued.map((q) => q.clip), ...clipsFile.clips.filter((c) => !queuedIds.has(c.detectionId))];
 
   const species = speciesFile.species;
   const speciesById = Object.fromEntries(species.map((s) => [s.id, s]));

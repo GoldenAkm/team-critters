@@ -12,7 +12,7 @@ export function normalizeDetection(raw) {
     cameraId: raw.cameraId ?? raw.camera,
     timestamp: raw.timestamp,
     status: statusKey(raw.status),
-    confidence: Number(raw.confidence),
+    confidence: raw.confidence == null ? null : Number(raw.confidence), // null: the model gave no score
     box: normalizeBox(raw.box),
     clipUrl: raw.clipUrl ?? null,
     frameUrl: raw.frameUrl ?? null,

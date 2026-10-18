@@ -82,6 +82,13 @@
 .mp-hero h1 { font-family: var(--font-display); font-size: 44px; font-weight: 700; line-height: 1.02; color: #fff; }
 .mp-hero p { font-size: 16px; line-height: 1.5; color: rgb(255 255 255 / 0.9); }
 .mp-hero :focus-visible { outline-color: #9fe3f2; }
+/* Link to Digital Fishers 2.0: a white pill like Digital Fishers' "Marine collection" pill */
+.mp-hero__cta {
+  justify-self: start; display: inline-flex; align-items: center; min-height: 40px; margin-top: 4px; padding: 0 16px;
+  border-radius: 999px; background: #fff; color: var(--onc-teal-dark); font-size: 14px; font-weight: 500;
+  text-decoration: none; text-shadow: none; box-shadow: var(--shadow-1); transition: background 0.15s;
+}
+.mp-hero__cta:hover { background: var(--tint); }
 
 
 /* Filter bar above the map: sightings count, species chips, camera picker, environmental layers, left-aligned */

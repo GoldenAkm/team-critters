@@ -1,10 +1,203 @@
 {
-  "_note": "Illustrative sample detections. Replace this file with the model pipeline's output (same fields; see src/lib/detections.js).",
   "detections": [
-    { "id": "d1", "species": "copper_rockfish", "camera": "hartley_bay", "timestamp": "2024-04-20T13:02:13Z", "status": "Uncertain", "confidence": 0.58, "box": { "x": 0.34, "y": 0.42, "w": 0.30, "h": 0.26 }, "clipUrl": null, "frameUrl": null },
-    { "id": "d2", "species": "lingcod", "camera": "campbell_river", "timestamp": "2024-08-01T05:01:35Z", "status": "Needs review", "confidence": 0.71, "box": { "x": 0.18, "y": 0.55, "w": 0.46, "h": 0.20 }, "clipUrl": null, "frameUrl": null },
-    { "id": "d3", "species": "kelp_greenling", "camera": "campbell_river", "timestamp": "2025-06-12T14:03:00Z", "status": "Uncertain", "confidence": 0.49, "box": { "x": 0.52, "y": 0.36, "w": 0.26, "h": 0.22 }, "clipUrl": null, "frameUrl": null },
-    { "id": "d4", "species": "copper_rockfish", "camera": "china_creek", "timestamp": "2022-11-22T22:04:01Z", "status": "Needs review", "confidence": 0.77, "box": { "x": 0.40, "y": 0.30, "w": 0.28, "h": 0.30 }, "clipUrl": null, "frameUrl": null },
-    { "id": "d5", "species": "copper_rockfish", "camera": "hartley_bay", "timestamp": "2024-04-25T04:02:55Z", "status": "Identified", "confidence": 0.96, "box": { "x": 0.30, "y": 0.40, "w": 0.32, "h": 0.28 }, "clipUrl": null, "frameUrl": null }
+    {
+      "id": "map-d26",
+      "species": "rockfish",
+      "camera": "campbell_river",
+      "timestamp": "2019-09-10T09:02:54Z",
+      "status": "Needs review",
+      "confidence": 0.1142,
+      "box": {
+        "x": 0.2094,
+        "y": 0.2708,
+        "w": 0.4875,
+        "h": 0.3104
+      },
+      "clipUrl": "https://data.oceannetworks.ca/SeaTube?resourceTypeId=1000&resourceId=24385&time=2019-09-10T09:02:54.000Z&annotationId=18379000",
+      "frameUrl": "/frames/AXISCAMACCC8E891288_20190910T090006.000Z_t0168.00.jpg",
+      "source": "model",
+      "modelVersion": "vic02-rockfish-fine-tuned-6bef1b984c43",
+      "model": {
+        "status": "Needs review",
+        "score": 0.1142,
+        "box": [
+          134,
+          130,
+          446,
+          279
+        ],
+        "species_hint": null,
+        "all_boxes": [
+          {
+            "box": [
+              134,
+              130,
+              446,
+              279
+            ],
+            "score": 0.1142,
+            "status": "Needs review",
+            "det_conf": 0.28,
+            "det_source": "cfd"
+          }
+        ],
+        "thresholds": {
+          "needs_review": 0.11221037805080414,
+          "identified": 0.8838388919830322
+        },
+        "model_version": "vic02-rockfish-fine-tuned-6bef1b984c43",
+        "seconds": 0.117
+      }
+    },
+    {
+      "id": "map-d28",
+      "species": "rockfish",
+      "camera": "hartley_bay",
+      "timestamp": "2024-01-20T11:04:39Z",
+      "status": "Needs review",
+      "confidence": 0.8729,
+      "box": {
+        "x": 0.025,
+        "y": 0.0028,
+        "w": 0.4938,
+        "h": 0.9944
+      },
+      "clipUrl": "https://data.oceannetworks.ca/SeaTube?resourceTypeId=1000&resourceId=79452&time=2024-01-20T11:04:39.000Z&annotationId=18411300",
+      "frameUrl": "/frames/AXISCAMB8A44F76CD4F_20240120T110006.000Z_t0273.00.jpg",
+      "source": "model",
+      "modelVersion": "vic02-rockfish-fine-tuned-6bef1b984c43",
+      "model": {
+        "status": "Needs review",
+        "score": 0.8729,
+        "box": [
+          16,
+          1,
+          332,
+          359
+        ],
+        "species_hint": null,
+        "all_boxes": [
+          {
+            "box": [
+              16,
+              1,
+              332,
+              359
+            ],
+            "score": 0.8729,
+            "status": "Needs review",
+            "det_conf": 0.882,
+            "det_source": "cfd"
+          }
+        ],
+        "thresholds": {
+          "needs_review": 0.11221037805080414,
+          "identified": 0.8838388919830322
+        },
+        "model_version": "vic02-rockfish-fine-tuned-6bef1b984c43",
+        "seconds": 0.122
+      }
+    },
+    {
+      "id": "map-d30",
+      "species": "rockfish",
+      "camera": "hartley_bay",
+      "timestamp": "2024-01-27T13:04:34Z",
+      "status": "Needs review",
+      "confidence": 0.8587,
+      "box": {
+        "x": 0.0016,
+        "y": 0.0167,
+        "w": 0.4297,
+        "h": 0.9694
+      },
+      "clipUrl": "https://data.oceannetworks.ca/SeaTube?resourceTypeId=1000&resourceId=79452&time=2024-01-27T13:04:34.000Z&annotationId=18413800",
+      "frameUrl": "/frames/AXISCAMB8A44F76CD4F_20240127T130006.000Z_t0268.00.jpg",
+      "source": "model",
+      "modelVersion": "vic02-rockfish-fine-tuned-6bef1b984c43",
+      "model": {
+        "status": "Needs review",
+        "score": 0.8587,
+        "box": [
+          1,
+          6,
+          276,
+          355
+        ],
+        "species_hint": null,
+        "all_boxes": [
+          {
+            "box": [
+              1,
+              6,
+              276,
+              355
+            ],
+            "score": 0.8587,
+            "status": "Needs review",
+            "det_conf": 0.888,
+            "det_source": "cfd"
+          }
+        ],
+        "thresholds": {
+          "needs_review": 0.11221037805080414,
+          "identified": 0.8838388919830322
+        },
+        "model_version": "vic02-rockfish-fine-tuned-6bef1b984c43",
+        "seconds": 0.13
+      }
+    },
+    {
+      "id": "map-d12",
+      "species": "rockfish",
+      "camera": "campbell_river",
+      "timestamp": "2019-08-31T00:01:39Z",
+      "status": "Uncertain",
+      "confidence": null,
+      "box": null,
+      "clipUrl": "https://data.oceannetworks.ca/SeaTube?resourceTypeId=1000&resourceId=24385&time=2019-08-31T00:01:39.000Z&annotationId=18359700",
+      "frameUrl": "/frames/AXISCAMACCC8E891288_20190831T000006.000Z_t0093.00.jpg",
+      "source": "model",
+      "modelVersion": "vic02-rockfish-fine-tuned-6bef1b984c43",
+      "model": {
+        "status": "No detection",
+        "score": null,
+        "box": null,
+        "species_hint": null,
+        "all_boxes": [],
+        "thresholds": {
+          "needs_review": 0.11221037805080414,
+          "identified": 0.8838388919830322
+        },
+        "model_version": "vic02-rockfish-fine-tuned-6bef1b984c43",
+        "seconds": 1.026
+      }
+    },
+    {
+      "id": "map-d13",
+      "species": "rockfish",
+      "camera": "campbell_river",
+      "timestamp": "2019-09-01T07:03:29Z",
+      "status": "Uncertain",
+      "confidence": null,
+      "box": null,
+      "clipUrl": "https://data.oceannetworks.ca/SeaTube?resourceTypeId=1000&resourceId=24385&time=2019-09-01T07:03:29.000Z&annotationId=18365100",
+      "frameUrl": "/frames/AXISCAMACCC8E891288_20190901T070006.000Z_t0203.00.jpg",
+      "source": "model",
+      "modelVersion": "vic02-rockfish-fine-tuned-6bef1b984c43",
+      "model": {
+        "status": "No detection",
+        "score": null,
+        "box": null,
+        "species_hint": null,
+        "all_boxes": [],
+        "thresholds": {
+          "needs_review": 0.11221037805080414,
+          "identified": 0.8838388919830322
+        },
+        "model_version": "vic02-rockfish-fine-tuned-6bef1b984c43",
+        "seconds": 0.105
+      }
+    }
   ]
 }

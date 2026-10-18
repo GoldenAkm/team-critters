@@ -129,6 +129,8 @@
 .answer__icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: rgb(255 255 255 / 0.18); }
 .lookalikes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 12px; border: 1px dashed var(--line); border-radius: var(--radius); }
 .lookalikes legend { padding: 0 4px; font-size: 12px; color: var(--muted); }
+/* Skip: a quiet glass button under the answer tiles */
+.df-skip { align-self: flex-start; }
 
 /* Result */
 .result {

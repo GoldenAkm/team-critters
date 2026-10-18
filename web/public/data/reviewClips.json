@@ -1,9 +1,80 @@
 {
-  "_note": "Illustrative sample clips. priorVotes simulates the other reviewers until there is a shared backend.",
+  "_note": "Real ONC rockfish frames from the Interactive Map, the ones the team marked small, partial or blurry, with the rockfish model's result as returned (model). They start with no prior votes: nobody else has reviewed them yet.",
   "clips": [
-    { "id": "c1", "detectionId": "d1", "lookAlikes": ["quillback_rockfish", "Brown rockfish", "Cabezon"], "tip": "Look for the pale stripe on the rear half of the body. Colour alone isn't reliable in green, murky water.", "priorVotes": { "yes": 2, "no": 0, "unsure": 0 } },
-    { "id": "c2", "detectionId": "d2", "lookAlikes": ["kelp_greenling", "Sculpin"], "tip": "Lingcod are longer and thinner than rockfish, with a huge mouth.", "priorVotes": { "yes": 1, "no": 0, "unsure": 0 } },
-    { "id": "c3", "detectionId": "d3", "lookAlikes": ["lingcod", "Painted greenling"], "tip": "Greenlings have one long dorsal fin, not the separate spiny fin of a rockfish.", "priorVotes": { "yes": 1, "no": 1, "unsure": 0 } },
-    { "id": "c4", "detectionId": "d4", "lookAlikes": ["quillback_rockfish", "Brown rockfish"], "tip": "A quillback's dorsal spines are much taller and more ragged.", "priorVotes": { "yes": 2, "no": 0, "unsure": 0 } }
+    {
+      "id": "map-c-d26",
+      "detectionId": "map-d26",
+      "lookAlikes": [
+        "lingcod",
+        "kelp_greenling",
+        "Other fish"
+      ],
+      "tip": "Rockfish have a spiny dorsal fin along most of the back and a large head with big eyes. Lingcod and greenlings are longer and slimmer. If the fish is too small or blurry to tell, choose \"Can't tell\".",
+      "priorVotes": {
+        "yes": 0,
+        "no": 0,
+        "unsure": 0
+      }
+    },
+    {
+      "id": "map-c-d28",
+      "detectionId": "map-d28",
+      "lookAlikes": [
+        "lingcod",
+        "kelp_greenling",
+        "Other fish"
+      ],
+      "tip": "Rockfish have a spiny dorsal fin along most of the back and a large head with big eyes. Lingcod and greenlings are longer and slimmer. If the fish is too small or blurry to tell, choose \"Can't tell\".",
+      "priorVotes": {
+        "yes": 0,
+        "no": 0,
+        "unsure": 0
+      }
+    },
+    {
+      "id": "map-c-d30",
+      "detectionId": "map-d30",
+      "lookAlikes": [
+        "lingcod",
+        "kelp_greenling",
+        "Other fish"
+      ],
+      "tip": "Rockfish have a spiny dorsal fin along most of the back and a large head with big eyes. Lingcod and greenlings are longer and slimmer. If the fish is too small or blurry to tell, choose \"Can't tell\".",
+      "priorVotes": {
+        "yes": 0,
+        "no": 0,
+        "unsure": 0
+      }
+    },
+    {
+      "id": "map-c-d12",
+      "detectionId": "map-d12",
+      "lookAlikes": [
+        "lingcod",
+        "kelp_greenling",
+        "Other fish"
+      ],
+      "tip": "Rockfish have a spiny dorsal fin along most of the back and a large head with big eyes. Lingcod and greenlings are longer and slimmer. If the fish is too small or blurry to tell, choose \"Can't tell\".",
+      "priorVotes": {
+        "yes": 0,
+        "no": 0,
+        "unsure": 0
+      }
+    },
+    {
+      "id": "map-c-d13",
+      "detectionId": "map-d13",
+      "lookAlikes": [
+        "lingcod",
+        "kelp_greenling",
+        "Other fish"
+      ],
+      "tip": "Rockfish have a spiny dorsal fin along most of the back and a large head with big eyes. Lingcod and greenlings are longer and slimmer. If the fish is too small or blurry to tell, choose \"Can't tell\".",
+      "priorVotes": {
+        "yes": 0,
+        "no": 0,
+        "unsure": 0
+      }
+    }
   ]
 }
