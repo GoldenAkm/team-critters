@@ -1,5 +1,7 @@
 // Species shape + status styling: identified = filled, uncertain = dashed outline, needs_review = outline with "?".
-export const SPECIES_COLOR = '#0b6e8a'
+import { ONC } from './oncTheme.js'
+
+export const SPECIES_COLOR = ONC.navy
 
 export function symbolSvg(shape, status, size = 20, color = SPECIES_COLOR) {
   const filled = status === 'identified'

@@ -1,4 +1,4 @@
-import { species, sources, footageQualityAssessed } from '../../shared/data.js'
+import { species, sources, sightingsMeta, footageQualityAssessed } from '../../shared/data.js'
 import { STATUSES } from '../../shared/status.js'
 import SpeciesSymbol from '../../shared/SpeciesSymbol.jsx'
 import { cameraTree } from './derive.js'
@@ -39,7 +39,7 @@ export default function Sidebar({
   return (
     <aside className="sidebar" aria-label="Map filters">
       <header className="sidebar-head">
-        <h1>Interactive Map</h1>
+        <h1>Filters</h1>
         <p>Confirmed sightings at Ocean Networks Canada fixed cameras.</p>
       </header>
 
@@ -77,7 +77,7 @@ export default function Sidebar({
         <section>
           <h2>Environmental data</h2>
           <div role="radiogroup" aria-label="Environmental data">
-            {[['off', 'Off'], ['temp', 'Water temperature'], ['oxygen', 'Dissolved oxygen']].map(([v, label]) => (
+            {[['off', 'Off'], ['temp', 'Temperature'], ['oxygen', 'Oxygen']].map(([v, label]) => (
               <label key={v} className="radio-row">
                 <input type="radio" name="env" value={v} checked={envMode === v} onChange={() => setEnvMode(v)} />
                 {label}
@@ -120,12 +120,19 @@ export default function Sidebar({
         <span><strong>{shownCount}</strong> detections shown</span>
         <button type="button" className="link-btn" onClick={onReset}>Reset filters</button>
         <small className="sample-note">
-          Detections are <strong>illustrative sample data</strong>, not real model output.
-          Camera sites, temperature, oxygen and footage availability are real Ocean Networks Canada data ({sources.year}).
+          Real Ocean Networks Canada data ({sources.years.join(', ')}). Sightings are human-reviewed rockfish frames plus
+          ONC annotations that pass an accuracy check; they are not model output yet.
         </small>
         <details className="sources">
           <summary>Data sources &amp; citations</summary>
-          <ul>{sources.notes.map((n) => <li key={n}>{n}</li>)}</ul>
+          <ul>
+            {sources.notes.map((n) => <li key={n}>{n}</li>)}
+            <li>
+              ONC annotations kept only if {sightingsMeta.rule}: {sightingsMeta.rulePrecision.confirmed} of {sightingsMeta.rulePrecision.checked} such
+              rockfish annotations were confirmed by corrected labels, versus {sightingsMeta.baselinePrecision.confirmed} of {sightingsMeta.baselinePrecision.checked} overall.
+              Lingcod annotations are unmeasured, so they stay in Needs review.
+            </li>
+          </ul>
           <ul>{sources.citations.map((c) => <li key={c.doi}>{c.citation}</li>)}</ul>
         </details>
       </footer>

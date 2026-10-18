@@ -103,8 +103,8 @@
     "name": "Saanich Inlet",
     "region": "Pacific",
     "area": "Salish Sea",
-    "lat": 48.6531,
-    "lon": -123.5521,
+    "lat": 48.6224,
+    "lon": -123.4988,
     "oncLocationCode": "SAAN"
   },
   {
@@ -112,8 +112,8 @@
     "name": "Strait of Georgia",
     "region": "Pacific",
     "area": "Salish Sea",
-    "lat": 49.0398,
-    "lon": -123.4257,
+    "lat": 49.0848,
+    "lon": -123.3299,
     "oncLocationCode": "SOG"
   },
   {

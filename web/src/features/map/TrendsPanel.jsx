@@ -1,18 +1,19 @@
 import { useMemo, useState } from 'react'
 import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine } from 'recharts'
-import { detections, env, footage, footageQualityAssessed, weekOf, weekDate, WEEKS } from '../../shared/data.js'
+import { detections, yearData, footageQualityAssessed, weekOf, weekDate, WEEKS } from '../../shared/data.js'
 import { footageLabel } from '../../shared/status.js'
 import { MONTH_TICKS, cameraById, fmtDate, pearson } from './derive.js'
+import { ONC } from '../../shared/oncTheme.js'
 
 const SYNC = 'site-trends'
 const X_DOMAIN = [-0.5, WEEKS - 0.5]
 
-function WeekTooltip({ active, payload }) {
+function WeekTooltip({ active, payload, year }) {
   if (!active || !payload?.length) return null
   const r = payload[0].payload
   return (
     <div className="chart-tip">
-      <strong>Week of {fmtDate(weekDate(r.w))}</strong>
+      <strong>Week of {fmtDate(weekDate(r.w, year))}</strong>
       <span>Temp: {r.temp == null ? 'no data' : `${r.temp} °C`}</span>
       <span>Oxygen: {r.oxygen == null ? 'no data' : `${r.oxygen} mg/L`}</span>
       <span>Sightings: {r.footage === 'none' ? 'no footage' : r.sightings}</span>
@@ -40,7 +41,7 @@ function summarize(rows) {
   return `${parts.join(' ')} ${basis}`
 }
 
-export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, onClose }) {
+export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, year, onClose }) {
   const [showTemp, setShowTemp] = useState(true)
   const [showOxygen, setShowOxygen] = useState(true)
   const cam = cameraById[cameraId]
@@ -49,9 +50,10 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, onCl
     const sightings = Array(WEEKS).fill(0)
     for (const d of detections) {
       if (d.cameraId !== cameraId || !speciesOn.has(d.speciesId) || !statusOn[d.status]) continue
-      const w = weekOf(d.timestamp)
-      if (w >= 0 && w < WEEKS) sightings[w]++
+      const w = weekOf(d.timestamp, year)
+      if (w >= 0) sightings[w]++
     }
+    const { env, footage } = yearData(year)
     return Array.from({ length: WEEKS }, (_, w) => ({
       w,
       temp: env.cameras[cameraId]?.tempC[w] ?? null,
@@ -59,16 +61,16 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, onCl
       sightings: sightings[w],
       footage: footage.cameras[cameraId]?.[w] || 'none',
     }))
-  }, [cameraId, speciesOn, statusOn])
+  }, [cameraId, speciesOn, statusOn, year])
 
   const summary = useMemo(() => summarize(rows), [rows])
 
   function download() {
     const csv = ['week_start,temp_c,oxygen_mg_l,sightings,footage',
-      ...rows.map((r) => [weekDate(r.w).toISOString().slice(0, 10), r.temp ?? '', r.oxygen ?? '', r.sightings, r.footage].join(','))].join('\n')
+      ...rows.map((r) => [weekDate(r.w, year).toISOString().slice(0, 10), r.temp ?? '', r.oxygen ?? '', r.sightings, r.footage].join(','))].join('\n')
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
-    a.download = `${cameraId}_weekly.csv`
+    a.download = `${cameraId}_${year}_weekly.csv`
     a.click()
     URL.revokeObjectURL(a.href)
   }
@@ -78,14 +80,14 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, onCl
     <defs key="defs">
       <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
         <rect width="6" height="6" fill="#fff" />
-        <line x1="0" y1="0" x2="0" y2="6" stroke="#9aa7b0" strokeWidth="2" />
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#999999" strokeWidth="2" />
       </pattern>
     </defs>,
     ...rows.filter((r) => r.footage !== 'clear').map((r) => (
       <ReferenceArea key={`f${r.w}`} x1={r.w - 0.5} x2={r.w + 0.5} ifOverflow="hidden" strokeOpacity={0}
         fill={r.footage === 'none' ? 'url(#hatch)' : '#dfe6ea'} fillOpacity={r.footage === 'none' ? 1 : 0.8} />
     )),
-    <ReferenceArea key="sel" x1={range[0] - 0.5} x2={range[1] + 0.5} fill="none" stroke="#0b6e8a" strokeWidth={1.5} />,
+    <ReferenceArea key="sel" x1={range[0] - 0.5} x2={range[1] + 0.5} fill="none" stroke={ONC.teal} strokeWidth={1.5} />,
   ]
 
   const xAxis = (show) => (
@@ -102,7 +104,7 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, onCl
   return (
     <section className="trends" aria-label={`Site trends for ${cam.name}`}>
       <header className="trends-head">
-        <h2>{cam.name} <small>{cam.area} · weekly, 2025</small></h2>
+        <h2>{cam.name} <small>{cam.area} · weekly, {year}</small></h2>
         <div className="trends-controls">
           <label><input type="checkbox" checked={showTemp} onChange={() => setShowTemp(!showTemp)} /> Temperature</label>
           <label><input type="checkbox" checked={showOxygen} onChange={() => setShowOxygen(!showOxygen)} /> Oxygen</label>
@@ -122,14 +124,14 @@ export default function TrendsPanel({ cameraId, speciesOn, statusOn, range, onCl
                 {xAxis(i === charts.length - 1)}
                 <YAxis width={34} tick={{ fontSize: 11 }} allowDecimals={c.key !== 'sightings'}
                   domain={c.key === 'oxygen' ? [0, 'auto'] : ['auto', 'auto']} />
-                <Tooltip content={<WeekTooltip />} />
-                {c.key === 'temp' && <Line dataKey="temp" stroke="#d35400" dot={false} strokeWidth={2} connectNulls={false} isAnimationActive={false} />}
+                <Tooltip content={<WeekTooltip year={year} />} />
+                {c.key === 'temp' && <Line dataKey="temp" stroke={ONC.orange} dot={false} strokeWidth={2} connectNulls={false} isAnimationActive={false} />}
                 {c.key === 'oxygen' && <>
-                  <ReferenceLine y={2} stroke="#c0392b" strokeDasharray="4 3"
-                    label={{ value: 'hypoxic below 2 mg/L', position: 'insideTopRight', fontSize: 10, fill: '#c0392b' }} />
-                  <Line dataKey="oxygen" stroke="#2c7bb6" dot={false} strokeWidth={2} connectNulls={false} isAnimationActive={false} />
+                  <ReferenceLine y={2} stroke={ONC.red} strokeDasharray="4 3"
+                    label={{ value: 'hypoxic below 2 mg/L', position: 'insideTopRight', fontSize: 10, fill: ONC.red }} />
+                  <Line dataKey="oxygen" stroke={ONC.blue} dot={false} strokeWidth={2} connectNulls={false} isAnimationActive={false} />
                 </>}
-                {c.key === 'sightings' && <Bar dataKey="sightings" fill="#0b6e8a" isAnimationActive={false} />}
+                {c.key === 'sightings' && <Bar dataKey="sightings" fill={ONC.tealDark} isAnimationActive={false} />}
               </ComposedChart>
             </ResponsiveContainer>
           </div>

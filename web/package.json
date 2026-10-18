@@ -7,16 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "sample-data": "node scripts/make-sample-data.mjs --detections-only",
     "onc-data": "node scripts/fetch-onc-data.mjs",
-    "sample-data:all": "node scripts/make-sample-data.mjs"
+    "sightings": "../.venv/bin/python scripts/build_sightings.py"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
-    "react-router-dom": "^6.28.0",
     "recharts": "^2.13.3"
   },
   "devDependencies": {

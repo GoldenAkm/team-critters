@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
-import { species, cameras, detections, WEEKS } from '../../shared/data.js'
+import { species, cameras, detections, WEEKS, DEFAULT_YEAR } from '../../shared/data.js'
 import { BUBBLE_GROUPS, BUBBLE_ZOOM, countBy, filterDetections } from './derive.js'
 import Sidebar from './Sidebar.jsx'
 import MapView from './MapView.jsx'
@@ -8,6 +8,7 @@ import Timeline from './Timeline.jsx'
 import EnvTiles from './EnvTiles.jsx'
 import SpeciesCard from './SpeciesCard.jsx'
 import TrendsPanel from './TrendsPanel.jsx'
+import AppHeader from '../../shared/AppHeader.jsx'
 import './map.css'
 
 const FULL_YEAR = [0, WEEKS - 1]
@@ -18,6 +19,7 @@ export default function MapPage() {
   const [speciesOn, setSpeciesOn] = useState(() => new Set(species.map((s) => s.id)))
   const [statusOn, setStatusOn] = useState(DEFAULT_STATUS)
   const [envMode, setEnvMode] = useState('off')
+  const [year, setYear] = useState(DEFAULT_YEAR)
   const [range, setRange] = useState(FULL_YEAR)
   const [playing, setPlaying] = useState(false)
   const [search, setSearch] = useState('')
@@ -27,13 +29,13 @@ export default function MapPage() {
   const mapRef = useRef(null)
 
   const filtered = useMemo(
-    () => filterDetections(detections, { speciesOn, statusOn, range }),
-    [speciesOn, statusOn, range],
+    () => filterDetections(detections, { speciesOn, statusOn, range, year }),
+    [speciesOn, statusOn, range, year],
   )
   // Species counts ignore the species filter itself so unchecked species still show what they'd add.
   const speciesCounts = useMemo(
-    () => countBy(filterDetections(detections, { speciesOn: new Set(species.map((s) => s.id)), statusOn, range }), 'speciesId'),
-    [statusOn, range],
+    () => countBy(filterDetections(detections, { speciesOn: new Set(species.map((s) => s.id)), statusOn, range, year }), 'speciesId'),
+    [statusOn, range, year],
   )
   const cameraCounts = useMemo(() => countBy(filtered, 'cameraId'), [filtered])
 
@@ -74,55 +76,60 @@ export default function MapPage() {
     setStatusOn(DEFAULT_STATUS)
     setEnvMode('off')
     setRange(FULL_YEAR)
+    setYear(DEFAULT_YEAR)
     setPlaying(false)
     setSearch('')
   }
 
   return (
-    <div className="map-page">
-      <Sidebar
-        search={search} setSearch={setSearch}
-        speciesOn={speciesOn} setSpeciesOn={setSpeciesOn} speciesCounts={speciesCounts}
-        statusOn={statusOn} setStatusOn={setStatusOn}
-        envMode={envMode} setEnvMode={setEnvMode}
-        cameraCounts={cameraCounts} onCameraClick={openCamera}
-        shownCount={filtered.length} onReset={resetFilters}
-      />
-      <main className="map-main" aria-label="Map of ONC camera sites">
-        <MapView
-          mapRef={mapRef}
-          filtered={filtered} cameraCounts={cameraCounts}
-          envMode={envMode} range={range}
-          areaName={areaName}
-          onView={setView}
-          onMarkerClick={(detection, count) => setCard({ detection, count })}
-          onCameraClick={openCamera}
+    <div className="map-shell">
+      <AppHeader active="map" />
+      <div className="map-page">
+        <Sidebar
+          search={search} setSearch={setSearch}
+          speciesOn={speciesOn} setSpeciesOn={setSpeciesOn} speciesCounts={speciesCounts}
+          statusOn={statusOn} setStatusOn={setStatusOn}
+          envMode={envMode} setEnvMode={setEnvMode}
+          cameraCounts={cameraCounts} onCameraClick={openCamera}
+          shownCount={filtered.length} onReset={resetFilters}
         />
-        {envMode !== 'off' && (
-          <EnvTiles envMode={envMode} setEnvMode={setEnvMode} range={range} cameraIds={view.inView} />
-        )}
-        {card && (
-          <SpeciesCard
-            {...card}
-            onClose={() => setCard(null)}
-            onTrends={(id) => { openCamera(id); setCard(null) }}
+        <main className="map-main" aria-label="Map of ONC camera sites">
+          <MapView
+            mapRef={mapRef}
+            filtered={filtered} cameraCounts={cameraCounts}
+            envMode={envMode} range={range} year={year}
+            areaName={areaName}
+            onView={setView}
+            onMarkerClick={(detection, count) => setCard({ detection, count })}
+            onCameraClick={openCamera}
           />
-        )}
-        <div className="map-bottom">
-          {trendsCameraId && (
-            <TrendsPanel
-              cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range}
-              onClose={() => setTrendsCameraId(null)}
+          {envMode !== 'off' && (
+            <EnvTiles envMode={envMode} setEnvMode={setEnvMode} range={range} year={year} cameraIds={view.inView} />
+          )}
+          {card && (
+            <SpeciesCard
+              {...card}
+              onClose={() => setCard(null)}
+              onTrends={(id) => { openCamera(id); setCard(null) }}
             />
           )}
-          <Timeline
-            range={range}
-            setRange={(r) => { setPlaying(false); setRange(r) }}
-            playing={playing} onTogglePlay={togglePlay}
-            areaName={areaName} cameraIds={view.inView}
-          />
-        </div>
-      </main>
+          <div className="map-bottom">
+            {trendsCameraId && (
+              <TrendsPanel
+                cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year}
+                onClose={() => setTrendsCameraId(null)}
+              />
+            )}
+            <Timeline
+              range={range} year={year}
+              setYear={(y) => { setPlaying(false); setCard(null); setYear(y) }}
+              setRange={(r) => { setPlaying(false); setRange(r) }}
+              playing={playing} onTogglePlay={togglePlay}
+              areaName={areaName} cameraIds={view.inView}
+            />
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

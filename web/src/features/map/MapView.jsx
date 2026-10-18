@@ -24,12 +24,12 @@ function ViewTracker({ onView }) {
   return null
 }
 
-function cameraIcon(c, { envMode, range }) {
-  const foot = footageSummary(c.id, range)
+function cameraIcon(c, { envMode, range, year }) {
+  const foot = footageSummary(c.id, range, year)
   const notes = []
   let style = '', halo = ''
   if (envMode !== 'off') {
-    const v = envAverage(c.id, envMode, range)
+    const v = envAverage(c.id, envMode, range, year)
     style = `background:${envColor(envMode, v)}`
     const px = envHaloPx(envMode, v)
     if (px) halo = `<span class="cam-halo" style="width:${px * 2}px;height:${px * 2}px;background:${envColor(envMode, v)}"></span>`
@@ -67,7 +67,7 @@ function bubbleIcon(group, count) {
   })
 }
 
-export default function MapView({ mapRef, filtered, cameraCounts, envMode, range, areaName, onView, onMarkerClick, onCameraClick }) {
+export default function MapView({ mapRef, filtered, cameraCounts, envMode, range, year, areaName, onView, onMarkerClick, onCameraClick }) {
   const [zoom, setZoom] = useState(3)
   const [tilesFailed, setTilesFailed] = useState(false)
   const showBubbles = zoom < BUBBLE_ZOOM
@@ -88,7 +88,7 @@ export default function MapView({ mapRef, filtered, cameraCounts, envMode, range
   }, [filtered])
 
   const camIcons = useMemo(() => Object.fromEntries(cameras.map((c) =>
-    [c.id, cameraIcon(c, { envMode, range })])), [envMode, range])
+    [c.id, cameraIcon(c, { envMode, range, year })])), [envMode, range, year])
 
   return (
     <div className="map-wrap">

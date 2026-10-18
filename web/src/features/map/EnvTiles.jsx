@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { WEEKS } from '../../shared/data.js'
 import { envSeries, fmtEnv } from './derive.js'
+import { ONC } from '../../shared/oncTheme.js'
 
 const HYPOXIC = 2
 
@@ -20,15 +21,15 @@ function Sparkline({ values, range, hypoxic }) {
   return (
     <svg width={w} height={h} aria-hidden="true">
       <rect x={x(range[0])} y={0} width={Math.max(2, x(range[1]) - x(range[0]))} height={h} fill="currentColor" opacity="0.12" />
-      {hypoxic && <line x1={0} x2={w} y1={y(HYPOXIC)} y2={y(HYPOXIC)} stroke="#c0392b" strokeDasharray="3 2" />}
+      {hypoxic && <line x1={0} x2={w} y1={y(HYPOXIC)} y2={y(HYPOXIC)} stroke={ONC.red} strokeDasharray="3 2" />}
       <path d={d} fill="none" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   )
 }
 
-export default function EnvTiles({ envMode, setEnvMode, range, cameraIds }) {
-  const temp = useMemo(() => envSeries(cameraIds, 'temp'), [cameraIds])
-  const oxygen = useMemo(() => envSeries(cameraIds, 'oxygen'), [cameraIds])
+export default function EnvTiles({ envMode, setEnvMode, range, year, cameraIds }) {
+  const temp = useMemo(() => envSeries(cameraIds, 'temp', year), [cameraIds, year])
+  const oxygen = useMemo(() => envSeries(cameraIds, 'oxygen', year), [cameraIds, year])
   const avg = (arr) => {
     const vals = arr.slice(range[0], range[1] + 1).filter((v) => v != null)
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null
@@ -42,7 +43,7 @@ export default function EnvTiles({ envMode, setEnvMode, range, cameraIds }) {
   return (
     <div className="env-tiles">
       {tiles.map((t) => (
-        <button key={t.id} type="button" className={`env-tile ${envMode === t.id ? 'active' : ''}`} aria-pressed={envMode === t.id}
+        <button key={t.id} type="button" className={`env-tile ${t.id} ${envMode === t.id ? 'active' : ''}`} aria-pressed={envMode === t.id}
           onClick={() => setEnvMode(envMode === t.id ? 'off' : t.id)}
           title={envMode === t.id ? 'Turn environmental layer off' : `Shade map by ${t.label.toLowerCase()}`}>
           <span className="env-tile-label">{t.label} <small>avg in view</small></span>
