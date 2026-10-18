@@ -16,7 +16,7 @@ export default function AnswerPanel({ clip, onAnswer }) {
 
   return (
     <div className="answers" role="group" aria-label="Your answer">
-      <button type="button" className="answer answer--confirm" onClick={() => onAnswer({ kind: 'yes' })}>
+      <button type="button" className="answer answer--confirm" onClick={(e) => onAnswer({ kind: 'yes' }, e.currentTarget.getBoundingClientRect())}>
         <TileIcon kind="yes" />
         Confirm
       </button>
