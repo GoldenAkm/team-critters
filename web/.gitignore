@@ -22,6 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Background photo without a licence yet: kept out of git until replaced
-public/depths/1-surface-kelp.webp

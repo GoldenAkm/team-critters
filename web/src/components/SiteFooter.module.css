@@ -1,33 +1,64 @@
 /* Colours sampled from the ONC deep-seafloor image the landing page ends on:
    murky teal seafloor, near-black water, warm brown glow, coral sea pen. */
 .footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 24px;
-  padding: 20px var(--gutter);
+  padding: 22px var(--gutter) 24px;
   border-top: 1px solid rgb(240 138 93 / 0.35);
   background: linear-gradient(100deg, #18211f 0%, #0b0a10 40%, #0b0a10 65%, #2a190e 100%);
-  color: rgb(239 227 218 / 0.8);
-  font-size: 14px;
+  color: rgb(239 227 218 / 0.85);
 }
 
 .footer :focus-visible {
   outline-color: #f08a5d;
 }
 
-.credit {
-  color: #f08a5d;
-  font-family: var(--font-mono);
-  font-size: 13px;
+.project {
+  font-size: 14px;
 }
 
-.credit a {
-  color: inherit;
+/* Label | credit, in two aligned columns */
+.credits {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.creditRow {
+  display: contents;
+}
+
+.credits dt {
+  color: rgb(239 227 218 / 0.6);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  line-height: 1.75;
+  text-transform: uppercase;
+}
+
+.credits dd {
+  margin: 0;
+}
+
+.credits a {
+  color: #f08a5d;
   text-underline-offset: 3px;
 }
 
-.credit a:hover {
+.credits a:hover {
   color: #ffb08a;
+}
+
+/* Phones: label above each credit */
+@media (max-width: 560px) {
+  .credits {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .creditRow + .creditRow dt {
+    margin-top: 8px;
+  }
 }
