@@ -1,0 +1,62 @@
+/* Digital Fishers atoms. Colours, fonts, radii and shadows come from the Critters theme
+   (components/critters-theme.css, scoped to .critters-app) so this page matches the Interactive Map. */
+.critters-app {
+  --accent: var(--onc-teal-dark);
+  --accent-hover: #1c6879;
+  --ink-2: var(--muted);
+  --ink-3: #8a979f;
+  --ocean-deep: #06262b;
+  --ocean-mid: #0b3a42;
+  --ocean-light: #12505a;
+}
+
+.df-page h1, .df-page h2, .df-page h3 { margin: 0; line-height: 1.15; }
+.df-page h2, .df-page h3 { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
+.df-page p { margin: 0; }
+.df-page .sci { font-style: italic; color: var(--muted); }
+.df-page .muted { color: var(--muted); }
+.df-page .small { font-size: 12px; }
+.df-page .mono { font-variant-numeric: tabular-nums; }
+
+/* Small uppercase section label, as in the Map sidebar */
+.df-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Buttons (same shape as the Map's .btn) */
+.df-page .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 40px; padding: 9px 16px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer;
+  font-size: 13px; font-weight: 500; transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.df-page .btn:hover { border-color: var(--onc-teal); background: var(--tint); }
+.df-page .btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.df-page .btn--primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.df-page .btn--small { min-height: 32px; padding: 6px 12px; }
+
+.link-button { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 500; cursor: pointer; font-size: inherit; }
+.link-button:hover { text-decoration: underline; }
+
+/* Choice chips (look-alike picker) */
+.df-page .chip {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer;
+  font-size: 13px; font-weight: 500; transition: background 0.15s, border-color 0.15s;
+}
+.df-page .chip:hover { border-color: var(--onc-teal); background: var(--tint); color: var(--onc-teal-dark); }
+
+/* Status badges: same colours as the Map's species card */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+  border-radius: 999px; font-size: 12px; font-weight: 600;
+}
+.status-badge--identified { background: #eef7e6; color: #2f5a14; }
+.status-badge--needs_review { background: #fff6dd; color: #6b4e00; }
+.status-badge--uncertain { background: var(--surface-2); color: var(--muted); border: 1px dashed #9aa6ac; }
+
+/* Conservation tags: always a text label; colour is a second cue */
+.tag { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: var(--surface-2); color: var(--muted); }
+.tag--at_risk { background: #fbeae7; color: var(--onc-red); }
+.tag--interest { background: var(--tint); color: var(--onc-teal-dark); }
+.tag--not_at_risk { background: #eef7e6; color: #2f5a14; }
+
+.page-loading, .page-error { max-width: 1240px; margin: 0 auto; padding: 48px 20px; color: var(--muted); }
