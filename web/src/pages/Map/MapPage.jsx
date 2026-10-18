@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import L from 'leaflet'
 import { species, cameras, detections, WEEKS, DEFAULT_YEAR } from '../../components/data.js'
 import { BUBBLE_GROUPS, BUBBLE_ZOOM, countBy, filterDetections } from './derive.js'
 import Sidebar from './Sidebar.jsx'
@@ -9,6 +8,8 @@ import EnvTiles from './EnvTiles.jsx'
 import SpeciesCard from './SpeciesCard.jsx'
 import TrendsPanel from './TrendsPanel.jsx'
 import AppHeader from '../../components/AppHeader.jsx'
+import MapHero from './MapHero.jsx'
+import DataNote from './DataNote.jsx'
 import './map.css'
 
 const FULL_YEAR = [0, WEEKS - 1]
@@ -65,9 +66,7 @@ export default function MapPage() {
 
   function openCamera(cameraId) {
     const c = cameras.find((x) => x.id === cameraId)
-    // Keep the camera in the upper part of the map so the trends drawer doesn't cover it
-    const drawer = Math.min(520, window.innerHeight * 0.6)
-    mapRef.current?.flyToBounds(L.latLng(c.lat, c.lon).toBounds(30000), { paddingBottomRight: [0, drawer], maxZoom: 8, duration: 0.8 })
+    mapRef.current?.flyTo([c.lat, c.lon], 8, { duration: 0.8 })
     setTrendsCameraId(cameraId)
   }
 
@@ -81,55 +80,73 @@ export default function MapPage() {
     setSearch('')
   }
 
+  const reviewCount = detections.filter((d) => d.status === 'needs_review' && +d.timestamp.slice(0, 4) === year).length
+
   return (
-    <div className="map-shell">
+    <>
+      <a className="skip-link" href="#main">Skip to main content</a>
       <AppHeader active="map" />
-      <div className="map-page">
-        <Sidebar
-          search={search} setSearch={setSearch}
-          speciesOn={speciesOn} setSpeciesOn={setSpeciesOn} speciesCounts={speciesCounts}
-          statusOn={statusOn} setStatusOn={setStatusOn}
-          envMode={envMode} setEnvMode={setEnvMode}
-          cameraCounts={cameraCounts} onCameraClick={openCamera}
-          shownCount={filtered.length} onReset={resetFilters}
+      <main id="main" className="mp-page">
+        <MapHero
+          shown={filtered.length} year={year} reviewCount={reviewCount}
+          camerasWithSightings={Object.keys(cameraCounts).length} cameraCount={cameras.length}
         />
-        <main className="map-main" aria-label="Map of ONC camera sites">
-          <MapView
-            mapRef={mapRef}
-            filtered={filtered} cameraCounts={cameraCounts}
-            envMode={envMode} range={range} year={year}
-            areaName={areaName}
-            onView={setView}
-            onMarkerClick={(detection, count) => setCard({ detection, count })}
-            onCameraClick={openCamera}
-          />
-          {envMode !== 'off' && (
-            <EnvTiles envMode={envMode} setEnvMode={setEnvMode} range={range} year={year} cameraIds={view.inView} />
-          )}
-          {card && (
-            <SpeciesCard
-              {...card}
-              onClose={() => setCard(null)}
-              onTrends={(id) => { openCamera(id); setCard(null) }}
-            />
-          )}
-          <div className="map-bottom">
-            {trendsCameraId && (
-              <TrendsPanel
-                cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year}
-                onClose={() => setTrendsCameraId(null)}
-              />
-            )}
-            <Timeline
-              range={range} year={year}
-              setYear={(y) => { setPlaying(false); setCard(null); setYear(y) }}
-              setRange={(r) => { setPlaying(false); setRange(r) }}
-              playing={playing} onTogglePlay={togglePlay}
-              areaName={areaName} cameraIds={view.inView}
+
+        <div className="mp-body">
+          <div className="mp-layout">
+            <div className="mp-main">
+              <section className="mp-card mp-map-card" aria-label="Map of ONC camera sites">
+                <div className="map-main">
+                  <MapView
+                    mapRef={mapRef}
+                    filtered={filtered} cameraCounts={cameraCounts}
+                    envMode={envMode} range={range} year={year}
+                    areaName={areaName}
+                    onView={setView}
+                    onMarkerClick={(detection, count) => setCard({ detection, count })}
+                    onCameraClick={openCamera}
+                  />
+                  {envMode !== 'off' && (
+                    <EnvTiles envMode={envMode} setEnvMode={setEnvMode} range={range} year={year} cameraIds={view.inView} />
+                  )}
+                  {card && (
+                    <SpeciesCard
+                      {...card}
+                      onClose={() => setCard(null)}
+                      onTrends={(id) => { openCamera(id); setCard(null) }}
+                    />
+                  )}
+                </div>
+                <Timeline
+                  range={range} year={year}
+                  setYear={(y) => { setPlaying(false); setCard(null); setYear(y) }}
+                  setRange={(r) => { setPlaying(false); setRange(r) }}
+                  playing={playing} onTogglePlay={togglePlay}
+                  areaName={areaName} cameraIds={view.inView}
+                />
+              </section>
+
+              {trendsCameraId && (
+                <TrendsPanel
+                  cameraId={trendsCameraId} speciesOn={speciesOn} statusOn={statusOn} range={range} year={year}
+                  onClose={() => setTrendsCameraId(null)}
+                />
+              )}
+
+              <DataNote />
+            </div>
+
+            <Sidebar
+              search={search} setSearch={setSearch}
+              speciesOn={speciesOn} setSpeciesOn={setSpeciesOn} speciesCounts={speciesCounts}
+              statusOn={statusOn} setStatusOn={setStatusOn}
+              envMode={envMode} setEnvMode={setEnvMode}
+              cameraCounts={cameraCounts} onCameraClick={openCamera}
+              onReset={resetFilters}
             />
           </div>
-        </main>
-      </div>
-    </div>
+        </div>
+      </main>
+    </>
   )
 }
