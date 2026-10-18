@@ -1,42 +1,32 @@
 import { resolve } from 'node:path'
-import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-
-// Extra pages, each served from <name>/index.html. Links can omit the trailing slash.
-const PAGES = ['digital-fishers']
-
-// Vite only serves a page's index.html at "/<name>/"; redirect "/<name>" there.
-function pageSlashRedirect() {
-  const redirect = (req, res, next) => {
-    const [path, query = ''] = req.url.split('?')
-    if (PAGES.some((p) => path === `/${p}`)) {
-      res.statusCode = 301
-      res.setHeader('Location', `${path}/${query && `?${query}`}`)
-      res.end()
-      return
-    }
-    next()
-  }
-  return {
-    name: 'page-slash-redirect',
-    configureServer(server) {
-      server.middlewares.use(redirect)
-    },
-    configurePreviewServer(server) {
-      server.middlewares.use(redirect)
-    },
-  }
-}
+import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
+// Multi-page site: every tab is its own directory with its own index.html.
+const PAGES = { main: 'index.html', map: 'map/index.html', digitalFishers: 'digital-fishers/index.html' }
+
+// "/map" -> "/map/" so each directory's index.html is served with or without the trailing slash
+const trailingSlash = {
+  name: 'trailing-slash',
+  configureServer(server) { server.middlewares.use(redirect) },
+  configurePreviewServer(server) { server.middlewares.use(redirect) },
+}
+function redirect(req, res, next) {
+  const dirs = Object.values(PAGES).filter((p) => p !== 'index.html').map((p) => '/' + p.replace('/index.html', ''))
+  const [path, query] = req.url.split('?')
+  if (dirs.includes(path)) {
+    res.writeHead(301, { Location: `${path}/${query ? '?' + query : ''}` })
+    return res.end()
+  }
+  next()
+}
+
 export default defineConfig({
-  plugins: [react(), pageSlashRedirect()],
+  plugins: [react(), trailingSlash],
   build: {
     rolldownOptions: {
-      input: {
-        main: resolve(import.meta.dirname, 'index.html'),
-        ...Object.fromEntries(PAGES.map((p) => [p, resolve(import.meta.dirname, `${p}/index.html`)])),
-      },
+      input: Object.fromEntries(Object.entries(PAGES).map(([k, p]) => [k, resolve(import.meta.dirname, p)])),
     },
   },
 })

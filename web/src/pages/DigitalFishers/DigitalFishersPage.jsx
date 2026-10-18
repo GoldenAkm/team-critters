@@ -4,8 +4,7 @@ import { addVote, outcomeFor, resolveConsensus } from './consensus.js';
 import { toConfirmedDetection } from '../../lib/detections.js';
 import { useCollection } from '../../lib/useCollection.js';
 import { MATCH_BONUS, POINTS_PER_ANSWER, SHOW_AI_GUESS } from './config.js';
-import PortalHeader from '../../components/PortalHeader.jsx';
-import SiteFooter from '../../components/SiteFooter.jsx';
+import AppHeader from '../../components/AppHeader.jsx';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import ClipPlayer from './ClipPlayer.jsx';
 import AnswerPanel from './AnswerPanel.jsx';
@@ -15,6 +14,7 @@ import CollectedModal from './CollectedModal.jsx';
 import SessionComplete from './SessionComplete.jsx';
 import HowItWorks from './HowItWorks.jsx';
 import ProgressPanel from './ProgressPanel.jsx';
+import './base.css';
 import './DigitalFishersPage.css';
 
 const EMPTY_SESSION = { points: 0, reviewed: 0, newSpecies: 0 };
@@ -172,7 +172,7 @@ export default function ReviewPage() {
       </div>
 
       <p className="small muted demo-note">
-        Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
+        Data: Ocean Networks Canada. Prototype: species, clips, votes and scores shown are illustrative sample data.{' '}
         <button type="button" className="link-button" onClick={collection.reset}>
           Reset demo progress
         </button>
@@ -183,20 +183,17 @@ export default function ReviewPage() {
   );
 }
 
-const BREADCRUMB = ['Oceans 3.0', 'Machine Learning Species Identification', 'Digital Fishers 2.0'];
-
-// Shared portal chrome (from the landing page) around the page content.
+// Site header shared with the Interactive Map (mount() adds the .critters-app theme wrapper).
 function Shell({ children }) {
   return (
     <>
       <a className="skip-link" href="#main">
         Skip to main content
       </a>
-      <PortalHeader breadcrumb={BREADCRUMB} />
+      <AppHeader active="digital-fishers" />
       <main id="main" className="review-page">
         {children}
       </main>
-      <SiteFooter />
     </>
   );
 }

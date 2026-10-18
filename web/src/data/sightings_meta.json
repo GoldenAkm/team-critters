@@ -1,0 +1,21 @@
+{
+  "rule": "annotation_source == SeaScribe OR Count attribute >= 3",
+  "rulePrecision": {
+    "confirmed": 27,
+    "checked": 36,
+    "note": "Rockfish annotations passing the rule vs manifest.csv corrected labels"
+  },
+  "baselinePrecision": {
+    "confirmed": 70,
+    "checked": 274,
+    "note": "All ONC rockfish annotations vs manifest.csv corrected labels"
+  },
+  "counts": {
+    "lingcod:dropped": 177,
+    "lingcod:onc_annotation": 14,
+    "rockfish:corrected_label": 12,
+    "rockfish:dropped": 259,
+    "rockfish:onc_annotation": 6,
+    "rockfish:team_review": 69
+  }
+}

@@ -1,32 +1,26 @@
-/* Digital Fishers page tokens and shared bits. Base styles, fonts and colours come from
-   src/index.css (shared with the landing page); these names map onto those tokens. */
-:root {
-  --bg: var(--color-bg);
-  --surface: var(--color-surface);
-  --surface-2: var(--color-placeholder);
-  --ink: var(--color-ink);
-  --ink-2: var(--color-ink-muted);
-  --ink-3: var(--color-ink-faint);
-  --line: var(--color-line-soft);
-  --accent: var(--color-ink);
+/* Digital Fishers page bits. Colours come from the Critters theme (components/critters-theme.css,
+   scoped to .critters-app, shared with the Interactive Map); these extra names map onto it. */
+.critters-app {
+  --bg: var(--surface-2);
+  --ink-2: var(--muted);
+  --ink-3: #8a979f;
+  --accent: var(--onc-teal-dark);
   --accent-ink: #ffffff;
-  --radius: var(--radius-md);
   --mono: var(--font-mono);
 }
 
 h1, h2, h3 { line-height: 1.2; }
-button { font: inherit; color: inherit; }
 .mono { font-family: var(--mono); }
 .small { font-size: 0.85rem; }
 .muted { color: var(--ink-2); }
 .sci { font-style: italic; color: var(--ink-2); }
 
-.link-button { background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; min-height: 44px; }
+.link-button { background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; min-height: 44px; color: inherit; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  min-height: 44px; padding: 0 18px; border-radius: 8px; border: 1.5px solid var(--ink);
-  background: var(--surface); text-decoration: none; font-weight: 500; cursor: pointer;
+  min-height: 44px; padding: 0 18px; border-radius: 8px; border: 1.5px solid var(--accent);
+  background: var(--surface); color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer;
 }
 .btn--primary { background: var(--accent); color: var(--accent-ink); }
 .btn--small { min-height: 36px; padding: 0 12px; font-size: 0.85rem; }
@@ -35,7 +29,7 @@ button { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px;
   border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer;
 }
-.chip:hover { border-color: var(--ink); }
+.chip:hover { border-color: var(--accent); }
 .chip--static { min-height: 0; padding: 4px 12px; cursor: default; font-size: 0.85rem; }
 
 .status-badge {
